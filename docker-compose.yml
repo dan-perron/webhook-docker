@@ -1,0 +1,25 @@
+---
+version: "3.8"
+services:
+  webhook-server:
+    build:
+      context: ./webhook-server
+    container_name: webhook-server
+    environment:
+      - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+  mongodb:
+    image: mongo:6.0
+    volumes:
+      - mongodb-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    restart: unless-stopped
+volumes:
+  mongodb-data:
+  thunderdome-ootp:
+    external:
+      name: thunderdome-ootp
