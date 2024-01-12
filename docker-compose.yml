@@ -4,12 +4,17 @@ services:
   webhook-server:
     build:
       context: ./webhook-server
+      #tags:
+      #  - "dan-perron/webhook-server"
     container_name: webhook-server
+    image: "dan-perron/webhook-server"
     environment:
-      - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb
+      - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/?authSource=admin
     ports:
       - 3000:3000
     restart: unless-stopped
+    volumes:
+      - thunderdome-ootp:/ootp
   mongodb:
     image: mongo:6.0
     volumes:
