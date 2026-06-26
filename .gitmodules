@@ -1,3 +1,6 @@
 [submodule "webhook-server"]
 	path = webhook-server
 	url = git@github.djperron.com:dan-perron/webhook-server
+[submodule "calcium-tracker"]
+	path = calcium-tracker
+	url = git@github.djperron.com:dan-perron/calcium-tracker
