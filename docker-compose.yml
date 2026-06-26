@@ -15,6 +15,18 @@ services:
     restart: unless-stopped
     volumes:
       - thunderdome-ootp:/ootp
+  calcium-tracker:
+    build:
+      context: ./calcium-tracker
+    container_name: calcium-tracker
+    image: "dan-perron/calcium-tracker"
+    environment:
+      - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/?authSource=admin
+      - CALCIUM_PASSWORD=${CALCIUM_PASSWORD:-}
+      - CALCIUM_COOKIE_SECRET=${CALCIUM_COOKIE_SECRET:-change-me}
+    ports:
+      - 3001:3001
+    restart: unless-stopped
   mongodb:
     image: mongo:6.0
     volumes:
