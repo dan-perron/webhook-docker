@@ -1,5 +1,4 @@
 ---
-version: "3.8"
 services:
   webhook-server:
     build:
@@ -36,8 +35,23 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     restart: unless-stopped
+  personal-assistant:
+    build:
+      context: ./personal-assistant
+    container_name: personal-assistant
+    image: "dan-perron/personal-assistant"
+    environment:
+      - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/?authSource=admin
+      - TZ=America/Chicago
+    restart: unless-stopped
+  #windows-rdp-automation:
+  #  build:
+  #    context: ./windows-rdp-automation
+  #  container_name: windows-rdp-automation
+  #  image: "dan-perron/windows-rdp-automation"
+  #  restart: unless-stopped
 volumes:
   mongodb-data:
   thunderdome-ootp:
-    external:
-      name: thunderdome-ootp
+    name: thunderdome-ootp
+    external: true
