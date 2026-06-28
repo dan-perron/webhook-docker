@@ -22,6 +22,7 @@ services:
     image: "dan-perron/calcium-tracker"
     environment:
       - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/?authSource=admin
+      - BASE_PATH=${CALCIUM_BASE_PATH:-/calcium}
       - CALCIUM_PASSWORD=${CALCIUM_PASSWORD:-}
       - CALCIUM_COOKIE_SECRET=${CALCIUM_COOKIE_SECRET:-change-me}
     ports:
