@@ -4,3 +4,8 @@
 [submodule "calcium-tracker"]
 	path = calcium-tracker
 	url = git@github.djperron.com:dan-perron/calcium-tracker
+[submodule "windows-rdp-automation"]
+	path = windows-rdp-automation
+	url = git@github.djperron.com:dan-perron/windows-rdp-automation.git
+  branch = main
+
