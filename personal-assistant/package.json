@@ -1,0 +1,41 @@
+{
+  "name": "personal-assistant",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@slack/bolt": "^3.12.2",
+    "config": "^3.3.10",
+    "mongodb": "6",
+    "node-cron": "^3.0.3",
+    "source-map-support": "^0.5.21",
+    "typescript": "^5.3.3",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^3.0.11",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.4.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.2.4"
+  },
+  "scripts": {
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "fix": "yarn lint:fix && yarn format:write",
+    "build": "tsc -p .",
+    "prestart": "yarn build",
+    "start": "node built/bin/www.js",
+    "prepare": "husky install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn build && yarn lint:check && yarn format:check"
+    }
+  }
+}
