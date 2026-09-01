@@ -27,6 +27,25 @@ services:
     ports:
       - 3001:3001
     restart: unless-stopped
+  meeting-scheduler:
+    build:
+      context: ./meeting-scheduler
+    container_name: meeting-scheduler
+    image: "dan-perron/meeting-scheduler"
+    environment:
+      - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/?authSource=admin
+      - MONGODB_DATABASE=${MEET_DATABASE:-scheduler}
+      - BASE_PATH=${MEET_BASE_PATH:-/meet}
+      - PORT=3002
+      # Set false only to test over plain http (e.g. http://signs:3002/meet);
+      # with Secure cookies the browser silently drops the session on http.
+      - COOKIE_SECURE=${MEET_COOKIE_SECURE:-true}
+      # Absolute origin, used to build shareable event links. Needed because the
+      # Apache vhost does not set ProxyPreserveHost.
+      - PUBLIC_ORIGIN=${MEET_PUBLIC_ORIGIN:-https://djperron.com}
+    ports:
+      - 3002:3002
+    restart: unless-stopped
   mongodb:
     image: mongo:6.0
     volumes:

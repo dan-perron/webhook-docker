@@ -1,0 +1,41 @@
+{
+  "name": "meeting-scheduler",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Find a meeting time that works for a group — availability grid + ranked proposals",
+  "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "config": "^3.3.12",
+    "dayjs": "^1.11.13",
+    "hono": "^4.6.14",
+    "mongodb": "^6.12.0"
+  },
+  "devDependencies": {
+    "@types/config": "^3.3.5",
+    "@types/node": "^20.17.10",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.7",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  },
+  "scripts": {
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "fix": "yarn lint:fix && yarn format:write",
+    "build": "tsc -p .",
+    "prestart": "yarn build",
+    "start": "node built/server.js",
+    "dev": "yarn build && node built/server.js",
+    "dev:watch": "tsc -p . -w --preserveWatchOutput & node --watch built/server.js",
+    "seed": "yarn build && node built/seed.js",
+    "deploy": "./deploy.sh",
+    "prepare": "husky install"
+  }
+}

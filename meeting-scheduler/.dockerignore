@@ -1,0 +1,6 @@
+node_modules
+built
+.git
+config/local*
+*.log
+.DS_Store

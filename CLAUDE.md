@@ -4,7 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Docker Compose orchestration for a webhook server stack. Manages two services (webhook-server + MongoDB) and coordinates two git submodules that each have their own repos and build contexts.
+Docker Compose orchestration for the app stack on the `signs` home server. Runs
+four app services plus MongoDB. Some app directories are git submodules with
+their own repos; others are plain directories committed straight into this repo.
+
+Apache2 on the host (not in Docker) terminates TLS for `djperron.com` and
+reverse-proxies each app onto a path of the main domain, so no app needs its own
+DNS record or certificate.
 
 ## Commands
 
@@ -25,13 +31,33 @@ docker compose down
 ## Architecture
 
 **Services** defined in `docker-compose.yml`:
-- `webhook-server`: Node.js/TypeScript Express app (port 3000) — built from `./webhook-server` submodule. Connects to MongoDB and mounts an external `thunderdome-ootp` volume at `/ootp`.
-- `mongodb`: MongoDB 6.0 with persistent `mongodb-data` volume.
-- `windows-rdp-automation`: Python-based RDP automation (currently commented out) — from `./windows-rdp-automation` submodule.
+- `webhook-server`: Node/TypeScript Express app (port 3000) — from the `./webhook-server` submodule. Connects to MongoDB and mounts an external `thunderdome-ootp` volume at `/ootp`. Proxied at `/webhooks/`.
+- `calcium-tracker`: Node/TypeScript Hono app (port 3001) — from the `./calcium-tracker` submodule. Proxied at `/calcium`.
+- `meeting-scheduler`: Node/TypeScript Hono app (port 3002) — plain directory, **not** a submodule. A self-hosted When2Meet. Proxied at `/meet`.
+- `personal-assistant`: Node/TypeScript Slack bot (Socket Mode, no HTTP port) — plain directory, **not** a submodule.
+- `mongodb`: MongoDB 6.0 with persistent `mongodb-data` volume. **Not published to the host** — only reachable on this stack's network as hostname `mongodb`, which is why every app here deploys as a service in this stack.
+- `windows-rdp-automation`: Python RDP automation (currently commented out) — from the `./windows-rdp-automation` submodule.
+
+Each app uses its own logical database on the shared MongoDB (`webhook-server`,
+`calcium`, `scheduler`, …), not shared collections.
 
 **Git Submodules** (hosted on `github.djperron.com`):
-- `webhook-server` — the main application. Has its own `CLAUDE.md` with detailed architecture docs.
+- `webhook-server` — the original application. Has its own `CLAUDE.md` with detailed architecture docs.
+- `calcium-tracker` — Hono + hono/jsx + HTMX app; the canonical template for adding a new web app here.
 - `windows-rdp-automation` — Python service for driving OOTP simulations via RDP.
+
+**Plain directories** (committed to this repo, no separate remote): `personal-assistant`,
+`meeting-scheduler`. These deploy with a plain `docker compose up -d --build <name>` —
+no submodule bump. Prefer this for small apps; reach for a submodule only when the
+app genuinely needs its own repo and history.
+
+**Adding a new web app**: copy the `calcium-tracker` layout (Dockerfile,
+`config/default.cjs` with `normalizeBasePath`, `src/util/url.ts`, `/healthz`,
+eslint/prettier/husky), make it base-path aware from day one, give it the next
+free port, add the `MONGODB_CONNSTRING` env line, and add a two-line
+`ProxyPass`/`ProxyPassReverse` pair to
+`/etc/apache2/sites-enabled/000-default-le-ssl.conf` (the path passes through
+verbatim — no rewrite — because the app knows its own base path).
 
 **Environment**: `.env` file (gitignored) provides `MONGO_USERNAME` and `MONGO_PASSWORD`. See `.env_template` for required variables.
 
