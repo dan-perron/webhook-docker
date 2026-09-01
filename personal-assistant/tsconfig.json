@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outDir": "./built",
+    "allowJs": true,
+    "module": "nodenext",
+    "verbatimModuleSyntax": true,
+    "sourceMap": true,
+    "inlineSourceMap": false
+  },
+  "include": ["./src/**/*"]
+}
