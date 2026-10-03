@@ -27,6 +27,7 @@ describe('situationFromLinescore', () => {
       second: false,
       third: true,
       scheduledInnings: 9,
+      extraInningRunner: true,
     });
   });
 
@@ -68,7 +69,13 @@ describe('parseSchedule (recorded CWS @ CLE, ALDS G1)', () => {
     expect(s.status).toBe('in');
     expect(s.away).toMatchObject({ name: 'Chicago White Sox', score: 3 });
     expect(s.home).toMatchObject({ name: 'Cleveland Guardians', score: 0 });
-    expect(s.situation).toMatchObject({ inning: 8, half: 'top', outs: 1 });
+    expect(s.situation).toMatchObject({
+      inning: 8,
+      half: 'top',
+      outs: 1,
+      // gameType D (division series): no extra-innings runner
+      extraInningRunner: false,
+    });
     expect(s.detail).toBe('Top 8th, 1 out');
     // (14 + 1/3) of 18 half-innings done
     expect(s.fractionRemaining).toBeCloseTo(1 - (14 + 1 / 3) / 18, 10);
@@ -132,5 +139,32 @@ describe('parseSchedule (recorded inning break)', () => {
     expect(s!.detail).toBe('Mid 8th');
     // 15 of 18 half-innings done
     expect(s!.fractionRemaining).toBeCloseTo(3 / 18, 10);
+  });
+});
+
+describe('parseSchedule (recorded status edge cases)', () => {
+  it('"Warmup" is abstractly Live but has not started', () => {
+    const [s] = parseSchedule(
+      fixture<MlbSchedule>('mlb/schedule-849828-warmup.json')
+    );
+    expect(s).toMatchObject({
+      status: 'pre',
+      fractionRemaining: 1,
+      situation: null,
+      detail: 'Warmup',
+    });
+  });
+
+  it('"Game Over": CWS 3 @ CLE 0 is final, away wins', () => {
+    const [s] = parseSchedule(
+      fixture<MlbSchedule>('mlb/schedule-849829-gameover.json')
+    );
+    expect(s).toMatchObject({
+      status: 'final',
+      winner: 'away',
+      detail: 'Final',
+      fractionRemaining: 0,
+    });
+    expect(s!.away.score).toBe(3);
   });
 });

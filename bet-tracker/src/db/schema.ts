@@ -122,6 +122,16 @@ export const legs = sqliteTable(
     priorSource: text('prior_source', { enum: PRIOR_SOURCES }),
     // JSON prior inputs (home win prob, spread, total, ...) used by models.
     priorJson: text('prior_json'),
+    // Latest model evaluation (P(push) covers integer lines and voids).
+    pWin: real('p_win'),
+    pPush: real('p_push'),
+    model: text('model'),
+    modelInputsJson: text('model_inputs_json'),
+    evaluatedAt: text('evaluated_at'),
+    // Probabilities at placement: from the prior (pregame bets) or the
+    // de-vigged entered price (live bets). Set once.
+    pWinPlacement: real('p_win_placement'),
+    pPushPlacement: real('p_push_placement'),
     ...timestamps,
   },
   (t) => [

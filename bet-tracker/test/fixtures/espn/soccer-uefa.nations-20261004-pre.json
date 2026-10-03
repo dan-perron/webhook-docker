@@ -17,6 +17,11 @@
      "shortDetail": "Scheduled"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 14105,
+    "slug": "league-phase"
+   },
    "competitions": [
     {
      "id": "401861119",
@@ -121,6 +126,11 @@
      "detail": "Sun, October 4th at 12:00 PM EDT",
      "shortDetail": "Scheduled"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 14105,
+    "slug": "league-phase"
    },
    "competitions": [
     {
@@ -227,6 +237,11 @@
      "shortDetail": "Scheduled"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 14105,
+    "slug": "league-phase"
+   },
    "competitions": [
     {
      "id": "401861120",
@@ -331,6 +346,11 @@
      "detail": "Sun, October 4th at 2:45 PM EDT",
      "shortDetail": "Scheduled"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 14105,
+    "slug": "league-phase"
    },
    "competitions": [
     {
@@ -437,6 +457,11 @@
      "shortDetail": "Scheduled"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 14105,
+    "slug": "league-phase"
+   },
    "competitions": [
     {
      "id": "401861122",
@@ -541,6 +566,11 @@
      "detail": "Sun, October 4th at 2:45 PM EDT",
      "shortDetail": "Scheduled"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 14105,
+    "slug": "league-phase"
    },
    "competitions": [
     {
@@ -647,6 +677,11 @@
      "shortDetail": "Scheduled"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 14105,
+    "slug": "league-phase"
+   },
    "competitions": [
     {
      "id": "401861124",
@@ -751,6 +786,11 @@
      "detail": "Sun, October 4th at 2:45 PM EDT",
      "shortDetail": "Scheduled"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 14105,
+    "slug": "league-phase"
    },
    "competitions": [
     {

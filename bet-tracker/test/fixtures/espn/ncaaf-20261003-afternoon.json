@@ -18,6 +18,11 @@
      "shortDetail": "Final"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401856707",
@@ -87,6 +92,11 @@
      "detail": "1:08 - 4th Quarter",
      "shortDetail": "1:08 - 4th"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -172,6 +182,11 @@
      "shortDetail": "Final"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401858246",
@@ -242,6 +257,11 @@
      "shortDetail": "Final"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401856822",
@@ -311,6 +331,11 @@
      "detail": "2:43 - 4th Quarter",
      "shortDetail": "2:43 - 4th"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -396,6 +421,11 @@
      "shortDetail": "Final"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401858474",
@@ -466,6 +496,11 @@
      "shortDetail": "Final"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401858479",
@@ -535,6 +570,11 @@
      "detail": "6:43 - 4th Quarter",
      "shortDetail": "6:43 - 4th"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -620,6 +660,11 @@
      "shortDetail": "4:23 - 4th"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401866432",
@@ -704,6 +749,11 @@
      "shortDetail": "Halftime"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401866431",
@@ -777,6 +827,11 @@
      "shortDetail": "Final"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401858250",
@@ -846,6 +901,11 @@
      "detail": "Final",
      "shortDetail": "Final"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -917,6 +977,11 @@
      "shortDetail": "Final"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401856807",
@@ -986,6 +1051,11 @@
      "detail": "Final",
      "shortDetail": "Final"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -1057,6 +1127,11 @@
      "shortDetail": "Final"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401862791",
@@ -1126,6 +1201,11 @@
      "detail": "Sat, October 3rd at 3:30 PM EDT",
      "shortDetail": "10/3 - 3:30 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -1222,6 +1302,11 @@
      "shortDetail": "10/3 - 3:30 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401856710",
@@ -1316,6 +1401,11 @@
      "detail": "Sat, October 3rd at 3:30 PM EDT",
      "shortDetail": "10/3 - 3:30 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -1412,6 +1502,11 @@
      "shortDetail": "10/3 - 3:30 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401858248",
@@ -1506,6 +1601,11 @@
      "detail": "Sat, October 3rd at 3:30 PM EDT",
      "shortDetail": "10/3 - 3:30 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -1602,6 +1702,11 @@
      "shortDetail": "15:00 - 1st"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401862793",
@@ -1686,6 +1791,11 @@
      "shortDetail": "10/3 - 3:30 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401864515",
@@ -1753,6 +1863,11 @@
      "detail": "14:13 - 1st Quarter",
      "shortDetail": "14:13 - 1st"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -1838,6 +1953,11 @@
      "shortDetail": "14:16 - 1st"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401866433",
@@ -1921,6 +2041,11 @@
      "detail": "13:40 - 1st Quarter",
      "shortDetail": "13:40 - 1st"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -2006,6 +2131,11 @@
      "shortDetail": "14:16 - 1st"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401866477",
@@ -2090,6 +2220,11 @@
      "shortDetail": "14:32 - 1st"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401869956",
@@ -2173,6 +2308,11 @@
      "detail": "Sat, October 3rd at 3:45 PM EDT",
      "shortDetail": "10/3 - 3:45 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -2269,6 +2409,11 @@
      "shortDetail": "10/3 - 3:50 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401856708",
@@ -2363,6 +2508,11 @@
      "detail": "Sat, October 3rd at 4:00 PM EDT",
      "shortDetail": "10/3 - 4:00 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -2459,6 +2609,11 @@
      "shortDetail": "10/3 - 4:00 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401864514",
@@ -2553,6 +2708,11 @@
      "detail": "Sat, October 3rd at 4:15 PM EDT",
      "shortDetail": "10/3 - 4:15 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -2649,6 +2809,11 @@
      "shortDetail": "10/3 - 4:15 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401858472",
@@ -2743,6 +2908,11 @@
      "detail": "Sat, October 3rd at 6:00 PM EDT",
      "shortDetail": "10/3 - 6:00 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -2839,6 +3009,11 @@
      "shortDetail": "10/3 - 6:00 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401862790",
@@ -2933,6 +3108,11 @@
      "detail": "Sat, October 3rd at 7:00 PM EDT",
      "shortDetail": "10/3 - 7:00 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -3029,6 +3209,11 @@
      "shortDetail": "10/3 - 7:00 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401856711",
@@ -3123,6 +3308,11 @@
      "detail": "Sat, October 3rd at 7:00 PM EDT",
      "shortDetail": "10/3 - 7:00 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -3219,6 +3409,11 @@
      "shortDetail": "10/3 - 7:00 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401869942",
@@ -3313,6 +3508,11 @@
      "detail": "Sat, October 3rd at 7:00 PM EDT",
      "shortDetail": "10/3 - 7:00 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -3409,6 +3609,11 @@
      "shortDetail": "10/3 - 7:30 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401858249",
@@ -3503,6 +3708,11 @@
      "detail": "Sat, October 3rd at 7:30 PM EDT",
      "shortDetail": "10/3 - 7:30 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -3599,6 +3809,11 @@
      "shortDetail": "10/3 - 7:30 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401858478",
@@ -3693,6 +3908,11 @@
      "detail": "Sat, October 3rd at 7:30 PM EDT",
      "shortDetail": "10/3 - 7:30 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -3789,6 +4009,11 @@
      "shortDetail": "10/3 - 7:30 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401862792",
@@ -3883,6 +4108,11 @@
      "detail": "Sat, October 3rd at 7:30 PM EDT",
      "shortDetail": "10/3 - 7:30 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -3979,6 +4209,11 @@
      "shortDetail": "10/3 - 7:45 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401856706",
@@ -4073,6 +4308,11 @@
      "detail": "Sat, October 3rd at 8:00 PM EDT",
      "shortDetail": "10/3 - 8:00 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -4169,6 +4409,11 @@
      "shortDetail": "10/3 - 8:00 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401869932",
@@ -4263,6 +4508,11 @@
      "detail": "Sat, October 3rd at 9:30 PM EDT",
      "shortDetail": "10/3 - 9:30 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -4359,6 +4609,11 @@
      "shortDetail": "10/3 - 10:30 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401856817",
@@ -4453,6 +4708,11 @@
      "detail": "Sat, October 3rd at 10:30 PM EDT",
      "shortDetail": "10/3 - 10:30 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {
@@ -4549,6 +4809,11 @@
      "shortDetail": "10/3 - 11:00 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401856820",
@@ -4643,6 +4908,11 @@
      "detail": "Sat, October 3rd at 11:59 PM EDT",
      "shortDetail": "10/3 - 11:59 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
    },
    "competitions": [
     {

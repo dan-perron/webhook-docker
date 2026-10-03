@@ -1,0 +1,60 @@
+{
+ "dates": [
+  {
+   "games": [
+    {
+     "gamePk": 849828,
+     "gameType": "D",
+     "gameDate": "2026-10-03T20:00:00Z",
+     "status": {
+      "abstractGameState": "Live",
+      "codedGameState": "P",
+      "detailedState": "Warmup"
+     },
+     "teams": {
+      "home": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "abbreviation": "LAD",
+        "teamName": "Dodgers"
+       },
+       "score": 0
+      },
+      "away": {
+       "team": {
+        "id": 144,
+        "name": "Atlanta Braves",
+        "abbreviation": "ATL",
+        "teamName": "Braves"
+       },
+       "score": 0
+      }
+     },
+     "linescore": {
+      "currentInning": 1,
+      "inningState": "Top",
+      "isTopInning": true,
+      "scheduledInnings": 9,
+      "outs": 0,
+      "teams": {
+       "home": {
+        "runs": 0,
+        "hits": 0,
+        "errors": 0,
+        "leftOnBase": 0
+       },
+       "away": {
+        "runs": 0,
+        "hits": 0,
+        "errors": 0,
+        "leftOnBase": 0
+       }
+      },
+      "offense": {}
+     }
+    }
+   ]
+  }
+ ]
+}

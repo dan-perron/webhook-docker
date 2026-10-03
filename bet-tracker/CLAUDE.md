@@ -36,3 +36,14 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   `bin/dev node scripts/live-smoke.mjs` (after a build) checks the real APIs.
 - Event matching never guesses: anything but exactly one confident event is
   stored as candidates on the leg and needs `confirmLegMatch`.
+- Models (`src/models/`) are pure `(state, prior, selection) -> {win, push}`.
+  Every expected number in their tests is hand-derived (comments show the
+  math); keep it that way. MLB tests use a seeded RNG.
+- Prior order: ESPN/DraftKings lines (summary `pickcenter` keeps the closing
+  line after kickoff) -> Odds API pregame snapshot -> entered odds (pregame
+  bets only) -> neutral. Priors refresh until the event starts, then freeze.
+- `Tracker.tick()` (every 5 s from `server.ts`) polls only due events with an
+  open leg on an open bet, stores each leg's latest P(win)/P(push), settles
+  finals, and logs calibration snapshots (max one per leg per 5 min).
+- Parlay push/void recompute scales the remaining legs by the book's pricing
+  factor (stated price / product of legs).

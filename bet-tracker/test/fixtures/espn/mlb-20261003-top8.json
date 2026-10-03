@@ -18,6 +18,11 @@
      "shortDetail": "Top 8th"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 3,
+    "slug": "post-season"
+   },
    "competitions": [
     {
      "id": "401907990",
@@ -93,6 +98,11 @@
      "detail": "Scheduled",
      "shortDetail": "10/3 - 4:00 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 3,
+    "slug": "post-season"
    },
    "competitions": [
     {
@@ -189,6 +199,11 @@
      "shortDetail": "10/3 - 6:30 PM EDT"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 3,
+    "slug": "post-season"
+   },
    "competitions": [
     {
      "id": "401907985",
@@ -283,6 +298,11 @@
      "detail": "Scheduled",
      "shortDetail": "10/3 - 8:30 PM EDT"
     }
+   },
+   "season": {
+    "year": 2026,
+    "type": 3,
+    "slug": "post-season"
    },
    "competitions": [
     {

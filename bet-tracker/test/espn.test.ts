@@ -150,6 +150,8 @@ describe('ESPN MMA and MLB', () => {
       second: false,
       third: false,
       scheduledInnings: 9,
+      // ALDS: postseason extras have no runner on 2nd
+      extraInningRunner: false,
     });
     // 14 of 18 half-innings done
     expect(s!.fractionRemaining).toBeCloseTo(4 / 18, 10);

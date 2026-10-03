@@ -7,9 +7,9 @@
      "gameType": "D",
      "gameDate": "2026-10-03T17:00:00Z",
      "status": {
-      "abstractGameState": "Live",
-      "codedGameState": "I",
-      "detailedState": "In Progress"
+      "abstractGameState": "Final",
+      "codedGameState": "O",
+      "detailedState": "Game Over"
      },
      "teams": {
       "home": {
@@ -32,9 +32,9 @@
       }
      },
      "linescore": {
-      "currentInning": 8,
-      "inningState": "Middle",
-      "isTopInning": true,
+      "currentInning": 9,
+      "inningState": "Bottom",
+      "isTopInning": false,
       "scheduledInnings": 9,
       "outs": 3,
       "teams": {

@@ -15,6 +15,11 @@
      "shortDetail": "Scheduled"
     }
    },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
    "competitions": [
     {
      "id": "401907089",

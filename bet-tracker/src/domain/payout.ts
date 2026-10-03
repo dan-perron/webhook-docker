@@ -29,9 +29,22 @@ export interface Payout {
 }
 
 /**
+ * How the book priced the parlay relative to multiplying its legs: below 1
+ * when it discounted correlated legs (e.g. a UFC card: legs multiply to +699,
+ * priced +541 -> 6.41 / 7.99 = 0.80).
+ */
+export function parlayPriceFactor(bet: PayoutBet, legs: PayoutLeg[]): number {
+  return (
+    americanToDecimal(bet.priceAmerican) /
+    parlayDecimal(legs.map((l) => l.priceAmerican))
+  );
+}
+
+/**
  * What the bet returns if it wins. The book's stated payout wins over any
  * price math. If parlay legs pushed/voided, the price is recomputed from the
- * remaining legs' stored odds with the same boost percentage applied.
+ * remaining legs' stored odds, scaled by the book's original parlay pricing
+ * factor, with the same boost percentage applied.
  */
 export function winPayout(bet: PayoutBet, legs: PayoutLeg[]): Payout {
   const dropped = legs.filter(
@@ -42,7 +55,9 @@ export function winPayout(bet: PayoutBet, legs: PayoutLeg[]): Payout {
     if (remaining.length === 0) {
       return { cents: bet.stakeCents, source: 'recomputed_after_push' };
     }
-    let decimal = parlayDecimal(remaining.map((l) => l.priceAmerican));
+    let decimal =
+      parlayDecimal(remaining.map((l) => l.priceAmerican)) *
+      parlayPriceFactor(bet, legs);
     if (bet.boostPct) decimal = boostDecimal(decimal, bet.boostPct);
     return {
       cents: payoutCents(bet.stakeCents, decimal),
