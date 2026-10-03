@@ -14,6 +14,7 @@ export const appConfig = {
   timezone: config.get<string>('timezone'),
   auth: {
     appToken: config.get<string>('auth.appToken'),
+    extraRedirectUris: config.get<string[]>('auth.extraRedirectUris'),
   },
   oddsApi: {
     apiKey: config.get<string>('oddsApi.apiKey'),

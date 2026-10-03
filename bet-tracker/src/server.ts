@@ -12,7 +12,11 @@ if (!appConfig.auth.appToken) {
 const db = openDb(appConfig.databasePath);
 const services = createServices(db);
 const { tracker } = services;
-const app = createApp(services);
+const app = createApp(services, {
+  appToken: appConfig.auth.appToken,
+  publicOrigin: appConfig.publicOrigin,
+  extraRedirectUris: appConfig.auth.extraRedirectUris,
+});
 
 // The tracker decides per event when a poll is due; tick often and cheaply.
 const TICK_MS = 5_000;

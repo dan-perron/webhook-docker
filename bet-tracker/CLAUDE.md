@@ -47,3 +47,27 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   finals, and logs calibration snapshots (max one per leg per 5 min).
 - Parlay push/void recompute scales the remaining legs by the book's pricing
   factor (stated price / product of legs).
+
+## MCP
+
+- Tools live in `src/mcp/server.ts` (`createMcpServer(services)`), shared by
+  stdio (`src/mcp/stdio.ts`, `docker exec -i bet-tracker node
+  built/mcp/stdio.js` on signs) and HTTP (`POST /bets/mcp`, stateless, JSON
+  responses).
+- `/mcp` accepts `Authorization: Bearer <APP_TOKEN>` or an OAuth access token.
+  OAuth (`src/auth/`) is single-user: dynamic client registration, PKCE S256,
+  login = APP_TOKEN, redirect allowlist = Claude's connector callbacks +
+  loopback (+ `OAUTH_EXTRA_REDIRECT_URIS`). Codes 5 min, access 1 h, refresh
+  30 d with rotation; all stored hashed.
+
+## Deploy (Apache on signs)
+
+Add to `/etc/apache2/sites-enabled/000-default-le-ssl.conf` next to /meet. The
+two `.well-known` lines let OAuth clients find metadata at the root paths
+RFC 8414/9728 derive from `https://djperron.com/bets`; `flushpackets=on` keeps
+the page's SSE stream unbuffered.
+
+    ProxyPass        "/.well-known/oauth-protected-resource/bets/mcp" "http://localhost:3003/bets/.well-known/oauth-protected-resource"
+    ProxyPass        "/.well-known/oauth-authorization-server/bets" "http://localhost:3003/bets/.well-known/oauth-authorization-server"
+    ProxyPass        "/bets" "http://localhost:3003/bets" flushpackets=on timeout=300
+    ProxyPassReverse "/bets" "http://localhost:3003/bets"
