@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "outDir": "./built",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2023",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx"
+  },
+  "include": ["./src/**/*", "./test/**/*", "./*.ts"]
+}
