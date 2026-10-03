@@ -32,6 +32,12 @@ const config = {
     // Bearer token for the HTTP API/MCP and the password for the web login.
     // Empty disables the server (it refuses to start without one outside tests).
     appToken: process.env.APP_TOKEN || '',
+    // Extra exact OAuth redirect URIs to accept (comma-separated). Claude's
+    // connector callbacks and loopback URIs are always allowed.
+    extraRedirectUris: (process.env.OAUTH_EXTRA_REDIRECT_URIS || '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean),
   },
   oddsApi: {
     // Never logged. Empty disables odds calls (check_odds returns an error).

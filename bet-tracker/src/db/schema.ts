@@ -184,3 +184,47 @@ export type NewBetRow = typeof bets.$inferInsert;
 export type LegRow = typeof legs.$inferSelect;
 export type NewLegRow = typeof legs.$inferInsert;
 export type PredictionSnapshotRow = typeof predictionSnapshots.$inferSelect;
+
+// --- OAuth (single user; for claude.ai / mobile MCP connectors) -------------
+
+/** Dynamically registered public clients (PKCE, no secret). */
+export const oauthClients = sqliteTable('oauth_clients', {
+  clientId: text('client_id').primaryKey(),
+  clientName: text('client_name'),
+  redirectUrisJson: text('redirect_uris_json').notNull(),
+  createdAt: text('created_at')
+    .notNull()
+    .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+});
+
+/** Authorization codes, stored hashed; single use, short-lived. */
+export const oauthCodes = sqliteTable('oauth_codes', {
+  codeHash: text('code_hash').primaryKey(),
+  clientId: text('client_id')
+    .notNull()
+    .references(() => oauthClients.clientId, { onDelete: 'cascade' }),
+  redirectUri: text('redirect_uri').notNull(),
+  codeChallenge: text('code_challenge').notNull(),
+  scope: text('scope'),
+  expiresAt: text('expires_at').notNull(),
+  usedAt: text('used_at'),
+});
+
+/** Access and refresh tokens, stored hashed. */
+export const oauthTokens = sqliteTable(
+  'oauth_tokens',
+  {
+    tokenHash: text('token_hash').primaryKey(),
+    kind: text('kind', { enum: ['access', 'refresh'] }).notNull(),
+    clientId: text('client_id')
+      .notNull()
+      .references(() => oauthClients.clientId, { onDelete: 'cascade' }),
+    scope: text('scope'),
+    expiresAt: text('expires_at').notNull(),
+    revokedAt: text('revoked_at'),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+  },
+  (t) => [index('oauth_tokens_client_idx').on(t.clientId)]
+);
