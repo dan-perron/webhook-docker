@@ -42,8 +42,8 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
 - Prior order: ESPN/DraftKings lines (summary `pickcenter` keeps the closing
   line after kickoff) -> Odds API pregame snapshot -> entered odds (pregame
   bets only) -> neutral. Priors refresh until the event starts, then freeze.
-- `Tracker.tick()` (every 5 s from `server.ts`) polls only due events with an
-  open leg on an open bet, stores each leg's latest P(win)/P(push), settles
+- `Tracker.tick()` (every 5 s from `server.ts`) polls due events with an open
+  leg (even on a settled bet, so calibration gets outcomes), stores each leg's latest P(win)/P(push), settles
   finals, and logs calibration snapshots (max one per leg per 5 min).
 - Parlay push/void recompute scales the remaining legs by the book's pricing
   factor (stated price / product of legs).

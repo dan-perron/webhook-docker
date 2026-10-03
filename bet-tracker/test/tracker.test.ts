@@ -135,9 +135,14 @@ describe('Tracker.tick', () => {
 
     clock = new Date(NOW.getTime() + 31_000);
     const r2 = await tracker.tick();
-    // Only live games on open bets. UCF @ HOU, Syracuse @ UConn and Vandy @
-    // UGA are live but only on the 11-leg parlay, which already lost.
-    expect(r2.polled).toEqual(['mlb:849829']);
+    // Every live game with an open leg, including UCF @ HOU, Syracuse @ UConn
+    // and Vandy @ UGA whose only bet (the 11-leg parlay) already lost.
+    expect(r2.polled.sort()).toEqual([
+      'espn:ncaaf:401856705',
+      'espn:ncaaf:401856819',
+      'espn:ncaaf:401858252',
+      'mlb:849829',
+    ]);
   });
 
   it('logs calibration snapshots for open legs, throttled to one per 5 minutes', async () => {
