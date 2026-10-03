@@ -1,0 +1,8 @@
+node_modules
+built
+.git
+config/local*
+*.log
+data
+*.sqlite*
+.env

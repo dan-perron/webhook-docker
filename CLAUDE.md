@@ -34,6 +34,7 @@ docker compose down
 - `webhook-server`: Node/TypeScript Express app (port 3000) — from the `./webhook-server` submodule. Connects to MongoDB and mounts an external `thunderdome-ootp` volume at `/ootp`. Proxied at `/webhooks/`.
 - `calcium-tracker`: Node/TypeScript Hono app (port 3001) — from the `./calcium-tracker` submodule. Proxied at `/calcium`.
 - `meeting-scheduler`: Node/TypeScript Hono app (port 3002) — plain directory, **not** a submodule. A self-hosted When2Meet. Proxied at `/meet`.
+- `bet-tracker`: Node/TypeScript Hono app (port 3003) — plain directory, **not** a submodule. Live bet tracker + MCP server; uses its own SQLite on the `bet-tracker-data` volume, not Mongo. Proxied at `/bets`. Build/test via `bet-tracker/bin/dev` (see its CLAUDE.md).
 - `personal-assistant`: Node/TypeScript Slack bot (Socket Mode, no HTTP port) — plain directory, **not** a submodule.
 - `mongodb`: MongoDB 6.0 with persistent `mongodb-data` volume. **Not published to the host** — only reachable on this stack's network as hostname `mongodb`, which is why every app here deploys as a service in this stack.
 - `windows-rdp-automation`: Python RDP automation (currently commented out) — from the `./windows-rdp-automation` submodule.

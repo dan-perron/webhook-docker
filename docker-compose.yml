@@ -46,6 +46,23 @@ services:
     ports:
       - 3002:3002
     restart: unless-stopped
+  bet-tracker:
+    build:
+      context: ./bet-tracker
+    container_name: bet-tracker
+    image: "dan-perron/bet-tracker"
+    environment:
+      - APP_TOKEN=${BET_APP_TOKEN}
+      - ODDS_API_KEY=${ODDS_API_KEY:-}
+      - BASE_PATH=${BET_BASE_PATH:-/bets}
+      - PUBLIC_ORIGIN=${BET_PUBLIC_ORIGIN:-https://djperron.com}
+      - PREGAME_SNAPSHOT=${BET_PREGAME_SNAPSHOT:-true}
+      - TZ=America/Chicago
+    ports:
+      - 3003:3003
+    restart: unless-stopped
+    volumes:
+      - bet-tracker-data:/data
   mongodb:
     image: mongo:6.0
     volumes:
@@ -71,6 +88,7 @@ services:
   #  restart: unless-stopped
 volumes:
   mongodb-data:
+  bet-tracker-data:
   thunderdome-ootp:
     name: thunderdome-ootp
     external: true
