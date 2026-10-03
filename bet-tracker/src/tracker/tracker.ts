@@ -12,7 +12,18 @@ import {
 import { betStatus } from '../domain/value.js';
 import type { Providers } from '../gamestate/registry.js';
 import type { GameState, PregameLines } from '../gamestate/types.js';
+import { nameScore } from '../matching/match.js';
 import { matchLegs } from '../matching/service.js';
+import {
+  filterEvents,
+  linesFromOdds,
+  summarizeEvent,
+} from '../odds/consensus.js';
+import {
+  sportKey,
+  type OddsApiClient,
+  type OddsMarket,
+} from '../odds/oddsApi.js';
 import { evaluateEvent } from '../models/evaluate.js';
 import {
   resolvePrior,
@@ -34,6 +45,15 @@ export interface TrackerOptions {
   rematchEveryMinutes?: number;
   now?: () => Date;
   rng?: Rng;
+  /**
+   * Optional one-time Odds API snapshot per event shortly before it starts,
+   * used as the prior only when ESPN publishes no lines (e.g. UFC).
+   */
+  pregameSnapshot?: {
+    client: OddsApiClient;
+    enabled: boolean;
+    leadMinutes: number;
+  };
 }
 
 export interface TickResult {
@@ -109,6 +129,7 @@ export class Tracker extends EventEmitter {
       await this.rematch(result);
       const due = this.dueEvents();
       await this.refreshLines(due, result);
+      await this.pregameSnapshots(due, result);
       await this.pollStates(due, result);
       for (const id of new Set([
         ...result.polled,
@@ -219,6 +240,77 @@ export class Tracker extends EventEmitter {
           ...(lines ? { providerLinesJson: JSON.stringify(lines) } : {}),
           providerLinesAt: iso(now),
         })
+        .where(eq(events.id, e.id))
+        .run();
+    }
+  }
+
+  /** Markets worth paying for in a snapshot, per sport. */
+  private static snapshotMarkets(e: EventRow): OddsMarket[] {
+    if (e.sport === 'mma') return ['h2h'];
+    if (e.sport === 'soccer') return ['h2h', 'totals'];
+    return ['h2h', 'spreads', 'totals'];
+  }
+
+  private async pregameSnapshots(due: EventRow[], result: TickResult) {
+    const snap = this.opts.pregameSnapshot;
+    if (!snap?.enabled || !snap.client.configured) return;
+    const now = this.now();
+    for (const e of due) {
+      const minutesToStart =
+        (new Date(e.startTime).getTime() - now.getTime()) / 60_000;
+      if (
+        e.status !== 'pre' ||
+        e.pregameOddsAt ||
+        e.providerLinesJson ||
+        minutesToStart > snap.leadMinutes ||
+        minutesToStart < 0
+      ) {
+        continue;
+      }
+      let json: string | null = null;
+      try {
+        // One call per sport covers every event on it (and is cached).
+        const odds = await snap.client.getOdds({
+          sportKey: sportKey(e.sport, e.league),
+          markets: Tracker.snapshotMarkets(e),
+        });
+        const hit = filterEvents(
+          odds.events,
+          `${e.awayName} @ ${e.homeName}`
+        ).find(
+          (o) =>
+            Math.abs(
+              new Date(o.commence_time).getTime() -
+                new Date(e.startTime).getTime()
+            ) <
+            12 * 3600_000
+        );
+        if (hit) {
+          const lines = linesFromOdds(summarizeEvent(hit));
+          // Fights have no home/away: align the API's sides with ours.
+          const swapped =
+            nameScore(e.homeName, [hit.home_team]) <
+            nameScore(e.homeName, [hit.away_team]);
+          json = JSON.stringify(
+            swapped
+              ? {
+                  ...lines,
+                  homeMoneyline: lines.awayMoneyline,
+                  awayMoneyline: lines.homeMoneyline,
+                  spreadHome:
+                    lines.spreadHome == null ? null : -lines.spreadHome,
+                }
+              : lines
+          );
+        }
+      } catch (err) {
+        result.errors.push(`snapshot ${e.id}: ${(err as Error).message}`);
+      }
+      // One attempt per event, found or not.
+      this.db
+        .update(events)
+        .set({ pregameOddsJson: json, pregameOddsAt: iso(now) })
         .where(eq(events.id, e.id))
         .run();
     }

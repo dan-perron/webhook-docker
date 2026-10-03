@@ -74,6 +74,22 @@ export function nameScore(entered: string, aliases: string[]): number {
   return best;
 }
 
+/**
+ * Aliases for a bare full team name (The Odds API gives only those): the
+ * name, its nickname (last one or two words: "Rams", "White Sox") and its
+ * place ("Los Angeles"). Ambiguous aliases are fine for filtering.
+ */
+export function teamAliases(fullName: string): string[] {
+  const words = fullName.trim().split(/\s+/);
+  if (words.length < 2) return [fullName];
+  return [
+    fullName,
+    words.slice(-1).join(' '),
+    words.slice(-2).join(' '),
+    words.slice(0, -1).join(' '),
+  ];
+}
+
 export interface Candidate {
   event: ProviderEvent;
   score: number;

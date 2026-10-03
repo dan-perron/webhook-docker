@@ -4,7 +4,12 @@ import { openDb, type Db } from '../src/db/client.js';
 import { events } from '../src/db/schema.js';
 import { parseEvents, type EspnScoreboard } from '../src/gamestate/espn.js';
 import { createProviders } from '../src/gamestate/registry.js';
-import { matchEvent, nameScore, normalizeName } from '../src/matching/match.js';
+import {
+  matchEvent,
+  nameScore,
+  normalizeName,
+  teamAliases,
+} from '../src/matching/match.js';
 import { confirmLegMatch, matchLegs } from '../src/matching/service.js';
 import { loadSeed } from '../src/seed/load.js';
 import { fakeFetcher, fixture, SEED_ROUTES } from './helpers/fixtures.js';
@@ -197,5 +202,18 @@ describe('matchLegs on the seed bets (recorded 10/3-10/4 data)', () => {
         .all()
         .map((e) => e.id)
     ).toEqual(['espn:ncaaf:401858474']);
+  });
+});
+
+describe('teamAliases', () => {
+  it('derives nickname and place from a full name', () => {
+    expect(teamAliases('Los Angeles Rams')).toEqual([
+      'Los Angeles Rams',
+      'Rams',
+      'Angeles Rams',
+      'Los Angeles',
+    ]);
+    expect(nameScore('White Sox', teamAliases('Chicago White Sox'))).toBe(1);
+    expect(teamAliases('Portugal')).toEqual(['Portugal']);
   });
 });
