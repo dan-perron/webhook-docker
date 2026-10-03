@@ -1,0 +1,870 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "totalItems": 4,
+ "totalEvents": 0,
+ "totalGames": 4,
+ "totalGamesInProgress": 1,
+ "dates": [
+  {
+   "date": "2026-10-03",
+   "totalItems": 4,
+   "totalEvents": 0,
+   "totalGames": 4,
+   "totalGamesInProgress": 1,
+   "games": [
+    {
+     "gamePk": 849829,
+     "gameGuid": "c912c124-b09b-4ece-91b9-56e70e3f3ab0",
+     "link": "/api/v1.1/game/849829/feed/live",
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-03T17:00:00Z",
+     "officialDate": "2026-10-03",
+     "status": {
+      "abstractGameState": "Live",
+      "codedGameState": "I",
+      "detailedState": "In Progress",
+      "statusCode": "I",
+      "startTimeTBD": false,
+      "abstractGameCode": "L"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 145,
+        "name": "Chicago White Sox",
+        "link": "/api/v1/teams/145"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 0,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 3,
+       "splitSquad": false,
+       "seriesNumber": 2
+      },
+      "home": {
+       "team": {
+        "id": 114,
+        "name": "Cleveland Guardians",
+        "link": "/api/v1/teams/114"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 0,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 0,
+       "splitSquad": false,
+       "seriesNumber": 2
+      }
+     },
+     "linescore": {
+      "currentInning": 8,
+      "currentInningOrdinal": "8th",
+      "inningState": "Top",
+      "inningHalf": "Top",
+      "isTopInning": true,
+      "scheduledInnings": 9,
+      "innings": [
+       {
+        "num": 1,
+        "ordinalNum": "1st",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 2
+        }
+       },
+       {
+        "num": 2,
+        "ordinalNum": "2nd",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 3,
+        "ordinalNum": "3rd",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 3
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 4,
+        "ordinalNum": "4th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 3
+        },
+        "away": {
+         "runs": 2,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 5,
+        "ordinalNum": "5th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 6,
+        "ordinalNum": "6th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 7,
+        "ordinalNum": "7th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 1,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 8,
+        "ordinalNum": "8th",
+        "home": {
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       }
+      ],
+      "teams": {
+       "home": {
+        "runs": 0,
+        "hits": 3,
+        "errors": 0,
+        "leftOnBase": 7
+       },
+       "away": {
+        "runs": 3,
+        "hits": 6,
+        "errors": 0,
+        "leftOnBase": 4
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 682120,
+        "fullName": "Tim Herrin",
+        "link": "/api/v1/people/682120"
+       },
+       "catcher": {
+        "id": 672275,
+        "fullName": "Patrick Bailey",
+        "link": "/api/v1/people/672275"
+       },
+       "first": {
+        "id": 663993,
+        "fullName": "Nathaniel Lowe",
+        "link": "/api/v1/people/663993"
+       },
+       "second": {
+        "id": 683953,
+        "fullName": "Travis Bazzana",
+        "link": "/api/v1/people/683953"
+       },
+       "third": {
+        "id": 608070,
+        "fullName": "Jos\u00e9 Ram\u00edrez",
+        "link": "/api/v1/people/608070"
+       },
+       "shortstop": {
+        "id": 677587,
+        "fullName": "Brayan Rocchio",
+        "link": "/api/v1/people/677587"
+       },
+       "left": {
+        "id": 682657,
+        "fullName": "Angel Mart\u00ednez",
+        "link": "/api/v1/people/682657"
+       },
+       "center": {
+        "id": 680757,
+        "fullName": "Steven Kwan",
+        "link": "/api/v1/people/680757"
+       },
+       "right": {
+        "id": 800050,
+        "fullName": "Chase DeLauter",
+        "link": "/api/v1/people/800050"
+       },
+       "batter": {
+        "id": 608070,
+        "fullName": "Jos\u00e9 Ram\u00edrez",
+        "link": "/api/v1/people/608070"
+       },
+       "onDeck": {
+        "id": 800050,
+        "fullName": "Chase DeLauter",
+        "link": "/api/v1/people/800050"
+       },
+       "inHole": {
+        "id": 666176,
+        "fullName": "Jo Adell",
+        "link": "/api/v1/people/666176"
+       },
+       "battingOrder": 2,
+       "team": {
+        "id": 114,
+        "name": "Cleveland Guardians",
+        "link": "/api/v1/teams/114"
+       }
+      },
+      "offense": {
+       "batter": {
+        "id": 671976,
+        "fullName": "Tristan Peters",
+        "link": "/api/v1/people/671976"
+       },
+       "onDeck": {
+        "id": 678246,
+        "fullName": "Miguel Vargas",
+        "link": "/api/v1/people/678246"
+       },
+       "inHole": {
+        "id": 808959,
+        "fullName": "Munetaka Murakami",
+        "link": "/api/v1/people/808959"
+       },
+       "pitcher": {
+        "id": 691799,
+        "fullName": "Grant Taylor",
+        "link": "/api/v1/people/691799"
+       },
+       "battingOrder": 2,
+       "team": {
+        "id": 145,
+        "name": "Chicago White Sox",
+        "link": "/api/v1/teams/145"
+       }
+      },
+      "balls": 1,
+      "strikes": 2,
+      "outs": 1
+     },
+     "venue": {
+      "id": 5,
+      "name": "Progressive Field",
+      "link": "/api/v1/venues/5"
+     },
+     "content": {
+      "link": "/api/v1/game/849829/content"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-849829-2026-10-03",
+     "seasonDisplay": "2026",
+     "dayNight": "day",
+     "description": "ALDS 'B' Game 1",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 175,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 1,
+     "seriesDescription": "AL Division Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 849828,
+     "gameGuid": "621a974a-b250-4410-992f-37cb6c829743",
+     "link": "/api/v1.1/game/849828/feed/live",
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-03T20:00:00Z",
+     "officialDate": "2026-10-03",
+     "status": {
+      "abstractGameState": "Preview",
+      "codedGameState": "P",
+      "detailedState": "Pre-Game",
+      "statusCode": "P",
+      "startTimeTBD": false,
+      "abstractGameCode": "P"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 144,
+        "name": "Atlanta Braves",
+        "link": "/api/v1/teams/144"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 0,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 0,
+       "splitSquad": false,
+       "seriesNumber": 4
+      },
+      "home": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "link": "/api/v1/teams/119"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 0,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 0,
+       "splitSquad": false,
+       "seriesNumber": 4
+      }
+     },
+     "linescore": {
+      "currentInning": 1,
+      "currentInningOrdinal": "1st",
+      "inningState": "Top",
+      "inningHalf": "Top",
+      "isTopInning": true,
+      "scheduledInnings": 9,
+      "innings": [
+       {
+        "num": 1,
+        "ordinalNum": "1st",
+        "home": {
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       }
+      ],
+      "teams": {
+       "home": {
+        "runs": 0,
+        "hits": 0,
+        "errors": 0,
+        "leftOnBase": 0
+       },
+       "away": {
+        "runs": 0,
+        "hits": 0,
+        "errors": 0,
+        "leftOnBase": 0
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 669373,
+        "fullName": "Tarik Skubal",
+        "link": "/api/v1/people/669373"
+       },
+       "catcher": {
+        "id": 669257,
+        "fullName": "Will Smith",
+        "link": "/api/v1/people/669257"
+       },
+       "first": {
+        "id": 518692,
+        "fullName": "Freddie Freeman",
+        "link": "/api/v1/people/518692"
+       },
+       "second": {
+        "id": 669242,
+        "fullName": "Tommy Edman",
+        "link": "/api/v1/people/669242"
+       },
+       "third": {
+        "id": 571970,
+        "fullName": "Max Muncy",
+        "link": "/api/v1/people/571970"
+       },
+       "shortstop": {
+        "id": 605141,
+        "fullName": "Mookie Betts",
+        "link": "/api/v1/people/605141"
+       },
+       "left": {
+        "id": 606192,
+        "fullName": "Teoscar Hern\u00e1ndez",
+        "link": "/api/v1/people/606192"
+       },
+       "center": {
+        "id": 681624,
+        "fullName": "Andy Pages",
+        "link": "/api/v1/people/681624"
+       },
+       "right": {
+        "id": 663656,
+        "fullName": "Kyle Tucker",
+        "link": "/api/v1/people/663656"
+       },
+       "batter": {
+        "id": 605141,
+        "fullName": "Mookie Betts",
+        "link": "/api/v1/people/605141"
+       },
+       "onDeck": {
+        "id": 660271,
+        "fullName": "Shohei Ohtani",
+        "link": "/api/v1/people/660271"
+       },
+       "inHole": {
+        "id": 669257,
+        "fullName": "Will Smith",
+        "link": "/api/v1/people/669257"
+       },
+       "battingOrder": 1,
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "link": "/api/v1/teams/119"
+       }
+      },
+      "offense": {
+       "batter": {
+        "id": 686948,
+        "fullName": "Drake Baldwin",
+        "link": "/api/v1/people/686948"
+       },
+       "onDeck": {
+        "id": 660670,
+        "fullName": "Ronald Acu\u00f1a Jr.",
+        "link": "/api/v1/people/660670"
+       },
+       "inHole": {
+        "id": 645277,
+        "fullName": "Ozzie Albies",
+        "link": "/api/v1/people/645277"
+       },
+       "pitcher": {
+        "id": 689266,
+        "fullName": "Dylan Dodd",
+        "link": "/api/v1/people/689266"
+       },
+       "battingOrder": 1,
+       "team": {
+        "id": 144,
+        "name": "Atlanta Braves",
+        "link": "/api/v1/teams/144"
+       }
+      },
+      "balls": 0,
+      "strikes": 0,
+      "outs": 0
+     },
+     "venue": {
+      "id": 22,
+      "name": "UNIQLO Field at Dodger Stadium",
+      "link": "/api/v1/venues/22"
+     },
+     "content": {
+      "link": "/api/v1/game/849828/content"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-849828-2026-10-03",
+     "seasonDisplay": "2026",
+     "dayNight": "day",
+     "description": "NLDS 'B' Game 1",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 175,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 1,
+     "seriesDescription": "NL Division Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 849835,
+     "gameGuid": "97c5071c-1528-4b17-9f8e-f512ca3ddd9e",
+     "link": "/api/v1.1/game/849835/feed/live",
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-03T22:30:00Z",
+     "officialDate": "2026-10-03",
+     "status": {
+      "abstractGameState": "Preview",
+      "codedGameState": "P",
+      "detailedState": "Pre-Game",
+      "statusCode": "P",
+      "startTimeTBD": false,
+      "abstractGameCode": "P"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees",
+        "link": "/api/v1/teams/147"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 0,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 0,
+       "splitSquad": false,
+       "seriesNumber": 1
+      },
+      "home": {
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays",
+        "link": "/api/v1/teams/139"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 0,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 0,
+       "splitSquad": false,
+       "seriesNumber": 1
+      }
+     },
+     "linescore": {
+      "currentInning": 1,
+      "currentInningOrdinal": "1st",
+      "inningState": "Top",
+      "inningHalf": "Top",
+      "isTopInning": true,
+      "scheduledInnings": 9,
+      "innings": [
+       {
+        "num": 1,
+        "ordinalNum": "1st",
+        "home": {
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       }
+      ],
+      "teams": {
+       "home": {
+        "runs": 0,
+        "hits": 0,
+        "errors": 0,
+        "leftOnBase": 0
+       },
+       "away": {
+        "runs": 0,
+        "hits": 0,
+        "errors": 0,
+        "leftOnBase": 0
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 656876,
+        "fullName": "Drew Rasmussen",
+        "link": "/api/v1/people/656876"
+       },
+       "catcher": {
+        "id": 689414,
+        "fullName": "Liam Hicks",
+        "link": "/api/v1/people/689414"
+       },
+       "first": {
+        "id": 666018,
+        "fullName": "Jonathan Aranda",
+        "link": "/api/v1/people/666018"
+       },
+       "second": {
+        "id": 680700,
+        "fullName": "Richie Palacios",
+        "link": "/api/v1/people/680700"
+       },
+       "third": {
+        "id": 691406,
+        "fullName": "Junior Caminero",
+        "link": "/api/v1/people/691406"
+       },
+       "shortstop": {
+        "id": 670764,
+        "fullName": "Taylor Walls",
+        "link": "/api/v1/people/670764"
+       },
+       "left": {
+        "id": 802415,
+        "fullName": "Chandler Simpson",
+        "link": "/api/v1/people/802415"
+       },
+       "center": {
+        "id": 676356,
+        "fullName": "Jonny DeLuca",
+        "link": "/api/v1/people/676356"
+       },
+       "right": {
+        "id": 683748,
+        "fullName": "Victor Mesa Jr.",
+        "link": "/api/v1/people/683748"
+       },
+       "batter": {
+        "id": 650490,
+        "fullName": "Yandy D\u00edaz",
+        "link": "/api/v1/people/650490"
+       },
+       "onDeck": {
+        "id": 666018,
+        "fullName": "Jonathan Aranda",
+        "link": "/api/v1/people/666018"
+       },
+       "inHole": {
+        "id": 691406,
+        "fullName": "Junior Caminero",
+        "link": "/api/v1/people/691406"
+       },
+       "battingOrder": 1,
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays",
+        "link": "/api/v1/teams/139"
+       }
+      },
+      "offense": {
+       "batter": {
+        "id": 700250,
+        "fullName": "Ben Rice",
+        "link": "/api/v1/people/700250"
+       },
+       "onDeck": {
+        "id": 641355,
+        "fullName": "Cody Bellinger",
+        "link": "/api/v1/people/641355"
+       },
+       "inHole": {
+        "id": 671277,
+        "fullName": "Luis Garc\u00eda Jr.",
+        "link": "/api/v1/people/671277"
+       },
+       "pitcher": {
+        "id": 543037,
+        "fullName": "Gerrit Cole",
+        "link": "/api/v1/people/543037"
+       },
+       "battingOrder": 1,
+       "team": {
+        "id": 147,
+        "name": "New York Yankees",
+        "link": "/api/v1/teams/147"
+       }
+      },
+      "balls": 0,
+      "strikes": 0,
+      "outs": 0
+     },
+     "venue": {
+      "id": 12,
+      "name": "Tropicana Field",
+      "link": "/api/v1/venues/12"
+     },
+     "content": {
+      "link": "/api/v1/game/849835/content"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-849835-2026-10-03",
+     "seasonDisplay": "2026",
+     "dayNight": "night",
+     "description": "ALDS 'A' Game 1",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 175,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 1,
+     "seriesDescription": "AL Division Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 849830,
+     "gameGuid": "81e34e7a-5fd9-417d-9977-59a62b2a2005",
+     "link": "/api/v1.1/game/849830/feed/live",
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-04T00:30:00Z",
+     "officialDate": "2026-10-03",
+     "status": {
+      "abstractGameState": "Preview",
+      "codedGameState": "S",
+      "detailedState": "Scheduled",
+      "statusCode": "S",
+      "startTimeTBD": false,
+      "abstractGameCode": "P"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 135,
+        "name": "San Diego Padres",
+        "link": "/api/v1/teams/135"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 0,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "splitSquad": false,
+       "seriesNumber": 3
+      },
+      "home": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers",
+        "link": "/api/v1/teams/158"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 0,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "splitSquad": false,
+       "seriesNumber": 3
+      }
+     },
+     "linescore": {
+      "scheduledInnings": 9,
+      "innings": [],
+      "teams": {
+       "home": {},
+       "away": {}
+      },
+      "defense": {
+       "team": {
+        "id": 135,
+        "name": "San Diego Padres",
+        "link": "/api/v1/teams/135"
+       }
+      },
+      "offense": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers",
+        "link": "/api/v1/teams/158"
+       }
+      }
+     },
+     "venue": {
+      "id": 32,
+      "name": "American Family Field",
+      "link": "/api/v1/venues/32"
+     },
+     "content": {
+      "link": "/api/v1/game/849830/content"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-849830-2026-10-03",
+     "seasonDisplay": "2026",
+     "dayNight": "night",
+     "description": "NLDS 'A' Game 1",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 175,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 1,
+     "seriesDescription": "NL Division Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "events": []
+  }
+ ]
+}

@@ -1,0 +1,844 @@
+{
+ "events": [
+  {
+   "id": "401861119",
+   "date": "2026-10-04T13:00Z",
+   "name": "Lithuania at Azerbaijan",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0'",
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 9:00 AM EDT",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401861119",
+     "date": "2026-10-04T13:00Z",
+     "startDate": "2026-10-04T13:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0'",
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 9:00 AM EDT",
+       "shortDetail": "Scheduled"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "581",
+        "location": "Azerbaijan",
+        "name": "Azerbaijan",
+        "abbreviation": "AZE",
+        "displayName": "Azerbaijan",
+        "shortDisplayName": "Azerbaijan"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "460",
+        "location": "Lithuania",
+        "name": "Lithuania",
+        "abbreviation": "LTU",
+        "displayName": "Lithuania",
+        "shortDisplayName": "Lithuania"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "overUnder": 1.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+130"
+         },
+         "close": {
+          "odds": "+130"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+220"
+         },
+         "close": {
+          "odds": "+220"
+         }
+        },
+        "draw": {
+         "open": {
+          "odds": "+200"
+         },
+         "close": {
+          "odds": "+200"
+         }
+        }
+       },
+       "drawOdds": {
+        "moneyLine": 200
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401861121",
+   "date": "2026-10-04T16:00Z",
+   "name": "Austria at Kosovo",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0'",
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 12:00 PM EDT",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401861121",
+     "date": "2026-10-04T16:00Z",
+     "startDate": "2026-10-04T16:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0'",
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 12:00 PM EDT",
+       "shortDetail": "Scheduled"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "18272",
+        "location": "Kosovo",
+        "name": "Kosovo",
+        "abbreviation": "KOS",
+        "displayName": "Kosovo",
+        "shortDisplayName": "Kosovo"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "474",
+        "location": "Austria",
+        "name": "Austria",
+        "abbreviation": "AUT",
+        "displayName": "Austria",
+        "shortDisplayName": "Austria"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "overUnder": 2.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+235"
+         },
+         "close": {
+          "odds": "+220"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+105"
+         },
+         "close": {
+          "odds": "+110"
+         }
+        },
+        "draw": {
+         "open": {
+          "odds": "+240"
+         },
+         "close": {
+          "odds": "+240"
+         }
+        }
+       },
+       "drawOdds": {
+        "moneyLine": 240
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401861120",
+   "date": "2026-10-04T16:00Z",
+   "name": "Andorra at Malta",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0'",
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 12:00 PM EDT",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401861120",
+     "date": "2026-10-04T16:00Z",
+     "startDate": "2026-10-04T16:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0'",
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 12:00 PM EDT",
+       "shortDetail": "Scheduled"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "453",
+        "location": "Malta",
+        "name": "Malta",
+        "abbreviation": "MLT",
+        "displayName": "Malta",
+        "shortDisplayName": "Malta"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "587",
+        "location": "Andorra",
+        "name": "Andorra",
+        "abbreviation": "AND",
+        "displayName": "Andorra",
+        "shortDisplayName": "Andorra"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "overUnder": 2.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-160"
+         },
+         "close": {
+          "odds": "-155"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+600"
+         },
+         "close": {
+          "odds": "+500"
+         }
+        },
+        "draw": {
+         "open": {
+          "odds": "+210"
+         },
+         "close": {
+          "odds": "+220"
+         }
+        }
+       },
+       "drawOdds": {
+        "moneyLine": 220
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401861123",
+   "date": "2026-10-04T18:45Z",
+   "name": "Germany at Greece",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0'",
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 2:45 PM EDT",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401861123",
+     "date": "2026-10-04T18:45Z",
+     "startDate": "2026-10-04T18:45Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0'",
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 2:45 PM EDT",
+       "shortDetail": "Scheduled"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "455",
+        "location": "Greece",
+        "name": "Greece",
+        "abbreviation": "GRE",
+        "displayName": "Greece",
+        "shortDisplayName": "Greece"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "481",
+        "location": "Germany",
+        "name": "Germany",
+        "abbreviation": "GER",
+        "displayName": "Germany",
+        "shortDisplayName": "Germany"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "overUnder": 2.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+225"
+         },
+         "close": {
+          "odds": "+270"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+100"
+         },
+         "close": {
+          "odds": "-120"
+         }
+        },
+        "draw": {
+         "open": {
+          "odds": "+245"
+         },
+         "close": {
+          "odds": "+280"
+         }
+        }
+       },
+       "drawOdds": {
+        "moneyLine": 280
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401861122",
+   "date": "2026-10-04T18:45Z",
+   "name": "Serbia at Netherlands",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0'",
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 2:45 PM EDT",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401861122",
+     "date": "2026-10-04T18:45Z",
+     "startDate": "2026-10-04T18:45Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0'",
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 2:45 PM EDT",
+       "shortDetail": "Scheduled"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "449",
+        "location": "Netherlands",
+        "name": "Netherlands",
+        "abbreviation": "NED",
+        "displayName": "Netherlands",
+        "shortDisplayName": "Netherlands"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "6757",
+        "location": "Serbia",
+        "name": "Serbia",
+        "abbreviation": "SRB",
+        "displayName": "Serbia",
+        "shortDisplayName": "Serbia"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "overUnder": 3.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-550"
+         },
+         "close": {
+          "odds": "-700"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+1200"
+         },
+         "close": {
+          "odds": "+1200"
+         }
+        },
+        "draw": {
+         "open": {
+          "odds": "+475"
+         },
+         "close": {
+          "odds": "+650"
+         }
+        }
+       },
+       "drawOdds": {
+        "moneyLine": 650
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401861126",
+   "date": "2026-10-04T18:45Z",
+   "name": "Norway at Portugal",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0'",
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 2:45 PM EDT",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401861126",
+     "date": "2026-10-04T18:45Z",
+     "startDate": "2026-10-04T18:45Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0'",
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 2:45 PM EDT",
+       "shortDetail": "Scheduled"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "482",
+        "location": "Portugal",
+        "name": "Portugal",
+        "abbreviation": "POR",
+        "displayName": "Portugal",
+        "shortDisplayName": "Portugal"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "464",
+        "location": "Norway",
+        "name": "Norway",
+        "abbreviation": "NOR",
+        "displayName": "Norway",
+        "shortDisplayName": "Norway"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "overUnder": 3.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-130"
+         },
+         "close": {
+          "odds": "-165"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+295"
+         },
+         "close": {
+          "odds": "+330"
+         }
+        },
+        "draw": {
+         "open": {
+          "odds": "+265"
+         },
+         "close": {
+          "odds": "+330"
+         }
+        }
+       },
+       "drawOdds": {
+        "moneyLine": 330
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401861124",
+   "date": "2026-10-04T18:45Z",
+   "name": "Israel at Republic of Ireland",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0'",
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 2:45 PM EDT",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401861124",
+     "date": "2026-10-04T18:45Z",
+     "startDate": "2026-10-04T18:45Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0'",
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 2:45 PM EDT",
+       "shortDetail": "Scheduled"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "476",
+        "location": "Republic of Ireland",
+        "name": "Republic of Ireland",
+        "abbreviation": "IRL",
+        "displayName": "Republic of Ireland",
+        "shortDisplayName": "Rep Ireland"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "461",
+        "location": "Israel",
+        "name": "Israel",
+        "abbreviation": "ISR",
+        "displayName": "Israel",
+        "shortDisplayName": "Israel"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "overUnder": 2.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-115"
+         },
+         "close": {
+          "odds": "+110"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+290"
+         },
+         "close": {
+          "odds": "+235"
+         }
+        },
+        "draw": {
+         "open": {
+          "odds": "+235"
+         },
+         "close": {
+          "odds": "+225"
+         }
+        }
+       },
+       "drawOdds": {
+        "moneyLine": 225
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401861125",
+   "date": "2026-10-04T18:45Z",
+   "name": "Denmark at Wales",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0'",
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 2:45 PM EDT",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401861125",
+     "date": "2026-10-04T18:45Z",
+     "startDate": "2026-10-04T18:45Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0'",
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 2:45 PM EDT",
+       "shortDetail": "Scheduled"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "578",
+        "location": "Wales",
+        "name": "Wales",
+        "abbreviation": "WAL",
+        "displayName": "Wales",
+        "shortDisplayName": "Wales"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "479",
+        "location": "Denmark",
+        "name": "Denmark",
+        "abbreviation": "DEN",
+        "displayName": "Denmark",
+        "shortDisplayName": "Denmark"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "overUnder": 2.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+290"
+         },
+         "close": {
+          "odds": "+245"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-130"
+         },
+         "close": {
+          "odds": "-105"
+         }
+        },
+        "draw": {
+         "open": {
+          "odds": "+270"
+         },
+         "close": {
+          "odds": "+260"
+         }
+        }
+       },
+       "drawOdds": {
+        "moneyLine": 260
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,58 @@
+{
+ "dates": [
+  {
+   "games": [
+    {
+     "gamePk": 849829,
+     "gameDate": "2026-10-03T17:00:00Z",
+     "status": {
+      "abstractGameState": "Live",
+      "detailedState": "In Progress"
+     },
+     "teams": {
+      "home": {
+       "team": {
+        "id": 114,
+        "name": "Cleveland Guardians",
+        "abbreviation": "CLE",
+        "teamName": "Guardians"
+       },
+       "score": 0
+      },
+      "away": {
+       "team": {
+        "id": 145,
+        "name": "Chicago White Sox",
+        "abbreviation": "CWS",
+        "teamName": "White Sox"
+       },
+       "score": 3
+      }
+     },
+     "linescore": {
+      "currentInning": 8,
+      "inningState": "Middle",
+      "isTopInning": true,
+      "scheduledInnings": 9,
+      "outs": 3,
+      "teams": {
+       "home": {
+        "runs": 0,
+        "hits": 3,
+        "errors": 0,
+        "leftOnBase": 7
+       },
+       "away": {
+        "runs": 3,
+        "hits": 6,
+        "errors": 0,
+        "leftOnBase": 4
+       }
+      },
+      "offense": {}
+     }
+    }
+   ]
+  }
+ ]
+}

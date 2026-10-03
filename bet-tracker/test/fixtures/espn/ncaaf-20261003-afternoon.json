@@ -1,0 +1,4725 @@
+{
+ "events": [
+  {
+   "id": "401856707",
+   "date": "2026-10-03T16:00Z",
+   "name": "Alabama Crimson Tide at Mississippi State Bulldogs",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856707",
+     "date": "2026-10-03T16:00Z",
+     "startDate": "2026-10-03T16:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "23",
+       "team": {
+        "id": "344",
+        "location": "Mississippi State",
+        "name": "Bulldogs",
+        "abbreviation": "MSST",
+        "displayName": "Mississippi State Bulldogs",
+        "shortDisplayName": "Mississippi St"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": true,
+       "score": "56",
+       "team": {
+        "id": "333",
+        "location": "Alabama",
+        "name": "Crimson Tide",
+        "abbreviation": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856819",
+   "date": "2026-10-03T16:00Z",
+   "name": "UCF Knights at Houston Cougars",
+   "status": {
+    "clock": 68.0,
+    "displayClock": "1:08",
+    "period": 4,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "1:08 - 4th Quarter",
+     "shortDetail": "1:08 - 4th"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856819",
+     "date": "2026-10-03T16:00Z",
+     "startDate": "2026-10-03T16:00Z",
+     "status": {
+      "clock": 68.0,
+      "displayClock": "1:08",
+      "period": 4,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "1:08 - 4th Quarter",
+       "shortDetail": "1:08 - 4th"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "27",
+       "team": {
+        "id": "248",
+        "location": "Houston",
+        "name": "Cougars",
+        "abbreviation": "HOU",
+        "displayName": "Houston Cougars",
+        "shortDisplayName": "Houston"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "17",
+       "team": {
+        "id": "2116",
+        "location": "UCF",
+        "name": "Knights",
+        "abbreviation": "UCF",
+        "displayName": "UCF Knights",
+        "shortDisplayName": "UCF"
+       }
+      }
+     ],
+     "situation": {
+      "down": 4,
+      "distance": 6,
+      "yardLine": 71,
+      "possession": "2116",
+      "possessionText": "UCF 29",
+      "downDistanceText": "4th & 6 at UCF 29",
+      "lastPlay": {
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.999,
+        "awayWinPercentage": 0.0010000000000000009,
+        "secondsLeft": 82
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "401858246",
+   "date": "2026-10-03T16:00Z",
+   "name": "Boston College Eagles at SMU Mustangs",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858246",
+     "date": "2026-10-03T16:00Z",
+     "startDate": "2026-10-03T16:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "25",
+       "team": {
+        "id": "2567",
+        "location": "SMU",
+        "name": "Mustangs",
+        "abbreviation": "SMU",
+        "displayName": "SMU Mustangs",
+        "shortDisplayName": "SMU"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "16",
+       "team": {
+        "id": "103",
+        "location": "Boston College",
+        "name": "Eagles",
+        "abbreviation": "BC",
+        "displayName": "Boston College Eagles",
+        "shortDisplayName": "Boston College"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856822",
+   "date": "2026-10-03T16:00Z",
+   "name": "West Virginia Mountaineers at Iowa State Cyclones",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856822",
+     "date": "2026-10-03T16:00Z",
+     "startDate": "2026-10-03T16:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "45",
+       "team": {
+        "id": "66",
+        "location": "Iowa State",
+        "name": "Cyclones",
+        "abbreviation": "ISU",
+        "displayName": "Iowa State Cyclones",
+        "shortDisplayName": "Iowa State"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "42",
+       "team": {
+        "id": "277",
+        "location": "West Virginia",
+        "name": "Mountaineers",
+        "abbreviation": "WVU",
+        "displayName": "West Virginia Mountaineers",
+        "shortDisplayName": "West Virginia"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858252",
+   "date": "2026-10-03T16:00Z",
+   "name": "Syracuse Orange at UConn Huskies",
+   "status": {
+    "clock": 163.0,
+    "displayClock": "2:43",
+    "period": 4,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "2:43 - 4th Quarter",
+     "shortDetail": "2:43 - 4th"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858252",
+     "date": "2026-10-03T16:00Z",
+     "startDate": "2026-10-03T16:00Z",
+     "status": {
+      "clock": 163.0,
+      "displayClock": "2:43",
+      "period": 4,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "2:43 - 4th Quarter",
+       "shortDetail": "2:43 - 4th"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "34",
+       "team": {
+        "id": "41",
+        "location": "UConn",
+        "name": "Huskies",
+        "abbreviation": "CONN",
+        "displayName": "UConn Huskies",
+        "shortDisplayName": "UConn"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "34",
+       "team": {
+        "id": "183",
+        "location": "Syracuse",
+        "name": "Orange",
+        "abbreviation": "SYR",
+        "displayName": "Syracuse Orange",
+        "shortDisplayName": "Syracuse"
+       }
+      }
+     ],
+     "situation": {
+      "down": 2,
+      "distance": 10,
+      "yardLine": 58,
+      "possession": "41",
+      "possessionText": "SYR 42",
+      "downDistanceText": "2nd & 10 at SYR 42",
+      "lastPlay": {
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.6176,
+        "awayWinPercentage": 0.38239999999999996,
+        "secondsLeft": 166
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "401858474",
+   "date": "2026-10-03T16:00Z",
+   "name": "Michigan Wolverines at Minnesota Golden Gophers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858474",
+     "date": "2026-10-03T16:00Z",
+     "startDate": "2026-10-03T16:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "20",
+       "team": {
+        "id": "135",
+        "location": "Minnesota",
+        "name": "Golden Gophers",
+        "abbreviation": "MINN",
+        "displayName": "Minnesota Golden Gophers",
+        "shortDisplayName": "Minnesota"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "14",
+       "team": {
+        "id": "130",
+        "location": "Michigan",
+        "name": "Wolverines",
+        "abbreviation": "MICH",
+        "displayName": "Michigan Wolverines",
+        "shortDisplayName": "Michigan"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858479",
+   "date": "2026-10-03T16:30Z",
+   "name": "Michigan State Spartans at Wisconsin Badgers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858479",
+     "date": "2026-10-03T16:30Z",
+     "startDate": "2026-10-03T16:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "31",
+       "team": {
+        "id": "275",
+        "location": "Wisconsin",
+        "name": "Badgers",
+        "abbreviation": "WIS",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "3",
+       "team": {
+        "id": "127",
+        "location": "Michigan State",
+        "name": "Spartans",
+        "abbreviation": "MSU",
+        "displayName": "Michigan State Spartans",
+        "shortDisplayName": "Michigan St"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856705",
+   "date": "2026-10-03T16:45Z",
+   "name": "Vanderbilt Commodores at Georgia Bulldogs",
+   "status": {
+    "clock": 403.0,
+    "displayClock": "6:43",
+    "period": 4,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "6:43 - 4th Quarter",
+     "shortDetail": "6:43 - 4th"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856705",
+     "date": "2026-10-03T16:45Z",
+     "startDate": "2026-10-03T16:45Z",
+     "status": {
+      "clock": 403.0,
+      "displayClock": "6:43",
+      "period": 4,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "6:43 - 4th Quarter",
+       "shortDetail": "6:43 - 4th"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "31",
+       "team": {
+        "id": "61",
+        "location": "Georgia",
+        "name": "Bulldogs",
+        "abbreviation": "UGA",
+        "displayName": "Georgia Bulldogs",
+        "shortDisplayName": "Georgia"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "14",
+       "team": {
+        "id": "238",
+        "location": "Vanderbilt",
+        "name": "Commodores",
+        "abbreviation": "VAN",
+        "displayName": "Vanderbilt Commodores",
+        "shortDisplayName": "Vanderbilt"
+       }
+      }
+     ],
+     "situation": {
+      "down": 1,
+      "distance": 10,
+      "yardLine": 88,
+      "possession": "61",
+      "possessionText": "VAN 12",
+      "downDistanceText": "1st & 10 at VAN 12",
+      "lastPlay": {
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.999,
+        "awayWinPercentage": 0.0010000000000000009,
+        "secondsLeft": 403
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "401866432",
+   "date": "2026-10-03T17:00Z",
+   "name": "Western Michigan Broncos at Buffalo Bulls",
+   "status": {
+    "clock": 263.0,
+    "displayClock": "4:23",
+    "period": 4,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "4:23 - 4th Quarter",
+     "shortDetail": "4:23 - 4th"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401866432",
+     "date": "2026-10-03T17:00Z",
+     "startDate": "2026-10-03T17:00Z",
+     "status": {
+      "clock": 263.0,
+      "displayClock": "4:23",
+      "period": 4,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "4:23 - 4th Quarter",
+       "shortDetail": "4:23 - 4th"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "17",
+       "team": {
+        "id": "2084",
+        "location": "Buffalo",
+        "name": "Bulls",
+        "abbreviation": "BUFF",
+        "displayName": "Buffalo Bulls",
+        "shortDisplayName": "Buffalo"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "17",
+       "team": {
+        "id": "2711",
+        "location": "Western Michigan",
+        "name": "Broncos",
+        "abbreviation": "WMU",
+        "displayName": "Western Michigan Broncos",
+        "shortDisplayName": "W Michigan"
+       }
+      }
+     ],
+     "situation": {
+      "down": 4,
+      "distance": 5,
+      "yardLine": 28,
+      "possession": "2084",
+      "possessionText": "BUF 28",
+      "downDistanceText": "4th & 5 at BUF 28",
+      "lastPlay": {
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.2913,
+        "awayWinPercentage": 0.7087,
+        "secondsLeft": 263
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "401866431",
+   "date": "2026-10-03T18:00Z",
+   "name": "Toledo Rockets at Ball State Cardinals",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 2,
+    "type": {
+     "id": "23",
+     "name": "STATUS_HALFTIME",
+     "state": "in",
+     "completed": false,
+     "description": "Halftime",
+     "detail": "Halftime",
+     "shortDetail": "Halftime"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401866431",
+     "date": "2026-10-03T18:00Z",
+     "startDate": "2026-10-03T18:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 2,
+      "type": {
+       "id": "23",
+       "name": "STATUS_HALFTIME",
+       "state": "in",
+       "completed": false,
+       "description": "Halftime",
+       "detail": "Halftime",
+       "shortDetail": "Halftime"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "10",
+       "team": {
+        "id": "2050",
+        "location": "Ball State",
+        "name": "Cardinals",
+        "abbreviation": "BALL",
+        "displayName": "Ball State Cardinals",
+        "shortDisplayName": "Ball State"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "14",
+       "team": {
+        "id": "2649",
+        "location": "Toledo",
+        "name": "Rockets",
+        "abbreviation": "TOL",
+        "displayName": "Toledo Rockets",
+        "shortDisplayName": "Toledo"
+       }
+      }
+     ],
+     "situation": {
+      "down": -1,
+      "distance": -1,
+      "yardLine": 65
+     }
+    }
+   ]
+  },
+  {
+   "id": "401858250",
+   "date": "2026-10-03T16:00Z",
+   "name": "Notre Dame Fighting Irish at North Carolina Tar Heels",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858250",
+     "date": "2026-10-03T16:00Z",
+     "startDate": "2026-10-03T16:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "26",
+       "team": {
+        "id": "153",
+        "location": "North Carolina",
+        "name": "Tar Heels",
+        "abbreviation": "UNC",
+        "displayName": "North Carolina Tar Heels",
+        "shortDisplayName": "North Carolina"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": true,
+       "score": "37",
+       "team": {
+        "id": "87",
+        "location": "Notre Dame",
+        "name": "Fighting Irish",
+        "abbreviation": "ND",
+        "displayName": "Notre Dame Fighting Irish",
+        "shortDisplayName": "Notre Dame"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401862787",
+   "date": "2026-10-03T15:00Z",
+   "name": "Memphis Tigers at Charlotte 49ers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401862787",
+     "date": "2026-10-03T15:00Z",
+     "startDate": "2026-10-03T15:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "8",
+       "team": {
+        "id": "2429",
+        "location": "Charlotte",
+        "name": "49ers",
+        "abbreviation": "CLT",
+        "displayName": "Charlotte 49ers",
+        "shortDisplayName": "Charlotte"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": true,
+       "score": "59",
+       "team": {
+        "id": "235",
+        "location": "Memphis",
+        "name": "Tigers",
+        "abbreviation": "MEM",
+        "displayName": "Memphis Tigers",
+        "shortDisplayName": "Memphis"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856807",
+   "date": "2026-10-03T16:00Z",
+   "name": "Middle Tennessee Blue Raiders at Kansas Jayhawks",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856807",
+     "date": "2026-10-03T16:00Z",
+     "startDate": "2026-10-03T16:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "55",
+       "team": {
+        "id": "2305",
+        "location": "Kansas",
+        "name": "Jayhawks",
+        "abbreviation": "KU",
+        "displayName": "Kansas Jayhawks",
+        "shortDisplayName": "Kansas"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "2393",
+        "location": "Middle Tennessee",
+        "name": "Blue Raiders",
+        "abbreviation": "MTSU",
+        "displayName": "Middle Tennessee Blue Raiders",
+        "shortDisplayName": "MTSU"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858251",
+   "date": "2026-10-03T16:00Z",
+   "name": "Stanford Cardinal at Wake Forest Demon Deacons",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858251",
+     "date": "2026-10-03T16:00Z",
+     "startDate": "2026-10-03T16:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "57",
+       "team": {
+        "id": "154",
+        "location": "Wake Forest",
+        "name": "Demon Deacons",
+        "abbreviation": "WAKE",
+        "displayName": "Wake Forest Demon Deacons",
+        "shortDisplayName": "Wake Forest"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "3",
+       "team": {
+        "id": "24",
+        "location": "Stanford",
+        "name": "Cardinal",
+        "abbreviation": "STAN",
+        "displayName": "Stanford Cardinal",
+        "shortDisplayName": "Stanford"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401862791",
+   "date": "2026-10-03T16:00Z",
+   "name": "Navy Midshipmen at Air Force Falcons",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401862791",
+     "date": "2026-10-03T16:00Z",
+     "startDate": "2026-10-03T16:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "14",
+       "team": {
+        "id": "2005",
+        "location": "Air Force",
+        "name": "Falcons",
+        "abbreviation": "AFA",
+        "displayName": "Air Force Falcons",
+        "shortDisplayName": "Air Force"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "9",
+       "team": {
+        "id": "2426",
+        "location": "Navy",
+        "name": "Midshipmen",
+        "abbreviation": "NAVY",
+        "displayName": "Navy Midshipmen",
+        "shortDisplayName": "Navy"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858473",
+   "date": "2026-10-03T19:30Z",
+   "name": "Ohio State Buckeyes at Iowa Hawkeyes",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 3:30 PM EDT",
+     "shortDetail": "10/3 - 3:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858473",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 3:30 PM EDT",
+       "shortDetail": "10/3 - 3:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2294",
+        "location": "Iowa",
+        "name": "Hawkeyes",
+        "abbreviation": "IOWA",
+        "displayName": "Iowa Hawkeyes",
+        "shortDisplayName": "Iowa"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "194",
+        "location": "Ohio State",
+        "name": "Buckeyes",
+        "abbreviation": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 14.5,
+       "overUnder": 46.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+500"
+         },
+         "close": {
+          "odds": "+500"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-700"
+         },
+         "close": {
+          "odds": "-700"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856710",
+   "date": "2026-10-03T19:30Z",
+   "name": "Auburn Tigers at Tennessee Volunteers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 3:30 PM EDT",
+     "shortDetail": "10/3 - 3:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856710",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 3:30 PM EDT",
+       "shortDetail": "10/3 - 3:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2633",
+        "location": "Tennessee",
+        "name": "Volunteers",
+        "abbreviation": "TENN",
+        "displayName": "Tennessee Volunteers",
+        "shortDisplayName": "Tennessee"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2",
+        "location": "Auburn",
+        "name": "Tigers",
+        "abbreviation": "AUB",
+        "displayName": "Auburn Tigers",
+        "shortDisplayName": "Auburn"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -6.0,
+       "overUnder": 54.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-285"
+         },
+         "close": {
+          "odds": "-230"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+230"
+         },
+         "close": {
+          "odds": "+190"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858247",
+   "date": "2026-10-03T19:30Z",
+   "name": "California Golden Bears at UNLV Rebels",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 3:30 PM EDT",
+     "shortDetail": "10/3 - 3:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858247",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 3:30 PM EDT",
+       "shortDetail": "10/3 - 3:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2439",
+        "location": "UNLV",
+        "name": "Rebels",
+        "abbreviation": "UNLV",
+        "displayName": "UNLV Rebels",
+        "shortDisplayName": "UNLV"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "25",
+        "location": "California",
+        "name": "Golden Bears",
+        "abbreviation": "CAL",
+        "displayName": "California Golden Bears",
+        "shortDisplayName": "California"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 51.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-115"
+         },
+         "close": {
+          "odds": "-115"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-105"
+         },
+         "close": {
+          "odds": "-105"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858248",
+   "date": "2026-10-03T19:30Z",
+   "name": "Louisville Cardinals at NC State Wolfpack",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 3:30 PM EDT",
+     "shortDetail": "10/3 - 3:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858248",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 3:30 PM EDT",
+       "shortDetail": "10/3 - 3:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "152",
+        "location": "NC State",
+        "name": "Wolfpack",
+        "abbreviation": "NCSU",
+        "displayName": "NC State Wolfpack",
+        "shortDisplayName": "NC State"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "97",
+        "location": "Louisville",
+        "name": "Cardinals",
+        "abbreviation": "LOU",
+        "displayName": "Louisville Cardinals",
+        "shortDisplayName": "Louisville"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 5.5,
+       "overUnder": 56.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+250"
+         },
+         "close": {
+          "odds": "+185"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-310"
+         },
+         "close": {
+          "odds": "-225"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858253",
+   "date": "2026-10-03T19:30Z",
+   "name": "Virginia Cavaliers at Florida State Seminoles",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 3:30 PM EDT",
+     "shortDetail": "10/3 - 3:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858253",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 3:30 PM EDT",
+       "shortDetail": "10/3 - 3:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "52",
+        "location": "Florida State",
+        "name": "Seminoles",
+        "abbreviation": "FSU",
+        "displayName": "Florida State Seminoles",
+        "shortDisplayName": "Florida St"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "258",
+        "location": "Virginia",
+        "name": "Cavaliers",
+        "abbreviation": "UVA",
+        "displayName": "Virginia Cavaliers",
+        "shortDisplayName": "Virginia"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 1.5,
+       "overUnder": 51.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-102"
+         },
+         "close": {
+          "odds": "-108"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-118"
+         },
+         "close": {
+          "odds": "-112"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401862793",
+   "date": "2026-10-03T19:30Z",
+   "name": "Samford Bulldogs at UAB Blazers",
+   "status": {
+    "clock": 900.0,
+    "displayClock": "15:00",
+    "period": 1,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "15:00 - 1st Quarter",
+     "shortDetail": "15:00 - 1st"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401862793",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 900.0,
+      "displayClock": "15:00",
+      "period": 1,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "15:00 - 1st Quarter",
+       "shortDetail": "15:00 - 1st"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "5",
+        "location": "UAB",
+        "name": "Blazers",
+        "abbreviation": "UAB",
+        "displayName": "UAB Blazers",
+        "shortDisplayName": "UAB"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2535",
+        "location": "Samford",
+        "name": "Bulldogs",
+        "abbreviation": "SAM",
+        "displayName": "Samford Bulldogs",
+        "shortDisplayName": "Samford"
+       }
+      }
+     ],
+     "situation": {
+      "down": 2,
+      "distance": 9,
+      "yardLine": 80,
+      "possession": "5",
+      "possessionText": "SAM 20",
+      "downDistanceText": "2nd & 9 at SAM 20",
+      "lastPlay": {
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.9365,
+        "awayWinPercentage": 0.0635,
+        "secondsLeft": 3600
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "401864515",
+   "date": "2026-10-03T19:30Z",
+   "name": "Wyoming Cowboys at North Dakota State Bison",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 3:30 PM EDT",
+     "shortDetail": "10/3 - 3:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401864515",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 3:30 PM EDT",
+       "shortDetail": "10/3 - 3:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2449",
+        "location": "North Dakota State",
+        "name": "Bison",
+        "abbreviation": "NDSU",
+        "displayName": "North Dakota State Bison",
+        "shortDisplayName": "N Dakota St"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2751",
+        "location": "Wyoming",
+        "name": "Cowboys",
+        "abbreviation": "WYO",
+        "displayName": "Wyoming Cowboys",
+        "shortDisplayName": "Wyoming"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401866430",
+   "date": "2026-10-03T19:30Z",
+   "name": "Akron Zips at Central Michigan Chippewas",
+   "status": {
+    "clock": 853.0,
+    "displayClock": "14:13",
+    "period": 1,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "14:13 - 1st Quarter",
+     "shortDetail": "14:13 - 1st"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401866430",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 853.0,
+      "displayClock": "14:13",
+      "period": 1,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "14:13 - 1st Quarter",
+       "shortDetail": "14:13 - 1st"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2117",
+        "location": "Central Michigan",
+        "name": "Chippewas",
+        "abbreviation": "CMU",
+        "displayName": "Central Michigan Chippewas",
+        "shortDisplayName": "C Michigan"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2006",
+        "location": "Akron",
+        "name": "Zips",
+        "abbreviation": "AKR",
+        "displayName": "Akron Zips",
+        "shortDisplayName": "Akron"
+       }
+      }
+     ],
+     "situation": {
+      "down": 3,
+      "distance": 20,
+      "yardLine": 73,
+      "possession": "2006",
+      "possessionText": "AKR 27",
+      "downDistanceText": "3rd & 20 at AKR 27",
+      "lastPlay": {
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.6878,
+        "awayWinPercentage": 0.31220000000000003,
+        "secondsLeft": 3553
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "401866433",
+   "date": "2026-10-03T19:30Z",
+   "name": "Eastern Michigan Eagles at Massachusetts Minutemen",
+   "status": {
+    "clock": 856.0,
+    "displayClock": "14:16",
+    "period": 1,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "14:16 - 1st Quarter",
+     "shortDetail": "14:16 - 1st"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401866433",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 856.0,
+      "displayClock": "14:16",
+      "period": 1,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "14:16 - 1st Quarter",
+       "shortDetail": "14:16 - 1st"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "113",
+        "location": "Massachusetts",
+        "name": "Minutemen",
+        "abbreviation": "MASS",
+        "displayName": "Massachusetts Minutemen",
+        "shortDisplayName": "UMass"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2199",
+        "location": "Eastern Michigan",
+        "name": "Eagles",
+        "abbreviation": "EMU",
+        "displayName": "Eastern Michigan Eagles",
+        "shortDisplayName": "E Michigan"
+       }
+      }
+     ],
+     "situation": {
+      "down": 2,
+      "distance": 6,
+      "yardLine": 44,
+      "possession": "113",
+      "possessionText": "MASS 44",
+      "downDistanceText": "2nd & 6 at MASS 44",
+      "lastPlay": {
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.8458,
+        "awayWinPercentage": 0.1542,
+        "secondsLeft": 3556
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "401866434",
+   "date": "2026-10-03T19:30Z",
+   "name": "Ohio Bobcats at Kent State Golden Flashes",
+   "status": {
+    "clock": 820.0,
+    "displayClock": "13:40",
+    "period": 1,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "13:40 - 1st Quarter",
+     "shortDetail": "13:40 - 1st"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401866434",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 820.0,
+      "displayClock": "13:40",
+      "period": 1,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "13:40 - 1st Quarter",
+       "shortDetail": "13:40 - 1st"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2309",
+        "location": "Kent State",
+        "name": "Golden Flashes",
+        "abbreviation": "KENT",
+        "displayName": "Kent State Golden Flashes",
+        "shortDisplayName": "Kent State"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "195",
+        "location": "Ohio",
+        "name": "Bobcats",
+        "abbreviation": "OHIO",
+        "displayName": "Ohio Bobcats",
+        "shortDisplayName": "Ohio"
+       }
+      }
+     ],
+     "situation": {
+      "down": 1,
+      "distance": 10,
+      "yardLine": 61,
+      "possession": "195",
+      "possessionText": "OHIO 39",
+      "downDistanceText": "1st & 10 at OHIO 39",
+      "lastPlay": {
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.2121,
+        "awayWinPercentage": 0.7879,
+        "secondsLeft": 3551
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "401866477",
+   "date": "2026-10-03T19:30Z",
+   "name": "Bowling Green Falcons at Miami (OH) RedHawks",
+   "status": {
+    "clock": 856.0,
+    "displayClock": "14:16",
+    "period": 1,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "14:16 - 1st Quarter",
+     "shortDetail": "14:16 - 1st"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401866477",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 856.0,
+      "displayClock": "14:16",
+      "period": 1,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "14:16 - 1st Quarter",
+       "shortDetail": "14:16 - 1st"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "193",
+        "location": "Miami (OH)",
+        "name": "RedHawks",
+        "abbreviation": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami OH"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "189",
+        "location": "Bowling Green",
+        "name": "Falcons",
+        "abbreviation": "BGSU",
+        "displayName": "Bowling Green Falcons",
+        "shortDisplayName": "Bowling Green"
+       }
+      }
+     ],
+     "situation": {
+      "down": 1,
+      "distance": 10,
+      "yardLine": 53,
+      "possession": "193",
+      "possessionText": "BGSU 47",
+      "downDistanceText": "1st & 10 at BGSU 47",
+      "lastPlay": {
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.8936,
+        "awayWinPercentage": 0.10640000000000005,
+        "secondsLeft": 3556
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "401869956",
+   "date": "2026-10-03T19:30Z",
+   "name": "Old Dominion Monarchs at Georgia State Panthers",
+   "status": {
+    "clock": 872.0,
+    "displayClock": "14:32",
+    "period": 1,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "14:32 - 1st Quarter",
+     "shortDetail": "14:32 - 1st"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401869956",
+     "date": "2026-10-03T19:30Z",
+     "startDate": "2026-10-03T19:30Z",
+     "status": {
+      "clock": 872.0,
+      "displayClock": "14:32",
+      "period": 1,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "14:32 - 1st Quarter",
+       "shortDetail": "14:32 - 1st"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2247",
+        "location": "Georgia State",
+        "name": "Panthers",
+        "abbreviation": "GAST",
+        "displayName": "Georgia State Panthers",
+        "shortDisplayName": "Georgia St"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "295",
+        "location": "Old Dominion",
+        "name": "Monarchs",
+        "abbreviation": "ODU",
+        "displayName": "Old Dominion Monarchs",
+        "shortDisplayName": "Old Dominion"
+       }
+      }
+     ],
+     "situation": {
+      "down": 2,
+      "distance": 5,
+      "yardLine": 30,
+      "possession": "2247",
+      "possessionText": "GAST 30",
+      "downDistanceText": "2nd & 5 at GAST 30",
+      "lastPlay": {
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.6597,
+        "awayWinPercentage": 0.34030000000000005,
+        "secondsLeft": 3588
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "401869962",
+   "date": "2026-10-03T19:45Z",
+   "name": "Marshall Thundering Herd at James Madison Dukes",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 3:45 PM EDT",
+     "shortDetail": "10/3 - 3:45 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401869962",
+     "date": "2026-10-03T19:45Z",
+     "startDate": "2026-10-03T19:45Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 3:45 PM EDT",
+       "shortDetail": "10/3 - 3:45 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "256",
+        "location": "James Madison",
+        "name": "Dukes",
+        "abbreviation": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "276",
+        "location": "Marshall",
+        "name": "Thundering Herd",
+        "abbreviation": "MRSH",
+        "displayName": "Marshall Thundering Herd",
+        "shortDisplayName": "Marshall"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -15.5,
+       "overUnder": 55.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-700"
+         },
+         "close": {
+          "odds": "-750"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+500"
+         },
+         "close": {
+          "odds": "+525"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856708",
+   "date": "2026-10-03T19:50Z",
+   "name": "Florida Gators at Missouri Tigers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 3:50 PM EDT",
+     "shortDetail": "10/3 - 3:50 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856708",
+     "date": "2026-10-03T19:50Z",
+     "startDate": "2026-10-03T19:50Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 3:50 PM EDT",
+       "shortDetail": "10/3 - 3:50 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "142",
+        "location": "Missouri",
+        "name": "Tigers",
+        "abbreviation": "MIZ",
+        "displayName": "Missouri Tigers",
+        "shortDisplayName": "Missouri"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "57",
+        "location": "Florida",
+        "name": "Gators",
+        "abbreviation": "FLA",
+        "displayName": "Florida Gators",
+        "shortDisplayName": "Florida"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 5.5,
+       "overUnder": 57.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+110"
+         },
+         "close": {
+          "odds": "+180"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-130"
+         },
+         "close": {
+          "odds": "-218"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858475",
+   "date": "2026-10-03T20:00Z",
+   "name": "Maryland Terrapins at Nebraska Cornhuskers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 4:00 PM EDT",
+     "shortDetail": "10/3 - 4:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858475",
+     "date": "2026-10-03T20:00Z",
+     "startDate": "2026-10-03T20:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 4:00 PM EDT",
+       "shortDetail": "10/3 - 4:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "158",
+        "location": "Nebraska",
+        "name": "Cornhuskers",
+        "abbreviation": "NEB",
+        "displayName": "Nebraska Cornhuskers",
+        "shortDisplayName": "Nebraska"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "120",
+        "location": "Maryland",
+        "name": "Terrapins",
+        "abbreviation": "MD",
+        "displayName": "Maryland Terrapins",
+        "shortDisplayName": "Maryland"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -15.5,
+       "overUnder": 52.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-550"
+         },
+         "close": {
+          "odds": "-700"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+410"
+         },
+         "close": {
+          "odds": "+500"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401864514",
+   "date": "2026-10-03T20:00Z",
+   "name": "UTEP Miners at New Mexico Lobos",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 4:00 PM EDT",
+     "shortDetail": "10/3 - 4:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401864514",
+     "date": "2026-10-03T20:00Z",
+     "startDate": "2026-10-03T20:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 4:00 PM EDT",
+       "shortDetail": "10/3 - 4:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "167",
+        "location": "New Mexico",
+        "name": "Lobos",
+        "abbreviation": "UNM",
+        "displayName": "New Mexico Lobos",
+        "shortDisplayName": "New Mexico"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2638",
+        "location": "UTEP",
+        "name": "Miners",
+        "abbreviation": "UTEP",
+        "displayName": "UTEP Miners",
+        "shortDisplayName": "UTEP"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -23.5,
+       "overUnder": 47.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-2100"
+         },
+         "close": {
+          "odds": "-2400"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+1100"
+         },
+         "close": {
+          "odds": "+1200"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856709",
+   "date": "2026-10-03T20:15Z",
+   "name": "Kentucky Wildcats at South Carolina Gamecocks",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 4:15 PM EDT",
+     "shortDetail": "10/3 - 4:15 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856709",
+     "date": "2026-10-03T20:15Z",
+     "startDate": "2026-10-03T20:15Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 4:15 PM EDT",
+       "shortDetail": "10/3 - 4:15 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2579",
+        "location": "South Carolina",
+        "name": "Gamecocks",
+        "abbreviation": "SC",
+        "displayName": "South Carolina Gamecocks",
+        "shortDisplayName": "South Carolina"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "96",
+        "location": "Kentucky",
+        "name": "Wildcats",
+        "abbreviation": "UK",
+        "displayName": "Kentucky Wildcats",
+        "shortDisplayName": "Kentucky"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -2.5,
+       "overUnder": 52.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-270"
+         },
+         "close": {
+          "odds": "-142"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+220"
+         },
+         "close": {
+          "odds": "+120"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858472",
+   "date": "2026-10-03T20:15Z",
+   "name": "Purdue Boilermakers at Illinois Fighting Illini",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 4:15 PM EDT",
+     "shortDetail": "10/3 - 4:15 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858472",
+     "date": "2026-10-03T20:15Z",
+     "startDate": "2026-10-03T20:15Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 4:15 PM EDT",
+       "shortDetail": "10/3 - 4:15 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "356",
+        "location": "Illinois",
+        "name": "Fighting Illini",
+        "abbreviation": "ILL",
+        "displayName": "Illinois Fighting Illini",
+        "shortDisplayName": "Illinois"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2509",
+        "location": "Purdue",
+        "name": "Boilermakers",
+        "abbreviation": "PUR",
+        "displayName": "Purdue Boilermakers",
+        "shortDisplayName": "Purdue"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -10.0,
+       "overUnder": 61.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-410"
+         },
+         "close": {
+          "odds": "-375"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+320"
+         },
+         "close": {
+          "odds": "+295"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401860899",
+   "date": "2026-10-03T22:00Z",
+   "name": "Oregon State Beavers at Colorado State Rams",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 6:00 PM EDT",
+     "shortDetail": "10/3 - 6:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401860899",
+     "date": "2026-10-03T22:00Z",
+     "startDate": "2026-10-03T22:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 6:00 PM EDT",
+       "shortDetail": "10/3 - 6:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "36",
+        "location": "Colorado State",
+        "name": "Rams",
+        "abbreviation": "CSU",
+        "displayName": "Colorado State Rams",
+        "shortDisplayName": "Colorado St"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "204",
+        "location": "Oregon State",
+        "name": "Beavers",
+        "abbreviation": "ORST",
+        "displayName": "Oregon State Beavers",
+        "shortDisplayName": "Oregon St"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 7.0,
+       "overUnder": 62.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+154"
+         },
+         "close": {
+          "odds": "+210"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-185"
+         },
+         "close": {
+          "odds": "-258"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401862790",
+   "date": "2026-10-03T22:00Z",
+   "name": "Texas Southern Tigers at Florida Atlantic Owls",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 6:00 PM EDT",
+     "shortDetail": "10/3 - 6:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401862790",
+     "date": "2026-10-03T22:00Z",
+     "startDate": "2026-10-03T22:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 6:00 PM EDT",
+       "shortDetail": "10/3 - 6:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2226",
+        "location": "Florida Atlantic",
+        "name": "Owls",
+        "abbreviation": "FAU",
+        "displayName": "Florida Atlantic Owls",
+        "shortDisplayName": "FAU"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2640",
+        "location": "Texas Southern",
+        "name": "Tigers",
+        "abbreviation": "TXSO",
+        "displayName": "Texas Southern Tigers",
+        "shortDisplayName": "Texas Southern"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -47.5,
+       "overUnder": 62.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "OFF"
+         },
+         "close": {
+          "odds": "OFF"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "OFF"
+         },
+         "close": {
+          "odds": "OFF"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856818",
+   "date": "2026-10-03T23:00Z",
+   "name": "BYU Cougars at TCU Horned Frogs",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:00 PM EDT",
+     "shortDetail": "10/3 - 7:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856818",
+     "date": "2026-10-03T23:00Z",
+     "startDate": "2026-10-03T23:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:00 PM EDT",
+       "shortDetail": "10/3 - 7:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2628",
+        "location": "TCU",
+        "name": "Horned Frogs",
+        "abbreviation": "TCU",
+        "displayName": "TCU Horned Frogs",
+        "shortDisplayName": "TCU"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "252",
+        "location": "BYU",
+        "name": "Cougars",
+        "abbreviation": "BYU",
+        "displayName": "BYU Cougars",
+        "shortDisplayName": "BYU"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 6.0,
+       "overUnder": 47.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+164"
+         },
+         "close": {
+          "odds": "+185"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-198"
+         },
+         "close": {
+          "odds": "-225"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856711",
+   "date": "2026-10-03T23:00Z",
+   "name": "Arkansas Razorbacks at Texas A&M Aggies",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:00 PM EDT",
+     "shortDetail": "10/3 - 7:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856711",
+     "date": "2026-10-03T23:00Z",
+     "startDate": "2026-10-03T23:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:00 PM EDT",
+       "shortDetail": "10/3 - 7:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "245",
+        "location": "Texas A&M",
+        "name": "Aggies",
+        "abbreviation": "TA&M",
+        "displayName": "Texas A&M Aggies",
+        "shortDisplayName": "Texas A&M"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "8",
+        "location": "Arkansas",
+        "name": "Razorbacks",
+        "abbreviation": "ARK",
+        "displayName": "Arkansas Razorbacks",
+        "shortDisplayName": "Arkansas"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -14.0,
+       "overUnder": 50.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-700"
+         },
+         "close": {
+          "odds": "-625"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+500"
+         },
+         "close": {
+          "odds": "+455"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401862788",
+   "date": "2026-10-03T23:00Z",
+   "name": "UTSA Roadrunners at Rice Owls",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:00 PM EDT",
+     "shortDetail": "10/3 - 7:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401862788",
+     "date": "2026-10-03T23:00Z",
+     "startDate": "2026-10-03T23:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:00 PM EDT",
+       "shortDetail": "10/3 - 7:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "242",
+        "location": "Rice",
+        "name": "Owls",
+        "abbreviation": "RICE",
+        "displayName": "Rice Owls",
+        "shortDisplayName": "Rice"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2636",
+        "location": "UTSA",
+        "name": "Roadrunners",
+        "abbreviation": "UTSA",
+        "displayName": "UTSA Roadrunners",
+        "shortDisplayName": "UTSA"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 12.5,
+       "overUnder": 55.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+360"
+         },
+         "close": {
+          "odds": "+380"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-470"
+         },
+         "close": {
+          "odds": "-500"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401869942",
+   "date": "2026-10-03T23:00Z",
+   "name": "Georgia Southern Eagles at Coastal Carolina Chanticleers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:00 PM EDT",
+     "shortDetail": "10/3 - 7:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401869942",
+     "date": "2026-10-03T23:00Z",
+     "startDate": "2026-10-03T23:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:00 PM EDT",
+       "shortDetail": "10/3 - 7:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "324",
+        "location": "Coastal Carolina",
+        "name": "Chanticleers",
+        "abbreviation": "CCU",
+        "displayName": "Coastal Carolina Chanticleers",
+        "shortDisplayName": "Coastal"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "290",
+        "location": "Georgia Southern",
+        "name": "Eagles",
+        "abbreviation": "GASO",
+        "displayName": "Georgia Southern Eagles",
+        "shortDisplayName": "GA Southern"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 2.5,
+       "overUnder": 52.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-112"
+         },
+         "close": {
+          "odds": "+105"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-108"
+         },
+         "close": {
+          "odds": "-125"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401871089",
+   "date": "2026-10-03T23:00Z",
+   "name": "UL Monroe Warhawks at South Alabama Jaguars",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:00 PM EDT",
+     "shortDetail": "10/3 - 7:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401871089",
+     "date": "2026-10-03T23:00Z",
+     "startDate": "2026-10-03T23:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:00 PM EDT",
+       "shortDetail": "10/3 - 7:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "6",
+        "location": "South Alabama",
+        "name": "Jaguars",
+        "abbreviation": "USA",
+        "displayName": "South Alabama Jaguars",
+        "shortDisplayName": "South Alabama"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2433",
+        "location": "UL Monroe",
+        "name": "Warhawks",
+        "abbreviation": "ULM",
+        "displayName": "UL Monroe Warhawks",
+        "shortDisplayName": "UL Monroe"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -13.5,
+       "overUnder": 57.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-800"
+         },
+         "close": {
+          "odds": "-575"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+550"
+         },
+         "close": {
+          "odds": "+425"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858249",
+   "date": "2026-10-03T23:30Z",
+   "name": "Miami Hurricanes at Clemson Tigers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:30 PM EDT",
+     "shortDetail": "10/3 - 7:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858249",
+     "date": "2026-10-03T23:30Z",
+     "startDate": "2026-10-03T23:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:30 PM EDT",
+       "shortDetail": "10/3 - 7:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "228",
+        "location": "Clemson",
+        "name": "Tigers",
+        "abbreviation": "CLEM",
+        "displayName": "Clemson Tigers",
+        "shortDisplayName": "Clemson"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2390",
+        "location": "Miami",
+        "name": "Hurricanes",
+        "abbreviation": "MIA",
+        "displayName": "Miami Hurricanes",
+        "shortDisplayName": "Miami"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 15.5,
+       "overUnder": 48.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+285"
+         },
+         "close": {
+          "odds": "+525"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-360"
+         },
+         "close": {
+          "odds": "-750"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856821",
+   "date": "2026-10-03T23:30Z",
+   "name": "Texas Tech Red Raiders at Colorado Buffaloes",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:30 PM EDT",
+     "shortDetail": "10/3 - 7:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856821",
+     "date": "2026-10-03T23:30Z",
+     "startDate": "2026-10-03T23:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:30 PM EDT",
+       "shortDetail": "10/3 - 7:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "38",
+        "location": "Colorado",
+        "name": "Buffaloes",
+        "abbreviation": "COLO",
+        "displayName": "Colorado Buffaloes",
+        "shortDisplayName": "Colorado"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2641",
+        "location": "Texas Tech",
+        "name": "Red Raiders",
+        "abbreviation": "TTU",
+        "displayName": "Texas Tech Red Raiders",
+        "shortDisplayName": "Texas Tech"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 13.5,
+       "overUnder": 49.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+550"
+         },
+         "close": {
+          "odds": "+440"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-800"
+         },
+         "close": {
+          "odds": "-600"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858478",
+   "date": "2026-10-03T23:30Z",
+   "name": "Washington Huskies at USC Trojans",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:30 PM EDT",
+     "shortDetail": "10/3 - 7:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858478",
+     "date": "2026-10-03T23:30Z",
+     "startDate": "2026-10-03T23:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:30 PM EDT",
+       "shortDetail": "10/3 - 7:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "30",
+        "location": "USC",
+        "name": "Trojans",
+        "abbreviation": "USC",
+        "displayName": "USC Trojans",
+        "shortDisplayName": "USC"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "264",
+        "location": "Washington",
+        "name": "Huskies",
+        "abbreviation": "WASH",
+        "displayName": "Washington Huskies",
+        "shortDisplayName": "Washington"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -7.5,
+       "overUnder": 58.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-360"
+         },
+         "close": {
+          "odds": "-360"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+285"
+         },
+         "close": {
+          "odds": "+285"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401860898",
+   "date": "2026-10-03T23:30Z",
+   "name": "Utah State Aggies at Boise State Broncos",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:30 PM EDT",
+     "shortDetail": "10/3 - 7:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401860898",
+     "date": "2026-10-03T23:30Z",
+     "startDate": "2026-10-03T23:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:30 PM EDT",
+       "shortDetail": "10/3 - 7:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "68",
+        "location": "Boise State",
+        "name": "Broncos",
+        "abbreviation": "BOIS",
+        "displayName": "Boise State Broncos",
+        "shortDisplayName": "Boise St"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "328",
+        "location": "Utah State",
+        "name": "Aggies",
+        "abbreviation": "USU",
+        "displayName": "Utah State Aggies",
+        "shortDisplayName": "Utah State"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -19.5,
+       "overUnder": 51.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-1800"
+         },
+         "close": {
+          "odds": "-1450"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+1000"
+         },
+         "close": {
+          "odds": "+850"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401862792",
+   "date": "2026-10-03T23:30Z",
+   "name": "Temple Owls at South Florida Bulls",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:30 PM EDT",
+     "shortDetail": "10/3 - 7:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401862792",
+     "date": "2026-10-03T23:30Z",
+     "startDate": "2026-10-03T23:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:30 PM EDT",
+       "shortDetail": "10/3 - 7:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "58",
+        "location": "South Florida",
+        "name": "Bulls",
+        "abbreviation": "USF",
+        "displayName": "South Florida Bulls",
+        "shortDisplayName": "South Florida"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "218",
+        "location": "Temple",
+        "name": "Owls",
+        "abbreviation": "TEM",
+        "displayName": "Temple Owls",
+        "shortDisplayName": "Temple"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -5.5,
+       "overUnder": 48.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-225"
+         },
+         "close": {
+          "odds": "-230"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+185"
+         },
+         "close": {
+          "odds": "+190"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401869842",
+   "date": "2026-10-03T23:30Z",
+   "name": "Army Black Knights at Louisiana Tech Bulldogs",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:30 PM EDT",
+     "shortDetail": "10/3 - 7:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401869842",
+     "date": "2026-10-03T23:30Z",
+     "startDate": "2026-10-03T23:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:30 PM EDT",
+       "shortDetail": "10/3 - 7:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2348",
+        "location": "Louisiana Tech",
+        "name": "Bulldogs",
+        "abbreviation": "LT",
+        "displayName": "Louisiana Tech Bulldogs",
+        "shortDisplayName": "Louisiana Tech"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "349",
+        "location": "Army",
+        "name": "Black Knights",
+        "abbreviation": "ARMY",
+        "displayName": "Army Black Knights",
+        "shortDisplayName": "Army"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 47.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+145"
+         },
+         "close": {
+          "odds": "-110"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-175"
+         },
+         "close": {
+          "odds": "-110"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856706",
+   "date": "2026-10-03T23:45Z",
+   "name": "McNeese Cowboys at LSU Tigers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 7:45 PM EDT",
+     "shortDetail": "10/3 - 7:45 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856706",
+     "date": "2026-10-03T23:45Z",
+     "startDate": "2026-10-03T23:45Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 7:45 PM EDT",
+       "shortDetail": "10/3 - 7:45 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "99",
+        "location": "LSU",
+        "name": "Tigers",
+        "abbreviation": "LSU",
+        "displayName": "LSU Tigers",
+        "shortDisplayName": "LSU"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2377",
+        "location": "McNeese",
+        "name": "Cowboys",
+        "abbreviation": "MCN",
+        "displayName": "McNeese Cowboys",
+        "shortDisplayName": "McNeese"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -53.5,
+       "overUnder": 62.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "OFF"
+         },
+         "close": {
+          "odds": "OFF"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "OFF"
+         },
+         "close": {
+          "odds": "OFF"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401858477",
+   "date": "2026-10-04T00:00Z",
+   "name": "Indiana Hoosiers at Rutgers Scarlet Knights",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 8:00 PM EDT",
+     "shortDetail": "10/3 - 8:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401858477",
+     "date": "2026-10-04T00:00Z",
+     "startDate": "2026-10-04T00:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 8:00 PM EDT",
+       "shortDetail": "10/3 - 8:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "164",
+        "location": "Rutgers",
+        "name": "Scarlet Knights",
+        "abbreviation": "RUTG",
+        "displayName": "Rutgers Scarlet Knights",
+        "shortDisplayName": "Rutgers"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "84",
+        "location": "Indiana",
+        "name": "Hoosiers",
+        "abbreviation": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 24.5,
+       "overUnder": 56.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+1300"
+         },
+         "close": {
+          "odds": "+1200"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-2800"
+         },
+         "close": {
+          "odds": "-2400"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401869932",
+   "date": "2026-10-04T00:00Z",
+   "name": "Arkansas State Red Wolves at Louisiana Ragin' Cajuns",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 8:00 PM EDT",
+     "shortDetail": "10/3 - 8:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401869932",
+     "date": "2026-10-04T00:00Z",
+     "startDate": "2026-10-04T00:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 8:00 PM EDT",
+       "shortDetail": "10/3 - 8:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "309",
+        "location": "Louisiana",
+        "name": "Ragin' Cajuns",
+        "abbreviation": "UL",
+        "displayName": "Louisiana Ragin' Cajuns",
+        "shortDisplayName": "Louisiana"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2032",
+        "location": "Arkansas State",
+        "name": "Red Wolves",
+        "abbreviation": "ARST",
+        "displayName": "Arkansas State Red Wolves",
+        "shortDisplayName": "Arkansas St"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -6.0,
+       "overUnder": 49.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-175"
+         },
+         "close": {
+          "odds": "-225"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+145"
+         },
+         "close": {
+          "odds": "+185"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401860921",
+   "date": "2026-10-04T01:30Z",
+   "name": "Fresno State Bulldogs at Washington State Cougars",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 9:30 PM EDT",
+     "shortDetail": "10/3 - 9:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401860921",
+     "date": "2026-10-04T01:30Z",
+     "startDate": "2026-10-04T01:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 9:30 PM EDT",
+       "shortDetail": "10/3 - 9:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "265",
+        "location": "Washington State",
+        "name": "Cougars",
+        "abbreviation": "WSU",
+        "displayName": "Washington State Cougars",
+        "shortDisplayName": "Washington St"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "278",
+        "location": "Fresno State",
+        "name": "Bulldogs",
+        "abbreviation": "FRES",
+        "displayName": "Fresno State Bulldogs",
+        "shortDisplayName": "Fresno St"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 44.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-118"
+         },
+         "close": {
+          "odds": "-122"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-102"
+         },
+         "close": {
+          "odds": "+102"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856817",
+   "date": "2026-10-04T02:30Z",
+   "name": "Baylor Bears at Arizona State Sun Devils",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 10:30 PM EDT",
+     "shortDetail": "10/3 - 10:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856817",
+     "date": "2026-10-04T02:30Z",
+     "startDate": "2026-10-04T02:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 10:30 PM EDT",
+       "shortDetail": "10/3 - 10:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "9",
+        "location": "Arizona State",
+        "name": "Sun Devils",
+        "abbreviation": "ASU",
+        "displayName": "Arizona State Sun Devils",
+        "shortDisplayName": "Arizona St"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "239",
+        "location": "Baylor",
+        "name": "Bears",
+        "abbreviation": "BAY",
+        "displayName": "Baylor Bears",
+        "shortDisplayName": "Baylor"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -3.5,
+       "overUnder": 48.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-180"
+         },
+         "close": {
+          "odds": "-175"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+150"
+         },
+         "close": {
+          "odds": "+145"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401860900",
+   "date": "2026-10-04T02:30Z",
+   "name": "Texas State Bobcats at San Diego State Aztecs",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 10:30 PM EDT",
+     "shortDetail": "10/3 - 10:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401860900",
+     "date": "2026-10-04T02:30Z",
+     "startDate": "2026-10-04T02:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 10:30 PM EDT",
+       "shortDetail": "10/3 - 10:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "21",
+        "location": "San Diego State",
+        "name": "Aztecs",
+        "abbreviation": "SDSU",
+        "displayName": "San Diego State Aztecs",
+        "shortDisplayName": "San Diego St"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "326",
+        "location": "Texas State",
+        "name": "Bobcats",
+        "abbreviation": "TXST",
+        "displayName": "Texas State Bobcats",
+        "shortDisplayName": "Texas St"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 9.5,
+       "overUnder": 57.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+150"
+         },
+         "close": {
+          "odds": "+295"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-180"
+         },
+         "close": {
+          "odds": "-375"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401856820",
+   "date": "2026-10-04T03:00Z",
+   "name": "Cincinnati Bearcats at Arizona Wildcats",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 11:00 PM EDT",
+     "shortDetail": "10/3 - 11:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401856820",
+     "date": "2026-10-04T03:00Z",
+     "startDate": "2026-10-04T03:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 11:00 PM EDT",
+       "shortDetail": "10/3 - 11:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "12",
+        "location": "Arizona",
+        "name": "Wildcats",
+        "abbreviation": "ARIZ",
+        "displayName": "Arizona Wildcats",
+        "shortDisplayName": "Arizona"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "2132",
+        "location": "Cincinnati",
+        "name": "Bearcats",
+        "abbreviation": "CIN",
+        "displayName": "Cincinnati Bearcats",
+        "shortDisplayName": "Cincinnati"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -7.0,
+       "overUnder": 55.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-285"
+         },
+         "close": {
+          "odds": "-250"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+230"
+         },
+         "close": {
+          "odds": "+205"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401864513",
+   "date": "2026-10-04T03:59Z",
+   "name": "San Jos\u00e9 State Spartans at Hawai'i Rainbow Warriors",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sat, October 3rd at 11:59 PM EDT",
+     "shortDetail": "10/3 - 11:59 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401864513",
+     "date": "2026-10-04T03:59Z",
+     "startDate": "2026-10-04T03:59Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 11:59 PM EDT",
+       "shortDetail": "10/3 - 11:59 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "62",
+        "location": "Hawai'i",
+        "name": "Rainbow Warriors",
+        "abbreviation": "HAW",
+        "displayName": "Hawai'i Rainbow Warriors",
+        "shortDisplayName": "Hawai'i"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "23",
+        "location": "San Jos\u00e9 State",
+        "name": "Spartans",
+        "abbreviation": "SJSU",
+        "displayName": "San Jos\u00e9 State Spartans",
+        "shortDisplayName": "San Jos\u00e9 St"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -2.5,
+       "overUnder": 50.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-180"
+         },
+         "close": {
+          "odds": "-148"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+150"
+         },
+         "close": {
+          "odds": "+124"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

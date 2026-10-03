@@ -1,0 +1,540 @@
+{
+ "events": [
+  {
+   "id": "600061182",
+   "date": "2026-10-03T20:00Z",
+   "name": "UFC 332: Silva vs. Wang",
+   "status": {
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Scheduled",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401907089",
+     "date": "2026-10-03T20:00Z",
+     "startDate": "2026-10-03T20:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 4:00 PM EDT",
+       "shortDetail": "10/3 - 4:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Court McGee",
+        "shortName": "C. McGee"
+       }
+      },
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Eric Nolan",
+        "shortName": "E. Nolan"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401912275",
+     "date": "2026-10-03T20:00Z",
+     "startDate": "2026-10-03T20:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 4:00 PM EDT",
+       "shortDetail": "10/3 - 4:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Marvin Vettori",
+        "shortName": "M. Vettori"
+       }
+      },
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Ismail Naurdiev",
+        "shortName": "I. Naurdiev"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401917346",
+     "date": "2026-10-03T20:00Z",
+     "startDate": "2026-10-03T20:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 4:00 PM EDT",
+       "shortDetail": "10/3 - 4:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Rafael Dos Anjos",
+        "shortName": "R. Dos Anjos"
+       }
+      },
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Alexander Hernandez",
+        "shortName": "A. Hernandez"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401926808",
+     "date": "2026-10-03T20:00Z",
+     "startDate": "2026-10-03T20:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 4:00 PM EDT",
+       "shortDetail": "10/3 - 4:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Jacobe Smith",
+        "shortName": "J. Smith"
+       }
+      },
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Bruce Whitehead",
+        "shortName": "B. Whitehead"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401912274",
+     "date": "2026-10-03T20:00Z",
+     "startDate": "2026-10-03T20:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 4:00 PM EDT",
+       "shortDetail": "10/3 - 4:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Johnny Walker",
+        "shortName": "J. Walker"
+       }
+      },
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Mick Parkin",
+        "shortName": "M. Parkin"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401922306",
+     "date": "2026-10-03T22:00Z",
+     "startDate": "2026-10-03T22:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 6:00 PM EDT",
+       "shortDetail": "10/3 - 6:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Anthony Wint",
+        "shortName": "A. Wint"
+       }
+      },
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Lucas Armand",
+        "shortName": "L. Armand"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401927906",
+     "date": "2026-10-03T22:00Z",
+     "startDate": "2026-10-03T22:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 6:00 PM EDT",
+       "shortDetail": "10/3 - 6:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Anthony Romero",
+        "shortName": "A. Romero"
+       }
+      },
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Marcus McGhee",
+        "shortName": "M. McGhee"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401912277",
+     "date": "2026-10-03T22:00Z",
+     "startDate": "2026-10-03T22:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 6:00 PM EDT",
+       "shortDetail": "10/3 - 6:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Andrey Pulyaev",
+        "shortName": "A. Pulyaev"
+       }
+      },
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Damian Pinas",
+        "shortName": "D. Pinas"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401912276",
+     "date": "2026-10-03T22:00Z",
+     "startDate": "2026-10-03T22:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 6:00 PM EDT",
+       "shortDetail": "10/3 - 6:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Alden Coria",
+        "shortName": "A. Coria"
+       }
+      },
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Imanol Rodriguez",
+        "shortName": "I. Rodriguez"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401907088",
+     "date": "2026-10-04T00:00Z",
+     "startDate": "2026-10-04T00:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 8:00 PM EDT",
+       "shortDetail": "10/3 - 8:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Roman Kopylov",
+        "shortName": "R. Kopylov"
+       }
+      },
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Ateba Gautier",
+        "shortName": "A. Gautier"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401917345",
+     "date": "2026-10-04T00:00Z",
+     "startDate": "2026-10-04T00:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 8:00 PM EDT",
+       "shortDetail": "10/3 - 8:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Roberto Soldi\u0107",
+        "shortName": "R. Soldi\u0107"
+       }
+      },
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Khaos Williams",
+        "shortName": "K. Williams"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401917347",
+     "date": "2026-10-04T00:00Z",
+     "startDate": "2026-10-04T00:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 8:00 PM EDT",
+       "shortDetail": "10/3 - 8:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "King Green",
+        "shortName": "K. Green"
+       }
+      },
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Esteban Ribovics",
+        "shortName": "E. Ribovics"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401907087",
+     "date": "2026-10-04T00:00Z",
+     "startDate": "2026-10-04T00:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 8:00 PM EDT",
+       "shortDetail": "10/3 - 8:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Deiveson Figueiredo",
+        "shortName": "D. Figueiredo"
+       }
+      },
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Payton Talbott",
+        "shortName": "P. Talbott"
+       }
+      }
+     ]
+    },
+    {
+     "id": "401912278",
+     "date": "2026-10-04T00:00Z",
+     "startDate": "2026-10-04T00:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "-",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sat, October 3rd at 8:00 PM EDT",
+       "shortDetail": "10/3 - 8:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "order": 1,
+       "winner": false,
+       "athlete": {
+        "displayName": "Natalia Silva",
+        "shortName": "N. Silva"
+       }
+      },
+      {
+       "order": 2,
+       "winner": false,
+       "athlete": {
+        "displayName": "Wang Cong",
+        "shortName": "W. Cong"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

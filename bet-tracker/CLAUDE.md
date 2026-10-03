@@ -28,3 +28,11 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
 - `src/domain/betInput.ts` is the single validated input shape for both the seed
   loader and MCP `add_bet`.
 - Seed: `node built/seed/cli.js [--force]` (idempotent without `--force`).
+- Game state goes through `GameStateProvider` (`src/gamestate/`): MLB from the
+  Stats API (batched `schedule?hydrate=linescore`), everything else from ESPN
+  scoreboards (one call per sport/league/date). ESPN `yardLine` is measured
+  from the home goal line; don't trust `possessionText` abbreviations.
+- Tests use trimmed real responses in `test/fixtures/`; never hit the network.
+  `bin/dev node scripts/live-smoke.mjs` (after a build) checks the real APIs.
+- Event matching never guesses: anything but exactly one confident event is
+  stored as candidates on the leg and needs `confirmLegMatch`.
