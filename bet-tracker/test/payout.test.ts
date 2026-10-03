@@ -31,15 +31,16 @@ describe('winPayout', () => {
   });
 
   it('recomputes a parlay from remaining legs with the boost when a leg pushes', () => {
-    // Yankees leg pushes: 2.8 x 1.476190 = 4.133333; boosted 1 + 3.133333 x 1.3
-    // = 5.073333 -> $50.73
+    // Yankees leg pushes: 2.8 x 1.476190 = 4.133333, x book factor
+    // 8.85 / 8.845333 = 1.000528 -> 4.135514; boosted 1 + 3.135514 x 1.3
+    // = 5.076168 -> $50.76
     const legs = [
       open(180),
       { priceAmerican: 114, status: 'push' as const },
       open(-210),
     ];
     expect(winPayout(parlay, legs)).toEqual({
-      cents: 5073,
+      cents: 5076,
       source: 'recomputed_after_push',
     });
   });

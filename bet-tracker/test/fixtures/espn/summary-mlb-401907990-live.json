@@ -1,0 +1,35 @@
+{
+ "pickcenter": [
+  {
+   "spread": -1.5,
+   "overUnder": 6.5,
+   "provider": {
+    "name": "DraftKings"
+   },
+   "moneyline": {
+    "home": {
+     "open": {
+      "odds": "-158"
+     },
+     "close": {
+      "odds": "-149"
+     }
+    },
+    "away": {
+     "open": {
+      "odds": "+131"
+     },
+     "close": {
+      "odds": "+124"
+     }
+    }
+   },
+   "homeTeamOdds": {
+    "moneyLine": -149
+   },
+   "awayTeamOdds": {
+    "moneyLine": 124
+   }
+  }
+ ]
+}

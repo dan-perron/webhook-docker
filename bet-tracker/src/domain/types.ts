@@ -38,6 +38,7 @@ export type BoostKind = (typeof BOOST_KINDS)[number];
 
 /** Where a leg's pregame prior came from, in order of preference. */
 export const PRIOR_SOURCES = [
+  'espn_lines',
   'pregame_snapshot',
   'entered_odds',
   'neutral',

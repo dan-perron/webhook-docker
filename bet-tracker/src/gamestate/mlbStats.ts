@@ -35,8 +35,15 @@ interface MlbTeamSide {
 
 interface MlbGame {
   gamePk: number;
+  /** R = regular season; F/D/L/W = postseason rounds. */
+  gameType?: string;
   gameDate: string;
-  status: { abstractGameState: string; detailedState: string };
+  status: {
+    abstractGameState: string;
+    /** P = pre-game (incl. "Warmup", which is abstractly Live), S = scheduled. */
+    codedGameState?: string;
+    detailedState: string;
+  };
   teams: { home: MlbTeamSide; away: MlbTeamSide };
   linescore?: MlbLinescore;
   scheduledInnings?: number;
@@ -56,15 +63,21 @@ function gameStatus(g: MlbGame): { status: GameStatus; cancelled: boolean } {
   if (g.status.abstractGameState === 'Final') {
     return { status: 'final', cancelled: false };
   }
-  if (g.status.abstractGameState === 'Live')
+  // "Warmup" reports abstractGameState Live but coded state P: not started.
+  if (
+    g.status.abstractGameState === 'Live' &&
+    g.status.codedGameState !== 'P'
+  ) {
     return { status: 'in', cancelled: false };
+  }
   return { status: 'pre', cancelled: false };
 }
 
 /** Normalize to the half-inning being (or next to be) played. */
 export function situationFromLinescore(
   ls: MlbLinescore,
-  scheduled = 9
+  scheduled = 9,
+  regularSeason = true
 ): BaseballSituation {
   let inning = ls.currentInning ?? 1;
   const state = ls.inningState ?? (ls.isTopInning === false ? 'Bottom' : 'Top');
@@ -90,6 +103,7 @@ export function situationFromLinescore(
     second: live && ls.offense?.second != null,
     third: live && ls.offense?.third != null,
     scheduledInnings: ls.scheduledInnings ?? scheduled,
+    extraInningRunner: regularSeason,
   };
 }
 
@@ -126,7 +140,11 @@ export function parseSchedule(
       const ls = g.linescore;
       const sit =
         status === 'in' && ls
-          ? situationFromLinescore(ls, g.scheduledInnings)
+          ? situationFromLinescore(
+              ls,
+              g.scheduledInnings,
+              (g.gameType ?? 'R') === 'R'
+            )
           : null;
       const homeRuns = ls?.teams?.home?.runs ?? g.teams.home.score ?? 0;
       const awayRuns = ls?.teams?.away?.runs ?? g.teams.away.score ?? 0;

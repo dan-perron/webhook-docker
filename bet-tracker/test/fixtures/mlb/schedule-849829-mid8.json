@@ -4,9 +4,11 @@
    "games": [
     {
      "gamePk": 849829,
+     "gameType": "D",
      "gameDate": "2026-10-03T17:00:00Z",
      "status": {
       "abstractGameState": "Live",
+      "codedGameState": "I",
       "detailedState": "In Progress"
      },
      "teams": {

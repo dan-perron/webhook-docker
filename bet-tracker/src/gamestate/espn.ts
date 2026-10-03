@@ -129,6 +129,8 @@ interface EspnCompetition {
 interface EspnEvent {
   id: string;
   date: string;
+  /** type 2 = regular season, 3 = postseason. */
+  season?: { type?: number };
   status: EspnStatus;
   competitions: EspnCompetition[];
 }
@@ -275,7 +277,8 @@ function footballSituation(
 
 function baseballSituation(
   c: EspnCompetition,
-  st: EspnStatus
+  st: EspnStatus,
+  regularSeason: boolean
 ): Situation | null {
   const detail = st.type.shortDetail ?? st.type.detail ?? '';
   const m = detail.match(/^(Top|Bot|Bottom|Mid|Middle|End)\s+(\d+)/i);
@@ -308,6 +311,7 @@ function baseballSituation(
     second: live && !!s.onSecond,
     third: live && !!s.onThird,
     scheduledInnings: 9,
+    extraInningRunner: regularSeason,
   };
 }
 
@@ -350,7 +354,7 @@ export function parseScoreboard(
                   ((4 - p) * FOOTBALL_PERIOD_SECONDS + (clock ?? 0)) / 3600
                 );
         } else if (sport === 'mlb') {
-          situation = baseballSituation(c, st);
+          situation = baseballSituation(c, st, ev.season?.type !== 3);
           fractionRemaining = baseballFraction(situation);
         } else if (sport === 'soccer') {
           const minute = Math.floor((clock ?? 0) / 60);
@@ -437,6 +441,27 @@ export class EspnProvider implements GameStateProvider {
     private readonly fetcher: Fetcher = fetchJson,
     private readonly soccerLeagues: string[] = DEFAULT_SOCCER_LEAGUES
   ) {}
+
+  /**
+   * DraftKings lines from a game's summary. The summary keeps the closing
+   * line after kickoff (the scoreboard drops odds once a game starts).
+   */
+  async fetchLines(
+    sport: Sport,
+    league: string | null,
+    competitionId: string
+  ): Promise<PregameLines | null> {
+    const path =
+      sport === 'soccer'
+        ? `soccer/${league ?? this.soccerLeagues[0]}`
+        : PATHS[sport].path;
+    const summary = (await this.fetcher(
+      `${BASE}/${path}/summary?event=${competitionId}`
+    )) as {
+      pickcenter?: EspnOdds[];
+    };
+    return pregameLines(summary.pickcenter);
+  }
 
   private url(sport: Sport, league: string, date: string): string {
     if (sport === 'soccer') {

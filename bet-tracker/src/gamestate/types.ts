@@ -33,6 +33,8 @@ export interface BaseballSituation {
   second: boolean;
   third: boolean;
   scheduledInnings: number;
+  /** Extra innings start with a runner on 2nd (regular season only). */
+  extraInningRunner: boolean;
 }
 
 export interface SoccerSituation {
