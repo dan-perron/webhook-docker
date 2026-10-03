@@ -145,9 +145,10 @@ export class Tracker extends EventEmitter {
   }
 
   /**
-   * Events with an open leg on an open bet whose next poll is due, plus any
-   * never fetched (a leg matched to an already-final game still needs its
-   * final state to settle).
+   * Events with an open leg whose next poll is due, plus any never fetched
+   * (a leg matched to an already-final game still needs its final state).
+   * Legs of settled bets (e.g. a dead parlay) keep polling until their game
+   * ends so their calibration snapshots get an outcome.
    */
   private dueEvents(): EventRow[] {
     const now = iso(this.now());
@@ -155,11 +156,9 @@ export class Tracker extends EventEmitter {
       .selectDistinct({ e: events })
       .from(events)
       .innerJoin(legs, eq(legs.eventId, events.id))
-      .innerJoin(bets, eq(bets.id, legs.betId))
       .where(
         and(
           eq(legs.status, 'open'),
-          eq(bets.status, 'open'),
           or(
             isNull(events.stateJson),
             and(
