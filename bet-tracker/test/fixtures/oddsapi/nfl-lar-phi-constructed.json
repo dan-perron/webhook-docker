@@ -1,0 +1,64 @@
+[
+  {
+    "id": "e912304de2b2ce35b473ce2ecd3d1502",
+    "sport_key": "americanfootball_nfl",
+    "sport_title": "NFL",
+    "commence_time": "2026-10-04T17:00:00Z",
+    "home_team": "Philadelphia Eagles",
+    "away_team": "Los Angeles Rams",
+    "bookmakers": [
+      {
+        "key": "fanduel",
+        "title": "FanDuel",
+        "last_update": "2026-10-03T20:10:00Z",
+        "markets": [
+          { "key": "h2h", "last_update": "2026-10-03T20:10:00Z", "outcomes": [
+            { "name": "Los Angeles Rams", "price": -190 },
+            { "name": "Philadelphia Eagles", "price": 160 } ] },
+          { "key": "spreads", "last_update": "2026-10-03T20:10:00Z", "outcomes": [
+            { "name": "Los Angeles Rams", "price": -110, "point": -3.5 },
+            { "name": "Philadelphia Eagles", "price": -110, "point": 3.5 } ] },
+          { "key": "totals", "last_update": "2026-10-03T20:10:00Z", "outcomes": [
+            { "name": "Over", "price": -110, "point": 42.5 },
+            { "name": "Under", "price": -110, "point": 42.5 } ] }
+        ]
+      },
+      {
+        "key": "draftkings",
+        "title": "DraftKings",
+        "last_update": "2026-10-03T20:09:00Z",
+        "markets": [
+          { "key": "h2h", "last_update": "2026-10-03T20:09:00Z", "outcomes": [
+            { "name": "Los Angeles Rams", "price": -185 },
+            { "name": "Philadelphia Eagles", "price": 154 } ] },
+          { "key": "spreads", "last_update": "2026-10-03T20:09:00Z", "outcomes": [
+            { "name": "Los Angeles Rams", "price": -105, "point": -3.5 },
+            { "name": "Philadelphia Eagles", "price": -115, "point": 3.5 } ] },
+          { "key": "totals", "last_update": "2026-10-03T20:09:00Z", "outcomes": [
+            { "name": "Over", "price": -110, "point": 43.5 },
+            { "name": "Under", "price": -110, "point": 43.5 } ] }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "0b8e2f3c1a",
+    "sport_key": "americanfootball_nfl",
+    "sport_title": "NFL",
+    "commence_time": "2026-10-04T17:00:00Z",
+    "home_team": "Chicago Bears",
+    "away_team": "New York Jets",
+    "bookmakers": [
+      {
+        "key": "fanduel",
+        "title": "FanDuel",
+        "last_update": "2026-10-03T20:10:00Z",
+        "markets": [
+          { "key": "h2h", "outcomes": [
+            { "name": "New York Jets", "price": 120 },
+            { "name": "Chicago Bears", "price": -142 } ] }
+        ]
+      }
+    ]
+  }
+]

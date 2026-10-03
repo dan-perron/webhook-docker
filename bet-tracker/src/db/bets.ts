@@ -103,3 +103,85 @@ export function listBets(db: DbOrTx, status?: BetStatus): BetWithLegs[] {
 export function countBets(db: DbOrTx): number {
   return db.select({ n: count() }).from(bets).get()?.n ?? 0;
 }
+
+/** Bet-level fields editable after creation (dollars at this edge). */
+export interface BetUpdate {
+  book?: string;
+  externalBetId?: string | null;
+  placedAt?: string | null;
+  placedLive?: boolean;
+  stake?: number;
+  price?: number;
+  boostPct?: number | null;
+  boostKind?: BetRow['boostKind'];
+  boostedPrice?: number | null;
+  statedPayout?: number | null;
+  tokenInfo?: string | null;
+  notes?: string | null;
+}
+
+export function updateBet(
+  db: DbOrTx,
+  id: number,
+  u: BetUpdate
+): BetWithLegs | undefined {
+  const set: Partial<typeof bets.$inferInsert> = {};
+  if (u.book !== undefined) set.book = u.book;
+  if (u.externalBetId !== undefined) set.externalBetId = u.externalBetId;
+  if (u.placedAt !== undefined)
+    set.placedAt = u.placedAt ? new Date(u.placedAt).toISOString() : null;
+  if (u.placedLive !== undefined) set.placedLive = u.placedLive;
+  if (u.stake !== undefined) set.stakeCents = toCents(u.stake);
+  if (u.price !== undefined) set.priceAmerican = u.price;
+  if (u.boostPct !== undefined) set.boostPct = u.boostPct;
+  if (u.boostKind !== undefined) set.boostKind = u.boostKind;
+  if (u.boostedPrice !== undefined) set.boostedPriceAmerican = u.boostedPrice;
+  if (u.statedPayout !== undefined)
+    set.statedPayoutCents =
+      u.statedPayout == null ? null : toCents(u.statedPayout);
+  if (u.tokenInfo !== undefined) set.tokenInfo = u.tokenInfo;
+  if (u.notes !== undefined) set.notes = u.notes;
+  if (Object.keys(set).length === 0) return getBet(db, id);
+  if (u.placedLive !== undefined) {
+    // Placement probabilities depend on it (prior vs entered price): redo.
+    db.update(legs)
+      .set({ pWinPlacement: null, pPushPlacement: null })
+      .where(eq(legs.betId, id))
+      .run();
+  }
+  const updated = db
+    .update(bets)
+    .set({ ...set, updatedAt: new Date().toISOString() })
+    .where(eq(bets.id, id))
+    .returning()
+    .get();
+  return updated ? getBet(db, id) : undefined;
+}
+
+/** Record a result by hand (overrides what the legs say). */
+export function settleBet(
+  db: DbOrTx,
+  id: number,
+  result: Exclude<BetStatus, 'open'> | 'open'
+): BetWithLegs | undefined {
+  const now = new Date().toISOString();
+  const updated = db
+    .update(bets)
+    .set({
+      status: result,
+      settledAt: result === 'open' ? null : now,
+      updatedAt: now,
+    })
+    .where(eq(bets.id, id))
+    .returning()
+    .get();
+  return updated ? getBet(db, id) : undefined;
+}
+
+/** Delete a bet with its legs and snapshots. Returns whether it existed. */
+export function removeBet(db: DbOrTx, id: number): boolean {
+  return (
+    db.delete(bets).where(eq(bets.id, id)).returning({ id: bets.id }).all()
+      .length > 0
+  );
+}

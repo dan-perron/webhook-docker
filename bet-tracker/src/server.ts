@@ -2,8 +2,7 @@ import { serve } from '@hono/node-server';
 import { createApp } from './app.js';
 import { appConfig } from './config.js';
 import { openDb } from './db/client.js';
-import { createProviders } from './gamestate/registry.js';
-import { Tracker } from './tracker/tracker.js';
+import { createServices } from './services.js';
 
 if (!appConfig.auth.appToken) {
   console.error('APP_TOKEN must be set.');
@@ -11,11 +10,9 @@ if (!appConfig.auth.appToken) {
 }
 
 const db = openDb(appConfig.databasePath);
-const tracker = new Tracker(db, createProviders(), {
-  params: appConfig.models,
-  polling: appConfig.polling,
-});
-const app = createApp(db);
+const services = createServices(db);
+const { tracker } = services;
+const app = createApp(services);
 
 // The tracker decides per event when a poll is due; tick often and cheaply.
 const TICK_MS = 5_000;

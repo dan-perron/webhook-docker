@@ -1,9 +1,9 @@
 import { Hono } from 'hono';
 import { trimTrailingSlash } from 'hono/trailing-slash';
-import type { Db } from './db/client.js';
+import type { Services } from './mcp/server.js';
 import { basePath } from './util/url.js';
 
-export function createApp(_db: Db) {
+export function createApp(_services: Services) {
   const app = new Hono();
 
   // So "/bets/" resolves to the "/bets" root instead of 404ing.
