@@ -1,0 +1,365 @@
+{
+ "events": [
+  {
+   "id": "401907990",
+   "date": "2026-10-03T17:00Z",
+   "name": "Chicago White Sox at Cleveland Guardians",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 8,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "Top 8th",
+     "shortDetail": "Top 8th"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401907990",
+     "date": "2026-10-03T17:00Z",
+     "startDate": "2026-10-03T17:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 8,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "Top 8th",
+       "shortDetail": "Top 8th"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "5",
+        "location": "Cleveland",
+        "name": "Guardians",
+        "abbreviation": "CLE",
+        "displayName": "Cleveland Guardians",
+        "shortDisplayName": "Guardians"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "3",
+       "team": {
+        "id": "4",
+        "location": "Chicago",
+        "name": "White Sox",
+        "abbreviation": "CHW",
+        "displayName": "Chicago White Sox",
+        "shortDisplayName": "White Sox"
+       }
+      }
+     ],
+     "situation": {
+      "outs": 0,
+      "onFirst": false,
+      "onSecond": false,
+      "onThird": false,
+      "balls": 1,
+      "strikes": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "401908007",
+   "date": "2026-10-03T20:00Z",
+   "name": "Atlanta Braves at Los Angeles Dodgers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 1,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Scheduled",
+     "shortDetail": "10/3 - 4:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401908007",
+     "date": "2026-10-03T20:00Z",
+     "startDate": "2026-10-03T20:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 1,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Scheduled",
+       "shortDetail": "10/3 - 4:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "19",
+        "location": "Los Angeles",
+        "name": "Dodgers",
+        "abbreviation": "LAD",
+        "displayName": "Los Angeles Dodgers",
+        "shortDisplayName": "Dodgers"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "15",
+        "location": "Atlanta",
+        "name": "Braves",
+        "abbreviation": "ATL",
+        "displayName": "Atlanta Braves",
+        "shortDisplayName": "Braves"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 8.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-173"
+         },
+         "close": {
+          "odds": "-212"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+142"
+         },
+         "close": {
+          "odds": "+173"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401907985",
+   "date": "2026-10-03T22:30Z",
+   "name": "New York Yankees at Tampa Bay Rays",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 1,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Scheduled",
+     "shortDetail": "10/3 - 6:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401907985",
+     "date": "2026-10-03T22:30Z",
+     "startDate": "2026-10-03T22:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 1,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Scheduled",
+       "shortDetail": "10/3 - 6:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "30",
+        "location": "Tampa Bay",
+        "name": "Rays",
+        "abbreviation": "TB",
+        "displayName": "Tampa Bay Rays",
+        "shortDisplayName": "Rays"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "10",
+        "location": "New York",
+        "name": "Yankees",
+        "abbreviation": "NYY",
+        "displayName": "New York Yankees",
+        "shortDisplayName": "Yankees"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 7.0,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-133"
+         },
+         "close": {
+          "odds": "-135"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+110"
+         },
+         "close": {
+          "odds": "+112"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908002",
+   "date": "2026-10-04T00:30Z",
+   "name": "San Diego Padres at Milwaukee Brewers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 1,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Scheduled",
+     "shortDetail": "10/3 - 8:30 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401908002",
+     "date": "2026-10-04T00:30Z",
+     "startDate": "2026-10-04T00:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 1,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Scheduled",
+       "shortDetail": "10/3 - 8:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "name": "Brewers",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "25",
+        "location": "San Diego",
+        "name": "Padres",
+        "abbreviation": "SD",
+        "displayName": "San Diego Padres",
+        "shortDisplayName": "Padres"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 7.0,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-227"
+         },
+         "close": {
+          "odds": "-209"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+184"
+         },
+         "close": {
+          "odds": "+171"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

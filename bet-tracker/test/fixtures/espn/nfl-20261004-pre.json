@@ -1,0 +1,1348 @@
+{
+ "events": [
+  {
+   "id": "401872965",
+   "date": "2026-10-04T13:30Z",
+   "name": "Indianapolis Colts at Washington Commanders",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 9:30 AM EDT",
+     "shortDetail": "10/4 - 9:30 AM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872965",
+     "date": "2026-10-04T13:30Z",
+     "startDate": "2026-10-04T13:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 9:30 AM EDT",
+       "shortDetail": "10/4 - 9:30 AM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "28",
+        "location": "Washington",
+        "name": "Commanders",
+        "abbreviation": "WSH",
+        "displayName": "Washington Commanders",
+        "shortDisplayName": "Commanders"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "11",
+        "location": "Indianapolis",
+        "name": "Colts",
+        "abbreviation": "IND",
+        "displayName": "Indianapolis Colts",
+        "shortDisplayName": "Colts"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 4.5,
+       "overUnder": 46.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-110"
+         },
+         "close": {
+          "odds": "+170"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-110"
+         },
+         "close": {
+          "odds": "-205"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872971",
+   "date": "2026-10-04T17:00Z",
+   "name": "New England Patriots at Buffalo Bills",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 1:00 PM EDT",
+     "shortDetail": "10/4 - 1:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872971",
+     "date": "2026-10-04T17:00Z",
+     "startDate": "2026-10-04T17:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 1:00 PM EDT",
+       "shortDetail": "10/4 - 1:00 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2",
+        "location": "Buffalo",
+        "name": "Bills",
+        "abbreviation": "BUF",
+        "displayName": "Buffalo Bills",
+        "shortDisplayName": "Bills"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "17",
+        "location": "New England",
+        "name": "Patriots",
+        "abbreviation": "NE",
+        "displayName": "New England Patriots",
+        "shortDisplayName": "Patriots"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -7.0,
+       "overUnder": 49.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-162"
+         },
+         "close": {
+          "odds": "-310"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+136"
+         },
+         "close": {
+          "odds": "+250"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872972",
+   "date": "2026-10-04T17:00Z",
+   "name": "New York Jets at Chicago Bears",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 1:00 PM EDT",
+     "shortDetail": "10/4 - 1:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872972",
+     "date": "2026-10-04T17:00Z",
+     "startDate": "2026-10-04T17:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 1:00 PM EDT",
+       "shortDetail": "10/4 - 1:00 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "3",
+        "location": "Chicago",
+        "name": "Bears",
+        "abbreviation": "CHI",
+        "displayName": "Chicago Bears",
+        "shortDisplayName": "Bears"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "20",
+        "location": "New York",
+        "name": "Jets",
+        "abbreviation": "NYJ",
+        "displayName": "New York Jets",
+        "shortDisplayName": "Jets"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -3.5,
+       "overUnder": 43.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-380"
+         },
+         "close": {
+          "odds": "-185"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+300"
+         },
+         "close": {
+          "odds": "+154"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872969",
+   "date": "2026-10-04T17:00Z",
+   "name": "Jacksonville Jaguars at Cincinnati Bengals",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 1:00 PM EDT",
+     "shortDetail": "10/4 - 1:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872969",
+     "date": "2026-10-04T17:00Z",
+     "startDate": "2026-10-04T17:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 1:00 PM EDT",
+       "shortDetail": "10/4 - 1:00 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "4",
+        "location": "Cincinnati",
+        "name": "Bengals",
+        "abbreviation": "CIN",
+        "displayName": "Cincinnati Bengals",
+        "shortDisplayName": "Bengals"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "30",
+        "location": "Jacksonville",
+        "name": "Jaguars",
+        "abbreviation": "JAX",
+        "displayName": "Jacksonville Jaguars",
+        "shortDisplayName": "Jaguars"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -2.5,
+       "overUnder": 51.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-135"
+         },
+         "close": {
+          "odds": "-142"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+114"
+         },
+         "close": {
+          "odds": "+120"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872966",
+   "date": "2026-10-04T17:00Z",
+   "name": "Arizona Cardinals at New York Giants",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 1:00 PM EDT",
+     "shortDetail": "10/4 - 1:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872966",
+     "date": "2026-10-04T17:00Z",
+     "startDate": "2026-10-04T17:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 1:00 PM EDT",
+       "shortDetail": "10/4 - 1:00 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "19",
+        "location": "New York",
+        "name": "Giants",
+        "abbreviation": "NYG",
+        "displayName": "New York Giants",
+        "shortDisplayName": "Giants"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "22",
+        "location": "Arizona",
+        "name": "Cardinals",
+        "abbreviation": "ARI",
+        "displayName": "Arizona Cardinals",
+        "shortDisplayName": "Cardinals"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 2.5,
+       "overUnder": 44.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-325"
+         },
+         "close": {
+          "odds": "+120"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+260"
+         },
+         "close": {
+          "odds": "-142"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872970",
+   "date": "2026-10-04T17:00Z",
+   "name": "Los Angeles Rams at Philadelphia Eagles",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 1:00 PM EDT",
+     "shortDetail": "10/4 - 1:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872970",
+     "date": "2026-10-04T17:00Z",
+     "startDate": "2026-10-04T17:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 1:00 PM EDT",
+       "shortDetail": "10/4 - 1:00 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "21",
+        "location": "Philadelphia",
+        "name": "Eagles",
+        "abbreviation": "PHI",
+        "displayName": "Philadelphia Eagles",
+        "shortDisplayName": "Eagles"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "14",
+        "location": "Los Angeles",
+        "name": "Rams",
+        "abbreviation": "LAR",
+        "displayName": "Los Angeles Rams",
+        "shortDisplayName": "Rams"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 3.5,
+       "overUnder": 42.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-102"
+         },
+         "close": {
+          "odds": "+154"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-118"
+         },
+         "close": {
+          "odds": "-185"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872968",
+   "date": "2026-10-04T17:00Z",
+   "name": "Green Bay Packers at Tampa Bay Buccaneers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 1:00 PM EDT",
+     "shortDetail": "10/4 - 1:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872968",
+     "date": "2026-10-04T17:00Z",
+     "startDate": "2026-10-04T17:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 1:00 PM EDT",
+       "shortDetail": "10/4 - 1:00 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "27",
+        "location": "Tampa Bay",
+        "name": "Buccaneers",
+        "abbreviation": "TB",
+        "displayName": "Tampa Bay Buccaneers",
+        "shortDisplayName": "Buccaneers"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "9",
+        "location": "Green Bay",
+        "name": "Packers",
+        "abbreviation": "GB",
+        "displayName": "Green Bay Packers",
+        "shortDisplayName": "Packers"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 3.0,
+       "overUnder": 38.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+105"
+         },
+         "close": {
+          "odds": "+142"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-125"
+         },
+         "close": {
+          "odds": "-170"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872973",
+   "date": "2026-10-04T17:00Z",
+   "name": "Tennessee Titans at Baltimore Ravens",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 1:00 PM EDT",
+     "shortDetail": "10/4 - 1:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872973",
+     "date": "2026-10-04T17:00Z",
+     "startDate": "2026-10-04T17:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 1:00 PM EDT",
+       "shortDetail": "10/4 - 1:00 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "33",
+        "location": "Baltimore",
+        "name": "Ravens",
+        "abbreviation": "BAL",
+        "displayName": "Baltimore Ravens",
+        "shortDisplayName": "Ravens"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "10",
+        "location": "Tennessee",
+        "name": "Titans",
+        "abbreviation": "TEN",
+        "displayName": "Tennessee Titans",
+        "shortDisplayName": "Titans"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -11.5,
+       "overUnder": 42.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-395"
+         },
+         "close": {
+          "odds": "-700"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+310"
+         },
+         "close": {
+          "odds": "+500"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872967",
+   "date": "2026-10-04T17:00Z",
+   "name": "Dallas Cowboys at Houston Texans",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 1:00 PM EDT",
+     "shortDetail": "10/4 - 1:00 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872967",
+     "date": "2026-10-04T17:00Z",
+     "startDate": "2026-10-04T17:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 1:00 PM EDT",
+       "shortDetail": "10/4 - 1:00 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "34",
+        "location": "Houston",
+        "name": "Texans",
+        "abbreviation": "HOU",
+        "displayName": "Houston Texans",
+        "shortDisplayName": "Texans"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "6",
+        "location": "Dallas",
+        "name": "Cowboys",
+        "abbreviation": "DAL",
+        "displayName": "Dallas Cowboys",
+        "shortDisplayName": "Cowboys"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -3.0,
+       "overUnder": 48.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-135"
+         },
+         "close": {
+          "odds": "-162"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+114"
+         },
+         "close": {
+          "odds": "+136"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872974",
+   "date": "2026-10-04T20:05Z",
+   "name": "Miami Dolphins at Minnesota Vikings",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 4:05 PM EDT",
+     "shortDetail": "10/4 - 4:05 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872974",
+     "date": "2026-10-04T20:05Z",
+     "startDate": "2026-10-04T20:05Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 4:05 PM EDT",
+       "shortDetail": "10/4 - 4:05 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "16",
+        "location": "Minnesota",
+        "name": "Vikings",
+        "abbreviation": "MIN",
+        "displayName": "Minnesota Vikings",
+        "shortDisplayName": "Vikings"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "15",
+        "location": "Miami",
+        "name": "Dolphins",
+        "abbreviation": "MIA",
+        "displayName": "Miami Dolphins",
+        "shortDisplayName": "Dolphins"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -10.0,
+       "overUnder": 38.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-395"
+         },
+         "close": {
+          "odds": "-520"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+310"
+         },
+         "close": {
+          "odds": "+390"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872976",
+   "date": "2026-10-04T20:25Z",
+   "name": "Kansas City Chiefs at Las Vegas Raiders",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 4:25 PM EDT",
+     "shortDetail": "10/4 - 4:25 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872976",
+     "date": "2026-10-04T20:25Z",
+     "startDate": "2026-10-04T20:25Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 4:25 PM EDT",
+       "shortDetail": "10/4 - 4:25 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "13",
+        "location": "Las Vegas",
+        "name": "Raiders",
+        "abbreviation": "LV",
+        "displayName": "Las Vegas Raiders",
+        "shortDisplayName": "Raiders"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "12",
+        "location": "Kansas City",
+        "name": "Chiefs",
+        "abbreviation": "KC",
+        "displayName": "Kansas City Chiefs",
+        "shortDisplayName": "Chiefs"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 4.5,
+       "overUnder": 47.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+210"
+         },
+         "close": {
+          "odds": "+185"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-258"
+         },
+         "close": {
+          "odds": "-225"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872975",
+   "date": "2026-10-04T20:25Z",
+   "name": "Denver Broncos at San Francisco 49ers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 4:25 PM EDT",
+     "shortDetail": "10/4 - 4:25 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872975",
+     "date": "2026-10-04T20:25Z",
+     "startDate": "2026-10-04T20:25Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 4:25 PM EDT",
+       "shortDetail": "10/4 - 4:25 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "25",
+        "location": "San Francisco",
+        "name": "49ers",
+        "abbreviation": "SF",
+        "displayName": "San Francisco 49ers",
+        "shortDisplayName": "49ers"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "7",
+        "location": "Denver",
+        "name": "Broncos",
+        "abbreviation": "DEN",
+        "displayName": "Denver Broncos",
+        "shortDisplayName": "Broncos"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -3.0,
+       "overUnder": 47.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-135"
+         },
+         "close": {
+          "odds": "-148"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+114"
+         },
+         "close": {
+          "odds": "+124"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872977",
+   "date": "2026-10-04T20:25Z",
+   "name": "Los Angeles Chargers at Seattle Seahawks",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 4:25 PM EDT",
+     "shortDetail": "10/4 - 4:25 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872977",
+     "date": "2026-10-04T20:25Z",
+     "startDate": "2026-10-04T20:25Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 4:25 PM EDT",
+       "shortDetail": "10/4 - 4:25 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "26",
+        "location": "Seattle",
+        "name": "Seahawks",
+        "abbreviation": "SEA",
+        "displayName": "Seattle Seahawks",
+        "shortDisplayName": "Seahawks"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "24",
+        "location": "Los Angeles",
+        "name": "Chargers",
+        "abbreviation": "LAC",
+        "displayName": "Los Angeles Chargers",
+        "shortDisplayName": "Chargers"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -7.0,
+       "overUnder": 42.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-162"
+         },
+         "close": {
+          "odds": "-375"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+136"
+         },
+         "close": {
+          "odds": "+295"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401872978",
+   "date": "2026-10-05T00:20Z",
+   "name": "Detroit Lions at Carolina Panthers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 4th at 8:20 PM EDT",
+     "shortDetail": "10/4 - 8:20 PM EDT"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401872978",
+     "date": "2026-10-05T00:20Z",
+     "startDate": "2026-10-05T00:20Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 4th at 8:20 PM EDT",
+       "shortDetail": "10/4 - 8:20 PM EDT"
+      },
+      "isTBDFlex": false
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "29",
+        "location": "Carolina",
+        "name": "Panthers",
+        "abbreviation": "CAR",
+        "displayName": "Carolina Panthers",
+        "shortDisplayName": "Panthers"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "8",
+        "location": "Detroit",
+        "name": "Lions",
+        "abbreviation": "DET",
+        "displayName": "Detroit Lions",
+        "shortDisplayName": "Lions"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 3.5,
+       "overUnder": 50.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+136"
+         },
+         "close": {
+          "odds": "+150"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-162"
+         },
+         "close": {
+          "odds": "-180"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

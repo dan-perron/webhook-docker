@@ -51,6 +51,10 @@ export const events = sqliteTable(
     stateJson: text('state_json'),
     stateUpdatedAt: text('state_updated_at'),
     nextPollAt: text('next_poll_at'),
+    // Free pregame lines the game-state provider publishes (e.g. ESPN's
+    // DraftKings feed), refreshed while the event is still pre-game.
+    providerLinesJson: text('provider_lines_json'),
+    providerLinesAt: text('provider_lines_at'),
     // Optional one-time pregame odds snapshot (JSON) used as the prior.
     pregameOddsJson: text('pregame_odds_json'),
     pregameOddsAt: text('pregame_odds_at'),
