@@ -1,9 +1,5 @@
 import config from 'config';
-
-interface FootballSigmas {
-  marginSigma: number;
-  totalSigma: number;
-}
+import type { FootballSigmas } from './models/prior.js';
 
 /** Centralized, typed access to the `config` package values. */
 export const appConfig = {

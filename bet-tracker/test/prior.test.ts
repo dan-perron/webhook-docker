@@ -1,4 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import {
+  homeWinShare,
+  marginPmf,
+  NFL_KEY_WEIGHTS,
+} from '../src/models/football.js';
 import { resolvePrior } from '../src/models/prior.js';
 import { normalQuantile } from '../src/models/stats.js';
 import { PARAMS } from './helpers/states.js';
@@ -36,9 +41,13 @@ describe('resolvePrior', () => {
     expect(p.awayWin).toBeCloseTo(0.622466, 5);
     expect(p.expectedMargin).toBe(-3.5);
     expect(p.expectedTotal).toBe(42.5);
-    expect(p.detail).toBe(
-      'DraftKings via ESPN: ML +154/-185, home +3.5, o/u 42.5'
+    expect(p.detail).toMatch(
+      /^DraftKings via ESPN: ML \+154\/-185, home \+3\.5, o\/u 42\.5; σ \d+\.\d fitted to the moneyline$/
     );
+    // The fitted sigma makes the margin model reproduce the moneyline.
+    expect(
+      homeWinShare(marginPmf(-3.5, p.marginSigma!, NFL_KEY_WEIGHTS))
+    ).toBeCloseTo(0.377534, 5);
   });
 
   it('the Odds API snapshot is next', () => {

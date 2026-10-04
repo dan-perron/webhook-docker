@@ -4,8 +4,8 @@ import type { ModelParams, Prior } from '../../src/models/prior.js';
 
 export const PARAMS: ModelParams = {
   football: {
-    nfl: { marginSigma: 13.5, totalSigma: 13 },
-    ncaaf: { marginSigma: 15, totalSigma: 14 },
+    nfl: { marginSigma: 13.5, totalSigma: 13, sigmaRange: [10, 16] },
+    ncaaf: { marginSigma: 15, totalSigma: 14, sigmaRange: [11, 20] },
   },
   mlb: { simulations: 20000 },
 };
