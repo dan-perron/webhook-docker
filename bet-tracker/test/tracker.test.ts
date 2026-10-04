@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { getBet, listBets } from '../src/db/bets.js';
+import { createBet, getBet, listBets } from '../src/db/bets.js';
 import { openDb, type Db } from '../src/db/client.js';
 import { events, predictionSnapshots } from '../src/db/schema.js';
 import { createProviders } from '../src/gamestate/registry.js';
 import { matchLegs } from '../src/matching/service.js';
 import { seededRng } from '../src/models/stats.js';
 import { loadSeed } from '../src/seed/load.js';
-import { Tracker, type TickResult } from '../src/tracker/tracker.js';
+import { footballJoint } from '../src/models/football.js';
+import { preState, Tracker, type TickResult } from '../src/tracker/tracker.js';
 import { valueBetRow } from '../src/tracker/valuation.js';
 import { devig } from '../src/odds/math.js';
 import { fakeFetcher, SEED_ROUTES } from './helpers/fixtures.js';
@@ -205,5 +206,94 @@ describe('reevaluateAll', () => {
     expect(requested).toEqual([]);
     expect(r.polled).toEqual([]);
     expect(r.evaluatedEvents).toContain('mlb:849829');
+  });
+});
+
+describe('same-game parlays (football joint model)', () => {
+  it('prices legs on one game jointly, now and at placement', async () => {
+    const { bet } = createBet(db, {
+      book: 'FanDuel',
+      stake: 10,
+      price: 260,
+      legs: [
+        {
+          sport: 'nfl',
+          eventDate: '2026-10-04',
+          participants: ['Los Angeles Rams', 'Philadelphia Eagles'],
+          market: 'moneyline',
+          selection: { kind: 'team', team: 'Los Angeles Rams' },
+          price: -185,
+        },
+        {
+          sport: 'nfl',
+          eventDate: '2026-10-04',
+          participants: ['Los Angeles Rams', 'Philadelphia Eagles'],
+          market: 'spread',
+          selection: { kind: 'team', team: 'Philadelphia Eagles' },
+          line: 3.5,
+          price: -110,
+        },
+      ],
+    });
+    await tracker.tick();
+    const b = getBet(db, bet.id)!;
+    const v = valueBetRow(b.bet, b.legs);
+    expect(v.now.pWinSource).toBe('model');
+    expect(v.now.sameGameEventIds).toEqual(['espn:nfl:401872970']);
+    // Rams ML + Eagles +3.5 both win only when the Rams win by 1-3; on a
+    // tie the ML pushes and the bet pays on Eagles +3.5 alone. Every
+    // non-losing joint outcome pays more than the stake.
+    const prior = JSON.parse(b.legs[0]!.priorJson!);
+    const e = db
+      .select()
+      .from(events)
+      .all()
+      .find((x) => x.id === 'espn:nfl:401872970')!;
+    const direct = footballJoint(
+      preState(e),
+      prior,
+      b.legs.map((l) => ({
+        market: l.market,
+        kind: l.selectionKind,
+        side: l.side,
+        line: l.line,
+      })),
+      PARAMS.football.nfl
+    ).reduce((a, o) => a + o.p, 0);
+    expect(v.now.pWin).toBeCloseTo(direct, 10);
+    // Far below the independent product of the two legs.
+    expect(v.now.pWin).toBeLessThan(0.5 * b.legs[0]!.pWin! * b.legs[1]!.pWin!);
+    expect(v.atPlacement?.pWinSource).toBe('model');
+    expect(v.atPlacement!.pWin).toBeCloseTo(direct, 10);
+  });
+
+  it('other sports keep the book-implied fallback', async () => {
+    const { bet } = createBet(db, {
+      book: 'FanDuel',
+      stake: 10,
+      price: 250,
+      legs: [
+        {
+          sport: 'mlb',
+          eventDate: '2026-10-03',
+          participants: ['San Diego Padres', 'Milwaukee Brewers'],
+          market: 'moneyline',
+          selection: { kind: 'team', team: 'San Diego Padres' },
+          price: 188,
+        },
+        {
+          sport: 'mlb',
+          eventDate: '2026-10-03',
+          participants: ['San Diego Padres', 'Milwaukee Brewers'],
+          market: 'total',
+          selection: { kind: 'over' },
+          line: 7.5,
+          price: -110,
+        },
+      ],
+    });
+    await tracker.tick();
+    const b = getBet(db, bet.id)!;
+    expect(valueBetRow(b.bet, b.legs).now.pWinSource).toBe('book_implied');
   });
 });

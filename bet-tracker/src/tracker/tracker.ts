@@ -24,7 +24,9 @@ import {
   type OddsApiClient,
   type OddsMarket,
 } from '../odds/oddsApi.js';
+import type { JointOutcome } from '../domain/value.js';
 import { evaluateEvent } from '../models/evaluate.js';
+import { footballJoint } from '../models/football.js';
 import {
   resolvePrior,
   type EnteredLeg,
@@ -61,6 +63,12 @@ export interface TickResult {
   evaluatedEvents: string[];
   changedBets: number[];
   errors: string[];
+}
+
+/** A same-game joint outcome as stored on the bet (legs by id). */
+export interface StoredJoint {
+  p: number;
+  pushedLegIds: number[];
 }
 
 const iso = (d: Date) => d.toISOString();
@@ -516,8 +524,36 @@ export class Tracker extends EventEmitter {
         )
       : null;
 
+    const joints = this.sameGameJoints(e, state, prior, open);
+
     const affectedBets = new Set<number>();
     this.db.transaction((tx) => {
+      for (const j of joints) {
+        const bet = tx.select().from(bets).where(eq(bets.id, j.betId)).get();
+        if (!bet) continue;
+        const merge = (json: string | null, outcomes: StoredJoint[]) =>
+          JSON.stringify({
+            ...(json ? JSON.parse(json) : {}),
+            [e.id]: outcomes,
+          });
+        const placementKnown =
+          !!bet.jointPlacementJson &&
+          e.id in JSON.parse(bet.jointPlacementJson);
+        tx.update(bets)
+          .set({
+            jointJson: merge(bet.jointJson, j.now),
+            ...(j.placement && !placementKnown
+              ? {
+                  jointPlacementJson: merge(
+                    bet.jointPlacementJson,
+                    j.placement
+                  ),
+                }
+              : {}),
+          })
+          .where(eq(bets.id, j.betId))
+          .run();
+      }
       open.forEach((leg, i) => {
         const ev = evals[i]!;
         let placement: { win: number; push: number } | undefined;
@@ -585,6 +621,59 @@ export class Tracker extends EventEmitter {
     });
     result.evaluatedEvents.push(eventId);
     result.changedBets.push(...affectedBets);
+  }
+
+  /**
+   * For each bet with two or more open legs on this (football) event, the
+   * exact joint outcome of those legs now, and pregame for placement
+   * (pregame bets only). Other sports have no joint model yet: those bets
+   * stay book-implied.
+   */
+  private sameGameJoints(
+    e: EventRow,
+    state: GameState,
+    prior: Prior,
+    open: LegRow[]
+  ) {
+    if ((e.sport !== 'nfl' && e.sport !== 'ncaaf') || state.status === 'final')
+      return [];
+    const byBet = new Map<number, LegRow[]>();
+    for (const l of open)
+      byBet.set(l.betId, [...(byBet.get(l.betId) ?? []), l]);
+    const groups = [...byBet].filter(([, ls]) => ls.length > 1);
+    if (groups.length === 0) return [];
+    const sigmas = this.opts.params.football[e.sport];
+    const live = new Set(
+      this.db
+        .select({ id: bets.id })
+        .from(bets)
+        .where(
+          and(
+            inArray(
+              bets.id,
+              groups.map(([id]) => id)
+            ),
+            eq(bets.placedLive, true)
+          )
+        )
+        .all()
+        .map((b) => b.id)
+    );
+    const toStored = (ls: LegRow[], outs: JointOutcome[]): StoredJoint[] =>
+      outs.map((o) => ({
+        p: o.p,
+        pushedLegIds: o.pushed.map((i) => ls[i]!.id),
+      }));
+    return groups.map(([betId, ls]) => {
+      const sels = ls.map(selectionOf);
+      return {
+        betId,
+        now: toStored(ls, footballJoint(state, prior, sels, sigmas)),
+        placement: live.has(betId)
+          ? null
+          : toStored(ls, footballJoint(preState(e), prior, sels, sigmas)),
+      };
+    });
   }
 
   private maybeSnapshot(
