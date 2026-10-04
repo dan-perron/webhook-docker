@@ -29,7 +29,7 @@ export interface Services {
 const UNITS =
   'Units: money in US dollars; prices in American odds (e.g. +150, -110); probabilities 0..1.';
 const PROVENANCE =
-  'pWin/pPush/value/ev come from our state-based models (live score, clock, situation + a pregame prior), never from live odds. price/payout are what the book offered, as entered.';
+  "pWin/pPush/value/ev come from our state-based models (live score, clock, situation + a pregame prior), never from live odds; when now.source is 'book_implied' the bet has same-game legs without a joint model and pWin is the book's unboosted price instead. price/payout are what the book offered, as entered.";
 
 const json = (data: unknown) => ({
   content: [{ type: 'text' as const, text: JSON.stringify(data, null, 2) }],

@@ -162,9 +162,14 @@ export function BetCard({ b }: { b: BetView }) {
         ) : null}
       </div>
       {b.tokenInfo ? <div class="note">🎟 {b.tokenInfo}</div> : null}
-      {b.sameGameEventIds.length ? (
+      {b.now.source === 'book_implied' ? (
         <div class="note">
-          Same-game legs are treated as independent (correlation not modeled).
+          Same-game legs: P(win) and EV use the book's unboosted price until
+          this game type is modeled jointly.
+        </div>
+      ) : b.sameGameEventIds.length ? (
+        <div class="note">
+          Same-game legs priced together from one game model.
         </div>
       ) : null}
       <ul class="legs">
