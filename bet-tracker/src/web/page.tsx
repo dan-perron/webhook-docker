@@ -10,7 +10,7 @@ import {
   type LegView,
   type Portfolio,
 } from '../tracker/views.js';
-import { url } from '../util/url.js';
+import { home, url } from '../util/url.js';
 import {
   american,
   clock,
@@ -227,10 +227,10 @@ export function Content({ d }: { d: Dashboard }) {
   return (
     <div>
       <nav class="tabs">
-        <a href={url('/')} class={d.tab === 'open' ? 'on' : ''}>
+        <a href={home} class={d.tab === 'open' ? 'on' : ''}>
           Open ({d.counts.open})
         </a>
-        <a href={url('/?tab=settled')} class={d.tab === 'settled' ? 'on' : ''}>
+        <a href={`${home}?tab=settled`} class={d.tab === 'settled' ? 'on' : ''}>
           Settled ({d.counts.settled})
         </a>
       </nav>

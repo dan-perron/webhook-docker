@@ -4,7 +4,7 @@ import { streamSSE } from 'hono/streaming';
 import { clientKey } from '../auth/oauth.js';
 import type { FailureLimiter } from '../auth/rateLimit.js';
 import type { Services } from '../mcp/server.js';
-import { basePath, url } from '../util/url.js';
+import { basePath, home, url } from '../util/url.js';
 import {
   Content,
   Layout,
@@ -60,7 +60,7 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
     }
     cfg.limiter.reset(key);
     await startSession(c, cfg.session);
-    return c.redirect(url('/'));
+    return c.redirect(home);
   });
 
   const requireSession: MiddlewareHandler = async (c, next) => {
