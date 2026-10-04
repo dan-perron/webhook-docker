@@ -258,6 +258,29 @@ describe('web page', () => {
     expect(html).not.toMatch(/Roman Kopylov 0/);
   });
 
+  it("shows today's result in the header and groups settled bets by day", async () => {
+    const cookie = cookieOf(await login());
+    const open = await (await app.request('/', { headers: { cookie } })).text();
+    // Recording settles Minnesota ML (+$24) and two losers (-$10 each) today.
+    expect(open).toMatch(
+      /Today <span class="pos">\+\$4\.00<\/span> · 1W 2L · 3 settled/
+    );
+    const settled = await (
+      await app.request('/?tab=settled', { headers: { cookie } })
+    ).text();
+    expect(settled).toContain('<h2>Today</h2>');
+    expect(settled).toContain('1W 2L · staked $30.00 · returned $34.00');
+    // A settled card leads with its gain or loss.
+    expect(settled).toMatch(
+      /<div class="big pos">\+\$24\.00<\/div><div class="sub">Won<\/div>/
+    );
+    // An invalid tz cookie falls back instead of failing.
+    const odd = await app.request('/?tab=settled', {
+      headers: { cookie: `${cookie}; tz=Not/AZone` },
+    });
+    expect(odd.status).toBe(200);
+  });
+
   it('renders the settled tab', async () => {
     const cookie = cookieOf(await login());
     const html = await (
