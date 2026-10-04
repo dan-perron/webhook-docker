@@ -103,6 +103,7 @@ export class Tracker extends EventEmitter {
   private readonly now: () => Date;
   private readonly rng: Rng;
   private lastRematch = 0;
+  private readonly matchAttempted = new Set<number>();
   private running = false;
 
   constructor(
@@ -145,19 +146,25 @@ export class Tracker extends EventEmitter {
     return result;
   }
 
-  /** Retry unmatched legs on open bets every so often (events get listed late). */
+  /**
+   * Match unmatched legs on open bets: legs this process hasn't tried yet
+   * (e.g. seeded or added by the stdio MCP) right away, and ones that
+   * already failed every so often (events get listed late).
+   */
   private async rematch(result: TickResult) {
     const every = (this.opts.rematchEveryMinutes ?? 10) * 60_000;
-    if (this.now().getTime() - this.lastRematch < every) return;
-    this.lastRematch = this.now().getTime();
+    const retryDue = this.now().getTime() - this.lastRematch >= every;
     const ids = this.db
       .select({ id: legs.id })
       .from(legs)
       .innerJoin(bets, eq(bets.id, legs.betId))
       .where(and(eq(legs.matchStatus, 'unmatched'), eq(bets.status, 'open')))
       .all()
-      .map((r) => r.id);
+      .map((r) => r.id)
+      .filter((id) => retryDue || !this.matchAttempted.has(id));
     if (ids.length === 0) return;
+    if (retryDue) this.lastRematch = this.now().getTime();
+    for (const id of ids) this.matchAttempted.add(id);
     try {
       await matchLegs(this.db, this.providers, ids);
     } catch (e) {

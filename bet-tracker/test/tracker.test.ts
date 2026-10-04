@@ -172,3 +172,27 @@ describe('Tracker.tick', () => {
     expect(valueBetRow(b.bet, b.legs).now.sameGameEventIds).toEqual([]);
   });
 });
+
+describe('matching bets added while running', () => {
+  it('matches bets seeded after an empty first tick on the next tick', async () => {
+    // A server that started before any bets existed.
+    const empty = openDb(':memory:');
+    const providers = createProviders(fakeFetcher(ROUTES).fetcher);
+    const t = new Tracker(empty, providers, {
+      params: { ...PARAMS, mlb: { simulations: 1000 } },
+      polling: { liveSeconds: 30, scheduledSeconds: 600 },
+      now: () => NOW,
+      rng: seededRng(2),
+    });
+    await t.tick();
+    loadSeed(empty);
+    await t.tick();
+    const legs = listBets(empty).flatMap((b) => b.legs);
+    expect(legs.every((l) => l.matchStatus === 'matched')).toBe(true);
+    expect(
+      listBets(empty).find((b) =>
+        b.legs.some((l) => l.selectionTeam === 'Minnesota')
+      )!.bet.status
+    ).toBe('won');
+  });
+});
