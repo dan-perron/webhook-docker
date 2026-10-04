@@ -52,7 +52,7 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
 
 - Tools live in `src/mcp/server.ts` (`createMcpServer(services)`), shared by
   stdio (`src/mcp/stdio.ts`, `docker exec -i bet-tracker node
-  built/mcp/stdio.js` on signs) and HTTP (`POST /bets/mcp`, stateless, JSON
+built/mcp/stdio.js` on signs) and HTTP (`POST /bets/mcp`, stateless, JSON
   responses).
 - `/mcp` accepts `Authorization: Bearer <APP_TOKEN>` or an OAuth access token.
   OAuth (`src/auth/`) is single-user: dynamic client registration, PKCE S256,
