@@ -78,3 +78,10 @@ git commit -m "Update webhook-server"
 ```
 
 Most application code changes happen inside the `webhook-server` submodule — refer to `webhook-server/CLAUDE.md` for development commands (build, lint, test) and detailed architecture.
+
+## Backups
+
+`ops/backup-signs` (cron 03:30) backs up Mongo, bet-tracker, Home Assistant,
+Pi-hole, the *arr configs, every stack's compose/.env files and the Apache
+config to `/mnt/archive/backups/signs/`. See `ops/README.md` for contents and
+restore steps. A new app with state should get a part in that script.

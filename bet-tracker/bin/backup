@@ -7,7 +7,7 @@
 #   bin/backup                     # default destination
 #   DEST=/some/dir bin/backup
 #
-# Cron (djperron): 30 3 * * * /home/djperron/docker-compose/webhook-docker/bet-tracker/bin/backup >> /tmp/bet-tracker-backup.log 2>&1
+# Called nightly by ops/backup-signs (cron 03:30), which owns the schedule.
 #
 set -euo pipefail
 DEST="${DEST:-/mnt/archive/backups/signs/bet-tracker}"

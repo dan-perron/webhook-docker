@@ -124,8 +124,8 @@ ProxyPassReverse "/bets" "http://localhost:3003/bets"
 
 **Backups:** `bin/backup` takes an online SQLite backup inside the container,
 checks its integrity, copies it to `/mnt/archive/backups/signs/bet-tracker/`
-and keeps 30 days. It runs from djperron's crontab at 03:30
-(log: `/tmp/bet-tracker-backup.log`). To restore, stop the container, copy a
+and keeps 30 days. It runs nightly from `ops/backup-signs`
+(log: `/tmp/backup-signs.log`; see `ops/README.md`). To restore, stop the container, copy a
 backup over `/data/bet-tracker.sqlite` in the `bet-tracker-data` volume, and
 start it.
 
