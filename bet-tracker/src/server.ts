@@ -29,6 +29,9 @@ async function tick() {
     console.error('tracker tick failed', e);
   }
 }
+// Apply the current models to stored state right away (e.g. after a deploy).
+const boot = tracker.reevaluateAll();
+console.log(`re-evaluated ${boot.evaluatedEvents.length} events at startup`);
 setInterval(tick, TICK_MS);
 void tick();
 
