@@ -6,12 +6,14 @@ import { DEFAULT_REDIRECT_ALLOWLIST, OAuthStore } from './auth/oauthStore.js';
 import { FailureLimiter } from './auth/rateLimit.js';
 import { createMcpServer, type Services } from './mcp/server.js';
 import { basePath } from './util/url.js';
+import { webRoutes } from './web/routes.js';
 
 export interface AppOptions {
   appToken: string;
   /** Absolute origin, e.g. https://djperron.com (OAuth needs absolute URLs). */
   publicOrigin: string;
   extraRedirectUris?: string[];
+  timeZone?: string;
   now?: () => Date;
 }
 
@@ -40,6 +42,20 @@ export function createApp(services: Services, opts: AppOptions) {
     limiter: new FailureLimiter(),
   };
   r.route('/', oauthRoutes(auth));
+  r.route(
+    '/',
+    webRoutes(services, {
+      session: {
+        appToken: opts.appToken,
+        path: basePath || '/',
+        secure: opts.publicOrigin.startsWith('https:'),
+        now: opts.now,
+      },
+      // One limiter for every place APP_TOKEN can be guessed.
+      limiter: auth.limiter,
+      timeZone: opts.timeZone ?? 'America/Chicago',
+    })
+  );
 
   // Remote MCP (Streamable HTTP), stateless: a fresh server per request and
   // plain JSON responses (no long-lived streams through Apache).

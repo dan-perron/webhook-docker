@@ -1,0 +1,319 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f4f5f7;
+  --card: #ffffff;
+  --fg: #15181c;
+  --muted: #5f6b76;
+  --line: #e2e5e9;
+  --accent: #1f6feb;
+  --good: #1a7f37;
+  --warn: #b26b00;
+  --bad: #c62828;
+  --good-bg: #e7f5ec;
+  --warn-bg: #fff4e0;
+  --bad-bg: #fdecec;
+  --push-bg: #eef0f3;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1116;
+    --card: #171b22;
+    --fg: #e6e9ee;
+    --muted: #97a1ac;
+    --line: #262c35;
+    --accent: #4c8dff;
+    --good: #3fb950;
+    --warn: #e3a33a;
+    --bad: #ff6b6b;
+    --good-bg: #13261a;
+    --warn-bg: #2a2111;
+    --bad-bg: #2c1517;
+    --push-bg: #1d222a;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font:
+    15px/1.4 system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+.pos {
+  color: var(--good);
+}
+.neg {
+  color: var(--bad);
+}
+.muted,
+.sub,
+.ev,
+.state,
+.foot,
+.meta {
+  color: var(--muted);
+}
+
+/* Header with totals; sticks so totals stay visible while scrolling. */
+#summary {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  padding: max(10px, env(safe-area-inset-top)) 16px 8px;
+}
+.stats {
+  display: flex;
+  gap: 8px;
+}
+.stats > div {
+  flex: 1;
+  background: var(--card);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.stats .k {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+.stats .v {
+  font-size: 18px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.meta {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  margin-top: 6px;
+}
+.meta .conn {
+  margin-left: auto;
+  color: var(--muted);
+}
+.meta .conn.live {
+  color: var(--good);
+}
+.meta .conn.down {
+  color: var(--bad);
+}
+
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 8px 16px 32px;
+}
+h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 16px 0 8px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 8px;
+}
+.tabs a {
+  flex: 1;
+  text-align: center;
+  padding: 8px;
+  border-radius: 999px;
+  color: var(--fg);
+  text-decoration: none;
+  background: var(--card);
+}
+.tabs a.on {
+  background: var(--accent);
+  color: #fff;
+}
+
+.card,
+.bet {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.bet {
+  border-left: 4px solid var(--line);
+}
+.bet.good {
+  border-left-color: var(--good);
+}
+.bet.warn {
+  border-left-color: var(--warn);
+}
+.bet.bad,
+.bet.lost {
+  border-left-color: var(--bad);
+}
+.bet.won {
+  border-left-color: var(--good);
+}
+.bet header {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.bet .icon {
+  font-size: 18px;
+  line-height: 1.2;
+}
+.bet .title {
+  flex: 1;
+  min-width: 0;
+}
+.bet .label {
+  font-weight: 650;
+  font-size: 16px;
+}
+.bet .sub {
+  font-size: 13px;
+}
+.bet .pwin {
+  text-align: right;
+}
+.bet .pwin .big {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.money {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 8px 0 4px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.note {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 4px 0;
+}
+
+.legs {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+.leg {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 6px;
+  background: var(--push-bg);
+}
+.leg.good,
+.leg.won {
+  background: var(--good-bg);
+}
+.leg.warn {
+  background: var(--warn-bg);
+}
+.leg.bad,
+.leg.lost {
+  background: var(--bad-bg);
+}
+.leg .body {
+  flex: 1;
+  min-width: 0;
+}
+.leg .sel {
+  font-weight: 600;
+}
+.leg .price {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 13px;
+}
+.leg .ev,
+.leg .state {
+  font-size: 13px;
+}
+.leg .sit {
+  font-size: 13px;
+  font-weight: 600;
+}
+.leg .p {
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.exposure table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  font-size: 14px;
+}
+.exposure th,
+.exposure td {
+  padding: 4px 6px;
+  text-align: right;
+  border-bottom: 1px solid var(--line);
+}
+.exposure th:first-child,
+.exposure td:first-child {
+  text-align: left;
+}
+.exposure .net td {
+  font-weight: 700;
+  border-bottom: 0;
+}
+.exposure .label {
+  font-weight: 650;
+}
+.exposure .foot {
+  font-size: 12px;
+  margin-top: 6px;
+}
+.settled-total {
+  font-variant-numeric: tabular-nums;
+}
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 24px;
+}
+
+.login {
+  max-width: 360px;
+  padding-top: 15vh;
+}
+.login form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.login h1 {
+  margin: 0;
+  font-size: 22px;
+}
+.login input,
+.login button {
+  font-size: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+}
+.login button {
+  background: var(--accent);
+  border: 0;
+  color: #fff;
+}

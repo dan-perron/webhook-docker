@@ -12,6 +12,12 @@ module.exports = {
   ignorePatterns: ['built', 'node_modules', 'drizzle'],
   overrides: [
     {
+      // Client script served as-is to the browser.
+      env: { browser: true, node: false },
+      files: ['public/**/*.js'],
+      parserOptions: { sourceType: 'script' },
+    },
+    {
       env: {
         node: true,
       },
