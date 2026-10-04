@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Nightly backup of the bet-tracker SQLite database to the NAS.
+# Takes an online backup inside the running container (consistent while the
+# poller writes), checks it, copies it out, and keeps the last $KEEP_DAYS.
+#
+#   bin/backup                     # default destination
+#   DEST=/some/dir bin/backup
+#
+# Cron (djperron): 30 3 * * * /home/djperron/docker-compose/webhook-docker/bet-tracker/bin/backup >> /tmp/bet-tracker-backup.log 2>&1
+#
+set -euo pipefail
+DEST="${DEST:-/mnt/archive/backups/signs/bet-tracker}"
+KEEP_DAYS="${KEEP_DAYS:-30}"
+CONTAINER="${CONTAINER:-bet-tracker}"
+STAMP="$(date +%F)"
+TMP="/data/backup-${STAMP}.sqlite"
+
+mountpoint -q /mnt/archive || { echo "$(date -Is) /mnt/archive is not mounted" >&2; exit 1; }
+mkdir -p "$DEST"
+docker exec "$CONTAINER" rm -f "$TMP"
+docker exec "$CONTAINER" node built/backup.js "$TMP"
+docker cp "$CONTAINER:$TMP" "$DEST/bet-tracker-${STAMP}.sqlite"
+docker exec "$CONTAINER" rm -f "$TMP"
+find "$DEST" -name 'bet-tracker-*.sqlite' -mtime "+$KEEP_DAYS" -delete
+echo "$(date -Is) saved $DEST/bet-tracker-${STAMP}.sqlite"
