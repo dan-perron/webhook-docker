@@ -23,12 +23,19 @@ const legsText = (n: number) => (Number.isInteger(n) ? `${n}` : n.toFixed(1));
 // Plot geometry (viewBox units; the SVG scales to the card width).
 const W = 240;
 const H = 200;
-const L = 34;
+const L = 46;
 const R = 10;
 const T = 10;
 const B = 30;
 const x = (p: number) => L + p * (W - L - R);
 const y = (p: number) => H - B - p * (H - T - B);
+
+/** Dot area grows with the legs a bin represents (r 2.5 -> 7 at 10+ legs). */
+const dotRadius = (legs: number) =>
+  2.5 + 4.5 * Math.sqrt(Math.min(legs, 10) / 10);
+
+/** Below this many settled legs a sport's chart is mostly noise. */
+const FEW_LEGS = 10;
 
 function tip(b: ReliabilityBin) {
   return `${pct0(b.lo)}–${pct0(b.hi)} predicted (avg ${pct0(b.meanPredicted)}): won ${pct0(b.observed)} of ${legsText(b.legs)} legs, 95% range ${pct0(b.ciLow)}–${pct0(b.ciHigh)}`;
@@ -67,27 +74,29 @@ function ReliabilityChart({ c }: { c: SportCalibration }) {
       </text>
       <text
         class="axis-label"
-        x={10}
+        x={9}
         y={y(0.5)}
         text-anchor="middle"
-        transform={`rotate(-90 10 ${y(0.5)})`}
+        transform={`rotate(-90 9 ${y(0.5)})`}
       >
         Won
       </text>
       {c.bins.map((b) => (
         <g class="pt" data-tip={tip(b)} tabindex="0">
-          <line
-            class="whisker"
-            x1={x(b.meanPredicted)}
-            x2={x(b.meanPredicted)}
-            y1={y(b.ciLow)}
-            y2={y(b.ciHigh)}
-          />
+          {b.legs >= 1 ? (
+            <line
+              class="whisker"
+              x1={x(b.meanPredicted)}
+              x2={x(b.meanPredicted)}
+              y1={y(b.ciLow)}
+              y2={y(b.ciHigh)}
+            />
+          ) : null}
           <circle
             class="dot"
             cx={x(b.meanPredicted)}
             cy={y(b.observed)}
-            r="4.5"
+            r={dotRadius(b.legs).toFixed(1)}
           />
           <circle
             class="hit"
@@ -189,6 +198,12 @@ export function Calibration({ report }: { report: SportCalibration[] }) {
             <div class="label">
               {label(c.sport)} <span class="muted">· {c.legs} legs</span>
             </div>
+            {c.legs < FEW_LEGS ? (
+              <div class="note">
+                Too few settled legs to judge yet; dot size shows how many legs
+                each point represents.
+              </div>
+            ) : null}
             <ReliabilityChart c={c} />
             <BinTable c={c} />
           </div>
