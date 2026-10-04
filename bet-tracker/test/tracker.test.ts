@@ -196,3 +196,14 @@ describe('matching bets added while running', () => {
     ).toBe('won');
   });
 });
+
+describe('reevaluateAll', () => {
+  it('re-evaluates open legs from stored state without polling', async () => {
+    await tracker.tick();
+    requested.length = 0;
+    const r = tracker.reevaluateAll();
+    expect(requested).toEqual([]);
+    expect(r.polled).toEqual([]);
+    expect(r.evaluatedEvents).toContain('mlb:849829');
+  });
+});

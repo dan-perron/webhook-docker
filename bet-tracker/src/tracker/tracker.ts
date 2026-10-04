@@ -428,6 +428,30 @@ export class Tracker extends EventEmitter {
     );
   }
 
+  /**
+   * Re-evaluate every event with an open leg from stored state, without
+   * polling. Run at startup so model changes apply immediately instead of at
+   * each event's next poll.
+   */
+  reevaluateAll(): TickResult {
+    const result: TickResult = {
+      polled: [],
+      evaluatedEvents: [],
+      changedBets: [],
+      errors: [],
+    };
+    const ids = this.db
+      .selectDistinct({ id: legs.eventId })
+      .from(legs)
+      .where(and(eq(legs.status, 'open'), eq(legs.matchStatus, 'matched')))
+      .all()
+      .map((r) => r.id)
+      .filter((id): id is string => !!id);
+    for (const id of ids) this.evaluate(id, result);
+    if (result.evaluatedEvents.length) this.emit('change', result);
+    return result;
+  }
+
   /** Re-evaluate every open leg on an event (any bet), settle, snapshot. */
   evaluate(eventId: string, result: TickResult) {
     const e = this.db.select().from(events).where(eq(events.id, eventId)).get();
