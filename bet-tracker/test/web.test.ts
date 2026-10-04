@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../src/app.js';
 import { openDb } from '../src/db/client.js';
+import { legs, predictionSnapshots } from '../src/db/schema.js';
 import { createProviders } from '../src/gamestate/registry.js';
 import { matchLegs } from '../src/matching/service.js';
 import type { Services } from '../src/mcp/server.js';
@@ -265,6 +266,55 @@ describe('web page', () => {
     expect(html).toContain('Minnesota ML');
     expect(html).toContain('🏆');
     expect(html).not.toContain('Exposure');
+  });
+
+  it('settled tab: calibration table and one reliability chart per sport', async () => {
+    const cookie = cookieOf(await login());
+    const empty = await (
+      await app.request('/?tab=settled', { headers: { cookie } })
+    ).text();
+    expect(empty).toContain('No settled legs with logged predictions yet.');
+
+    const legIds = services.db
+      .select({ id: legs.id, betId: legs.betId })
+      .from(legs)
+      .limit(2)
+      .all();
+    services.db
+      .insert(predictionSnapshots)
+      .values([
+        {
+          betId: legIds[0]!.betId,
+          legId: legIds[0]!.id,
+          sport: 'mlb',
+          market: 'moneyline',
+          takenAt: '2026-10-03T19:00:00Z',
+          gameStatus: 'pre',
+          probability: 0.6,
+          outcome: 1,
+        },
+        {
+          betId: legIds[1]!.betId,
+          legId: legIds[1]!.id,
+          sport: 'ncaaf',
+          market: 'spread',
+          takenAt: '2026-10-03T19:00:00Z',
+          gameStatus: 'pre',
+          probability: 0.3,
+          outcome: 0,
+        },
+      ])
+      .run();
+    const html = await (
+      await app.request('/?tab=settled', { headers: { cookie } })
+    ).text();
+    expect(html).toContain('<h2>Calibration</h2>');
+    // All: (0.16 + 0.09) / 2 = 0.125
+    expect(html).toContain('<td>All sports</td><td>2</td><td>0.125</td>');
+    expect(html.match(/class="reliability"/g)).toHaveLength(2);
+    expect(html).toContain(
+      'data-tip="60%–70% predicted (avg 60%): won 100% of 1 legs'
+    );
   });
 
   it('serves static assets without a session', async () => {

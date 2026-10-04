@@ -317,3 +317,133 @@ h2 {
   border: 0;
   color: #fff;
 }
+
+/* Calibration (Settled tab). One series hue, validated light/dark. */
+.calibration {
+  --series-1: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  .calibration {
+    --series-1: #3987e5;
+  }
+}
+.brier {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.brier th,
+.brier td {
+  padding: 4px 6px;
+  text-align: right;
+  border-bottom: 1px solid var(--line);
+}
+.brier th:first-child,
+.brier td:first-child {
+  text-align: left;
+}
+.brier th {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 12px;
+}
+.brier tr.all td {
+  font-weight: 650;
+}
+.calibration .foot {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 8px 0 0;
+}
+.multiples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+.multiples .card {
+  margin-bottom: 0;
+}
+.chart .label {
+  font-weight: 650;
+}
+.reliability {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 4px;
+  overflow: visible;
+}
+.reliability .grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.reliability .axis {
+  stroke: var(--muted);
+  stroke-width: 1;
+}
+.reliability .diag {
+  stroke: var(--muted);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+.reliability .tick,
+.reliability .axis-label {
+  fill: var(--muted);
+  font-size: 10px;
+}
+.reliability .whisker {
+  stroke: var(--series-1);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+.reliability .dot {
+  fill: var(--series-1);
+  stroke: var(--card);
+  stroke-width: 2;
+}
+.reliability .hit {
+  fill: transparent;
+  cursor: pointer;
+}
+.reliability .pt:focus {
+  outline: none;
+}
+.reliability .pt:focus .dot,
+.reliability .pt:hover .dot {
+  stroke: var(--fg);
+}
+.bins summary {
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+  margin-top: 4px;
+}
+.bins table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.bins th,
+.bins td {
+  padding: 3px 4px;
+  text-align: right;
+  border-bottom: 1px solid var(--line);
+}
+.bins th:first-child,
+.bins td:first-child {
+  text-align: left;
+}
+.tip {
+  position: fixed;
+  z-index: 5;
+  max-width: 260px;
+  background: var(--fg);
+  color: var(--bg);
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  pointer-events: none;
+}

@@ -3,6 +3,10 @@ import { legs } from '../db/schema.js';
 import type { Services } from '../mcp/server.js';
 import type { Quota } from '../odds/oddsApi.js';
 import {
+  calibrationReport,
+  type SportCalibration,
+} from '../tracker/calibration.js';
+import {
   betViews,
   portfolio,
   type BetView,
@@ -11,6 +15,7 @@ import {
   type Portfolio,
 } from '../tracker/views.js';
 import { home, url } from '../util/url.js';
+import { Calibration } from './calibration.js';
 import {
   american,
   legStatusLine,
@@ -37,6 +42,8 @@ export interface Dashboard {
   /** Fallback zone for times before the browser re-renders them. */
   timeZone: string;
   now: Date;
+  /** Settled tab only. */
+  calibration: SportCalibration[];
 }
 
 export function loadDashboard(
@@ -64,6 +71,7 @@ export function loadDashboard(
     updatedAt,
     timeZone,
     now,
+    calibration: tab === 'settled' ? calibrationReport(s.db) : [],
   };
 }
 
@@ -297,6 +305,7 @@ export function Content({ d }: { d: Dashboard }) {
           </span>
         </div>
       ) : null}
+      {d.tab === 'settled' ? <Calibration report={d.calibration} /> : null}
       <section>
         {d.bets.length ? (
           d.bets.map((b) => <BetCard b={b} d={d} />)
