@@ -95,6 +95,7 @@ export function evaluateEvent(
       const inputs = {
         marginMean: round(d.marginMean),
         marginSd: round(d.marginSd),
+        sigma: round(d.sigma),
         totalMean: round(d.totalMean),
         totalSd: round(d.totalSd),
         possessionEp: round(d.possessionEp),

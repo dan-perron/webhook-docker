@@ -6,6 +6,7 @@ import type {
   Sport,
 } from '../domain/types.js';
 import { devig, devigSingle } from '../odds/math.js';
+import { fitMarginSigma, NFL_KEY_WEIGHTS } from './football.js';
 import { normalCdf, normalQuantile } from './stats.js';
 
 // Pregame view of an event: who is favored and by how much, and how much
@@ -20,6 +21,11 @@ export interface Prior {
   awayWin: number;
   /** Expected final margin, home minus away (football only, else null). */
   expectedMargin: number | null;
+  /**
+   * Football: σ of the final margin fitted so the margin model reproduces
+   * the moneyline (null = league default; no moneyline and spread together).
+   */
+  marginSigma?: number | null;
   /** Expected final total points/runs/goals (null for MMA). */
   expectedTotal: number | null;
   /** Human-readable inputs, e.g. "DraftKings via ESPN: ML -165/+330/+330". */
@@ -27,8 +33,11 @@ export interface Prior {
 }
 
 export interface FootballSigmas {
+  /** League-default σ of the final margin (points). */
   marginSigma: number;
   totalSigma: number;
+  /** Bounds for the per-game σ fitted to the moneyline. */
+  sigmaRange: readonly [number, number];
 }
 
 export interface ModelParams {
@@ -211,6 +220,7 @@ export function resolvePrior(
   let margin: number | null = isFootball(sport)
     ? (priced?.margin ?? null)
     : null;
+  let marginSigma: number | null = null;
 
   if (sport === 'soccer') {
     // Fill a partial 3-way from what is known, then renormalize.
@@ -228,6 +238,19 @@ export function resolvePrior(
     pAway /= sum;
   } else {
     pDraw = 0;
+    // A moneyline and a spread from the same source: fit σ so the margin
+    // model reproduces both (fixes underdogs priced off the spread alone).
+    if (isFootball(sport) && priced?.pHome != null && priced.margin != null) {
+      const s = params.football[sport as 'nfl' | 'ncaaf'];
+      marginSigma = fitMarginSigma(
+        priced.margin,
+        priced.pHome,
+        sport === 'nfl' ? NFL_KEY_WEIGHTS : null,
+        s.marginSigma,
+        s.sigmaRange
+      );
+      notes.push(`σ ${marginSigma.toFixed(1)} fitted to the moneyline`);
+    }
     if (isFootball(sport)) {
       if (pHome == null && margin != null) pHome = normalCdf(margin / sigma);
       if (margin == null && pHome != null)
@@ -248,6 +271,7 @@ export function resolvePrior(
     draw: pDraw,
     awayWin: pAway!,
     expectedMargin: margin,
+    marginSigma,
     expectedTotal: total,
     detail: notes.join('; '),
   };

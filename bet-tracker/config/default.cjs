@@ -61,10 +61,16 @@ const config = {
   models: {
     // Std dev (points) of the final scoring margin over a full game.
     football: {
-      nfl: { marginSigma: envNumber('NFL_MARGIN_SIGMA', 13.5), totalSigma: 13 },
+      // sigmaRange bounds the per-game σ fitted to the moneyline.
+      nfl: {
+        marginSigma: envNumber('NFL_MARGIN_SIGMA', 13.5),
+        totalSigma: 13,
+        sigmaRange: [10, 16],
+      },
       ncaaf: {
         marginSigma: envNumber('NCAAF_MARGIN_SIGMA', 15),
         totalSigma: 14,
+        sigmaRange: [11, 20],
       },
     },
     mlb: { simulations: 10000 },
