@@ -86,6 +86,11 @@ export const bets = sqliteTable('bets', {
   notes: text('notes'),
   status: text('status', { enum: BET_STATUSES }).notNull().default('open'),
   settledAt: text('settled_at'),
+  // Same-game groups priced from one game model: JSON
+  // { [eventId]: { p, pushedLegIds }[] } (non-losing outcomes), now and at
+  // placement (pregame bets only).
+  jointJson: text('joint_json'),
+  jointPlacementJson: text('joint_placement_json'),
   ...timestamps,
 });
 
