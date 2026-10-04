@@ -8,6 +8,9 @@ export const basePath = appConfig.basePath;
  * path so links/forms/HTMX/static URLs work when served under a sub-path.
  * `url('/events')` -> '/events' at root, '/bets/events' under BASE_PATH=/bets.
  */
+/** The app's root URL: '/bets' (no trailing slash, which would 301), or '/'. */
+export const home = basePath || '/';
+
 export function url(path: string): string {
   return basePath + path;
 }
