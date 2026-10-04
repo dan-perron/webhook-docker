@@ -16,6 +16,7 @@ const app = createApp(services, {
   appToken: appConfig.auth.appToken,
   publicOrigin: appConfig.publicOrigin,
   extraRedirectUris: appConfig.auth.extraRedirectUris,
+  timeZone: appConfig.timezone,
 });
 
 // The tracker decides per event when a poll is due; tick often and cheaply.
