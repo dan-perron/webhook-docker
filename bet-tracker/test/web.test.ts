@@ -12,6 +12,7 @@ import type { LiveView } from '../src/tracker/views.js';
 import {
   legStatusLine,
   signedUsd,
+  timeLabel,
   situationText,
   tone,
 } from '../src/web/format.js';
@@ -51,6 +52,7 @@ describe('format', () => {
     away: { name: 'UCF Knights', abbr: 'UCF', score: 17 },
     situation,
     providerWinProb: null,
+    startTime: '2026-10-04T18:45:00.000Z',
     fetchedAt: '',
   });
 
@@ -132,6 +134,26 @@ describe('format', () => {
     ).toBe('UCF 17 @ HOU 27 · 1:08 - 4th');
   });
 
+  it('time labels: time today, weekday this week, date beyond', () => {
+    const now = new Date('2026-10-03T19:40:00.000Z');
+    const tz = 'America/Chicago';
+    expect(timeLabel('2026-10-03T23:00:00.000Z', 'start', tz, now)).toBe(
+      '6:00 PM'
+    );
+    expect(timeLabel('2026-10-04T18:45:00.000Z', 'start', tz, now)).toBe(
+      'Sun 1:45 PM'
+    );
+    expect(timeLabel('2026-10-12T00:15:00.000Z', 'start', tz, now)).toBe(
+      'Oct 11, 7:15 PM'
+    );
+    expect(
+      timeLabel('2026-10-04T18:45:00.000Z', 'start', 'Europe/Lisbon', now)
+    ).toBe('Sun 7:45 PM');
+    expect(timeLabel('2026-10-04T01:44:00.000Z', 'time', tz, now)).toBe(
+      '8:44 PM'
+    );
+  });
+
   it('signs money with a true minus', () => {
     expect(signedUsd(11.41)).toBe('+$11.41');
     expect(signedUsd(-0.39)).toBe('−$0.39');
@@ -168,6 +190,7 @@ describe('web page', () => {
     app = createApp(services, {
       appToken: TOKEN,
       publicOrigin: 'https://djperron.com',
+      now: () => new Date('2026-10-03T19:40:00.000Z'),
     });
   });
 
@@ -220,6 +243,16 @@ describe('web page', () => {
     // Pregame legs (Rams, Sunday) are "Not started", and the quota is unknown.
     expect(html).toContain('Not started');
     expect(html).toContain('Odds API quota not checked yet');
+    // Pregame legs show the start time as a localizable <time>, Chicago
+    // fallback text: Portugal v Norway 18:45Z = Sun 1:45 PM CDT; Rams 17:00Z.
+    expect(html).toContain(
+      'Starts <time datetime="2026-10-04T18:45:00.000Z" data-fmt="start">Sun 1:45 PM</time>'
+    );
+    expect(html).toContain(
+      'Starts <time datetime="2026-10-04T17:00:00.000Z" data-fmt="start">Sun 12:00 PM</time>'
+    );
+    expect(html).not.toContain('Scheduled');
+    expect(html).toMatch(/Updated <time datetime="[^"]+" data-fmt="time">/);
     // Fights show no score.
     expect(html).not.toMatch(/Roman Kopylov 0/);
   });

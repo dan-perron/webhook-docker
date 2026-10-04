@@ -46,6 +46,8 @@ export interface LiveView {
   situation: GameState['situation'];
   /** The provider's own win probability (reference only, not our model). */
   providerWinProb: GameState['providerWinProb'];
+  /** Scheduled start (ISO). */
+  startTime: string;
   fetchedAt: string;
 }
 
@@ -65,6 +67,7 @@ export function liveView(e: EventRow | undefined): LiveView | null {
     away: s.away,
     situation: s.situation,
     providerWinProb: s.providerWinProb,
+    startTime: s.startTime,
     fetchedAt: s.fetchedAt,
   };
 }

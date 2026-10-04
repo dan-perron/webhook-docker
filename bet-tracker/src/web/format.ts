@@ -17,13 +17,38 @@ export const american = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 export const pct = (p: number | null) =>
   p == null ? '–' : `${(p * 100).toFixed(1)}%`;
 
-export function clock(iso: string | null, timeZone: string): string {
-  if (!iso) return '–';
-  return new Intl.DateTimeFormat('en-US', {
+export type TimeKind = 'time' | 'start';
+
+/**
+ * Text for a <time> element. The server renders it in the app's zone as a
+ * fallback; public/app.js re-renders the same format in the device's zone.
+ * 'time' = "8:44 PM"; 'start' = "1:45 PM" today, "Sun 1:45 PM" within a
+ * week, else "Oct 12, 1:45 PM".
+ */
+export function timeLabel(
+  iso: string,
+  kind: TimeKind,
+  timeZone: string,
+  now: Date = new Date()
+): string {
+  const d = new Date(iso);
+  const time = new Intl.DateTimeFormat('en-US', {
     timeZone,
     hour: 'numeric',
     minute: '2-digit',
-  }).format(new Date(iso));
+  }).format(d);
+  if (kind === 'time') return time;
+  const day = (x: Date) =>
+    new Intl.DateTimeFormat('en-CA', { timeZone }).format(x);
+  if (day(d) === day(now)) return time;
+  const days = (d.getTime() - now.getTime()) / 86_400_000;
+  const date = new Intl.DateTimeFormat(
+    'en-US',
+    days > -1 && days < 6
+      ? { timeZone, weekday: 'short' }
+      : { timeZone, month: 'short', day: 'numeric' }
+  ).format(d);
+  return days > -1 && days < 6 ? `${date} ${time}` : `${date}, ${time}`;
 }
 
 export type Tone = 'good' | 'warn' | 'bad' | 'won' | 'lost' | 'push' | 'idle';
@@ -89,14 +114,23 @@ export function situationText(live: LiveView): string | null {
   }
 }
 
-/** Short leg line: score and game clock (the situation line adds detail). */
-export function legStatusLine(l: LegView): string {
+/** A provider note worth showing before a game starts. */
+export function pregameNote(detail: string): string | null {
+  return /delay|postpon|suspend|cancel/i.test(detail) ? detail : null;
+}
+
+/**
+ * Short leg line: score and game clock (the situation line adds detail).
+ * Null for a game that hasn't started: the page shows its start time.
+ */
+export function legStatusLine(l: LegView): string | null {
   if (l.match.status === 'needs_confirmation')
     return 'Needs event confirmation';
   if (l.match.status === 'unmatched') return 'Not matched to an event yet';
   if (!l.live) return 'Waiting for first update';
   const { live } = l;
-  if (live.status === 'pre' || !live.score) return live.detail;
+  if (live.status === 'pre') return null;
+  if (!live.score) return live.detail;
   // Baseball's situation line already carries the inning and outs.
   if (live.status === 'in' && live.situation?.kind === 'baseball')
     return live.score;
