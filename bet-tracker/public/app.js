@@ -35,6 +35,32 @@
   };
 
   localize(document);
+
+  // Reliability-chart tooltips: hover, focus, or tap a point. Delegated so
+  // they survive SSE re-renders.
+  const showTip = (target) => {
+    const pt = target && target.closest && target.closest('[data-tip]');
+    const tip = document.getElementById('tip');
+    if (!tip) return;
+    if (!pt) {
+      tip.hidden = true;
+      return;
+    }
+    tip.textContent = pt.dataset.tip;
+    tip.hidden = false;
+    const r = pt.getBoundingClientRect();
+    const left = Math.min(
+      window.innerWidth - tip.offsetWidth - 8,
+      Math.max(8, r.left + r.width / 2 - tip.offsetWidth / 2)
+    );
+    tip.style.left = `${left}px`;
+    tip.style.top = `${Math.max(8, r.top - tip.offsetHeight - 8)}px`;
+  };
+  document.addEventListener('pointerover', (e) => showTip(e.target));
+  document.addEventListener('focusin', (e) => showTip(e.target));
+  document.addEventListener('click', (e) => showTip(e.target));
+  window.addEventListener('scroll', () => showTip(null), { passive: true });
+
   if (!eventsUrl || !window.EventSource) return;
 
   const setConn = (state) => {
