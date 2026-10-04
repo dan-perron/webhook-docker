@@ -54,6 +54,7 @@ export function createApp(services: Services, opts: AppOptions) {
       // One limiter for every place APP_TOKEN can be guessed.
       limiter: auth.limiter,
       timeZone: opts.timeZone ?? 'America/Chicago',
+      now: opts.now,
     })
   );
 

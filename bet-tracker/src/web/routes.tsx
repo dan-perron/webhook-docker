@@ -26,6 +26,7 @@ export interface WebConfig {
   timeZone: string;
   /** Seconds between SSE heartbeats (keeps proxies from closing idle streams). */
   heartbeatSeconds?: number;
+  now?: () => Date;
 }
 
 const tabOf = (q: string | undefined): Tab =>
@@ -69,7 +70,12 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
   };
 
   r.get('/', requireSession, (c) => {
-    const d = loadDashboard(s, tabOf(c.req.query('tab')), cfg.timeZone);
+    const d = loadDashboard(
+      s,
+      tabOf(c.req.query('tab')),
+      cfg.timeZone,
+      cfg.now?.()
+    );
     return c.html(<Layout d={d} />);
   });
 
@@ -78,7 +84,7 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
     const res = streamSSE(c, async (stream) => {
       let closed = false;
       const render = async () => {
-        const d = loadDashboard(s, tab, cfg.timeZone);
+        const d = loadDashboard(s, tab, cfg.timeZone, cfg.now?.());
         return JSON.stringify({
           summary: (await (<Summary d={d} />).toString()) as string,
           content: (await (<Content d={d} />).toString()) as string,

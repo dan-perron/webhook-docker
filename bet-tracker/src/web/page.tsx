@@ -13,13 +13,15 @@ import {
 import { home, url } from '../util/url.js';
 import {
   american,
-  clock,
   legStatusLine,
+  pregameNote,
   pct,
   signedUsd,
   situationText,
+  timeLabel,
   tone,
   usd,
+  type TimeKind,
 } from './format.js';
 
 export type Tab = 'open' | 'settled';
@@ -32,13 +34,16 @@ export interface Dashboard {
   quota: Quota;
   /** Latest model evaluation of any leg. */
   updatedAt: string | null;
+  /** Fallback zone for times before the browser re-renders them. */
   timeZone: string;
+  now: Date;
 }
 
 export function loadDashboard(
   s: Services,
   tab: Tab,
-  timeZone: string
+  timeZone: string,
+  now: Date = new Date()
 ): Dashboard {
   const all = betViews(s.db);
   const open = all.filter((b) => b.status === 'open');
@@ -58,10 +63,20 @@ export function loadDashboard(
     quota: s.odds.quota(),
     updatedAt,
     timeZone,
+    now,
   };
 }
 
 // --- Components -----------------------------------------------------------
+
+/** A time the browser re-renders in the device's zone (public/app.js). */
+function LocalTime(props: { iso: string; kind: TimeKind; d: Dashboard }) {
+  return (
+    <time datetime={props.iso} data-fmt={props.kind}>
+      {timeLabel(props.iso, props.kind, props.d.timeZone, props.d.now)}
+    </time>
+  );
+}
 
 export function Summary({ d }: { d: Dashboard }) {
   const o = d.portfolio.open;
@@ -84,7 +99,14 @@ export function Summary({ d }: { d: Dashboard }) {
         </div>
       </div>
       <div class="meta">
-        <span>Updated {clock(d.updatedAt, d.timeZone)}</span>
+        <span>
+          Updated{' '}
+          {d.updatedAt ? (
+            <LocalTime iso={d.updatedAt} kind="time" d={d} />
+          ) : (
+            '–'
+          )}
+        </span>
         <span>
           {d.quota.remaining == null
             ? 'Odds API quota not checked yet'
@@ -108,7 +130,7 @@ function priceLine(b: BetView) {
 /** A game has begun (or ended); before that, probabilities are just the prior. */
 const legStarted = (l: LegView) => !!l.live && l.live.status !== 'pre';
 
-function LegRow({ l, showP }: { l: LegView; showP: boolean }) {
+function LegRow({ l, showP, d }: { l: LegView; showP: boolean; d: Dashboard }) {
   const t = tone(l.status, l.pWin, legStarted(l));
   const sit = l.live ? situationText(l.live) : null;
   return (
@@ -121,7 +143,17 @@ function LegRow({ l, showP }: { l: LegView; showP: boolean }) {
           {l.selection} <span class="price">{american(l.priceAmerican)}</span>
         </div>
         <div class="ev">{l.eventLabel}</div>
-        <div class="state">{legStatusLine(l)}</div>
+        <div class="state">
+          {legStatusLine(l) ??
+            (l.live ? (
+              <>
+                Starts <LocalTime iso={l.live.startTime} kind="start" d={d} />
+                {pregameNote(l.live.detail)
+                  ? ` · ${pregameNote(l.live.detail)}`
+                  : ''}
+              </>
+            ) : null)}
+        </div>
         {sit ? <div class="sit">{sit}</div> : null}
       </div>
       {showP ? (
@@ -131,7 +163,7 @@ function LegRow({ l, showP }: { l: LegView; showP: boolean }) {
   );
 }
 
-export function BetCard({ b }: { b: BetView }) {
+export function BetCard({ b, d }: { b: BetView; d: Dashboard }) {
   const t = tone(b.status, b.now.pWin, b.legs.some(legStarted));
   const placed = b.atPlacement;
   return (
@@ -174,18 +206,22 @@ export function BetCard({ b }: { b: BetView }) {
       ) : null}
       <ul class="legs">
         {b.legs.map((l) => (
-          <LegRow l={l} showP={b.legs.length > 1} />
+          <LegRow l={l} showP={b.legs.length > 1} d={d} />
         ))}
       </ul>
     </article>
   );
 }
 
-function ExposureTable({ e }: { e: Exposure }) {
+function ExposureTable({ e, d }: { e: Exposure; d: Dashboard }) {
   return (
     <div class="exposure card">
       <div class="label">{e.label}</div>
-      {e.live ? (
+      {e.live?.status === 'pre' ? (
+        <div class="sub">
+          Starts <LocalTime iso={e.live.startTime} kind="start" d={d} />
+        </div>
+      ) : e.live ? (
         <div class="sub">{`${e.live.score} · ${e.live.detail}`}</div>
       ) : null}
       <table>
@@ -248,7 +284,7 @@ export function Content({ d }: { d: Dashboard }) {
         <section>
           <h2>Exposure</h2>
           {d.portfolio.exposure.map((e) => (
-            <ExposureTable e={e} />
+            <ExposureTable e={e} d={d} />
           ))}
         </section>
       ) : null}
@@ -263,7 +299,7 @@ export function Content({ d }: { d: Dashboard }) {
       ) : null}
       <section>
         {d.bets.length ? (
-          d.bets.map((b) => <BetCard b={b} />)
+          d.bets.map((b) => <BetCard b={b} d={d} />)
         ) : (
           <p class="empty">
             {d.tab === 'open' ? 'No open bets.' : 'Nothing settled yet.'}
