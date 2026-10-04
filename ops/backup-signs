@@ -1,0 +1,174 @@
+#!/bin/bash
+#
+# Nightly backup of app state on `signs` to the NAS archive share.
+#
+#   mongo/           mongodump of the shared MongoDB (all app databases)   14 days
+#   bet-tracker/     bet-tracker SQLite (bet-tracker/bin/backup)           30 days
+#   home-assistant/  HA config + .storage, Mosquitto, ring-mqtt            14 days
+#                    (not the recorder history DB or logs)
+#   pihole/          Pi-hole settings, lists, certs (not the query log)    14 days
+#   arr/             Sonarr/Radarr's own weekly backup zips (copied once each),
+#                    SABnzbd + SMA settings                                14 days
+#   stacks/          every stack's compose files, .env secrets and config  30 days
+#                    under ~/docker-compose (no app data, node_modules, .git)
+#   system/          Apache config and djperron's crontab                  30 days
+#
+# Each part runs on its own; the script exits non-zero if any part failed.
+# Root-owned files are archived from a read-only throwaway container, so no
+# sudo is needed. /etc/letsencrypt is root-only and not included (certbot
+# re-issues certificates).
+#
+# Cron (djperron): 30 3 * * * <this script> >> /tmp/backup-signs.log 2>&1
+#
+set -uo pipefail
+
+DEST="${DEST:-/mnt/archive/backups/signs}"
+STACKS=/home/djperron/docker-compose
+STAMP="$(date +%F)"
+FAILED=()
+
+log() { echo "$(date -Is) $*"; }
+
+# run <name> <function>: run one part, record failure, keep going.
+run() {
+  local name=$1
+  shift
+  mkdir -p "$DEST/$name"
+  if "$@"; then
+    log "ok      $name"
+  else
+    log "FAILED  $name"
+    FAILED+=("$name")
+  fi
+}
+
+# prune <dir> <glob> <days> (also clears partials left by a crash)
+prune() {
+  find "$1" -maxdepth 1 -name "$2" -mtime "+$3" -delete
+  find "$1" -maxdepth 1 -name '*.partial' -mmin +720 -delete
+}
+
+# Stream to <out>.partial; publish it under the final name only after the
+# caller's checks pass (a failed or truncated run never looks complete).
+partial() { cat > "$1.partial"; }
+publish() { mv "$1.partial" "$1"; }
+discard() { rm -f "$1.partial"; return 1; }
+
+backup_mongo() {
+  local out="$DEST/mongo/mongo-$STAMP.archive.gz"
+  # Credentials are read from the container's own environment.
+  docker exec webhook-docker-mongodb-1 sh -c \
+    'mongodump --quiet --archive --gzip --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin' \
+    | partial "$out" || discard "$out" || return 1
+  # The data is small (~2 MB of documents; the 500 MB volume is mostly
+  # journal/preallocation), so a dump of ~80 KB is normal.
+  # --gzip compresses inside Mongo's archive format (the file is not a gzip
+  # stream), so check it with mongorestore's own reader.
+  [ "$(stat -c %s "$out.partial")" -gt 10000 ] || discard "$out" || return 1
+  docker exec -i webhook-docker-mongodb-1 sh -c \
+    'mongorestore --quiet --dryRun --archive --gzip --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin' \
+    < "$out.partial" || discard "$out" || return 1
+  publish "$out"
+  prune "$DEST/mongo" 'mongo-*.archive.gz' 14
+}
+
+backup_bet_tracker() {
+  DEST="$DEST/bet-tracker" "$STACKS/webhook-docker/bet-tracker/bin/backup"
+}
+
+# tar_ro <src dir> <out> <tar args...>: archive from a read-only container.
+tar_ro() {
+  local src=$1 out=$2
+  shift 2
+  docker run --rm -v "$src":/src:ro -w /src alpine:latest tar czf - "$@" | partial "$out" || discard "$out" || return 1
+  gzip -t "$out.partial" || discard "$out" || return 1
+  publish "$out"
+}
+
+backup_home_assistant() {
+  tar_ro "$STACKS/home-assistant" "$DEST/home-assistant/home-assistant-$STAMP.tar.gz" \
+    --exclude='config/home-assistant_v2.db*' --exclude='config/*.log*' \
+    --exclude=config/deps --exclude=config/tts --exclude=mosquitto/log \
+    docker-compose.yml config mosquitto mosquitto-config ring-mqtt || return 1
+  prune "$DEST/home-assistant" 'home-assistant-*.tar.gz' 14
+}
+
+backup_pihole() {
+  tar_ro "$STACKS/pihole" "$DEST/pihole/pihole-$STAMP.tar.gz" \
+    --exclude='etc-pihole/pihole-FTL.db*' --exclude=etc-pihole/gravity_old.db \
+    --exclude=etc-pihole/listsCache \
+    compose.yaml Corefile etc-pihole || return 1
+  prune "$DEST/pihole" 'pihole-*.tar.gz' 14
+}
+
+backup_arr() {
+  local app vol latest
+  for app in sonarr radarr; do
+    vol="sabnzbd_${app}-config"
+    latest=$(docker run --rm -v "$vol":/c:ro alpine:latest sh -c 'ls -1 /c/Backups/scheduled/*.zip 2>/dev/null | sort | tail -1')
+    [ -n "$latest" ] || { log "no $app scheduled backup found"; return 1; }
+    local out
+    out="$DEST/arr/$(basename "$latest")"
+    if [ ! -f "$out" ]; then
+      docker run --rm -v "$vol":/c:ro alpine:latest cat "$latest" | partial "$out" || discard "$out" || return 1
+      unzip -tq "$out.partial" >/dev/null 2>&1 || python3 -m zipfile -t "$out.partial" >/dev/null || discard "$out" || return 1
+      publish "$out"
+    fi
+    # Keep the newest 8 weekly zips per app.
+    ls -1t "$DEST/arr/${app}_backup_"*.zip 2>/dev/null | tail -n +9 | xargs -r rm -f
+  done
+  local tmp
+  tmp=$(mktemp)
+  if ! docker run --rm -v sabnzbd_sabnzbd-config:/sab:ro -v sabnzbd_sma-config:/sma:ro alpine:latest \
+    tar czf - --exclude='*.log*' --exclude=sab/logs --exclude=sab/admin sab sma > "$tmp" \
+    || ! gzip -t "$tmp"; then
+    rm -f "$tmp"
+    return 1
+  fi
+  mv "$tmp" "$DEST/arr/sabnzbd-sma-$STAMP.tar.gz" || return 1
+  prune "$DEST/arr" 'sabnzbd-sma-*.tar.gz' 14
+}
+
+backup_stacks() {
+  local out="$DEST/stacks/stacks-$STAMP.tar.gz"
+  tar czf - -C "$STACKS" \
+    --exclude=.git --exclude=node_modules --exclude=built --exclude=data \
+    --exclude=home-assistant/config --exclude=pihole/etc-pihole \
+    --exclude='home-assistant/mosquitto/data' --exclude='home-assistant/mosquitto/log' \
+    --exclude='*.log' --exclude='test/fixtures' \
+    . | partial "$out" || discard "$out" || return 1
+  # Count rather than grep -q: an early exit would SIGPIPE tar under pipefail.
+  gzip -t "$out.partial" && [ "$(tar tzf "$out.partial" | grep -c 'webhook-docker/.env$')" -gt 0 ] || discard "$out" || return 1
+  publish "$out"
+  prune "$DEST/stacks" 'stacks-*.tar.gz' 30
+}
+
+backup_system() {
+  local out="$DEST/system/system-$STAMP.tar.gz" tmp
+  tmp=$(mktemp -d)
+  crontab -l > "$tmp/crontab-djperron" 2>/dev/null || true
+  cp -rL /etc/apache2/sites-available /etc/apache2/sites-enabled "$tmp/" 2>/dev/null
+  cp /etc/apache2/apache2.conf "$tmp/" 2>/dev/null
+  tar czf - -C "$tmp" . | partial "$out"
+  local rc=$?
+  rm -rf "$tmp"
+  [ $rc -eq 0 ] && gzip -t "$out.partial" || discard "$out" || return 1
+  publish "$out"
+  prune "$DEST/system" 'system-*.tar.gz' 30
+}
+
+mountpoint -q /mnt/archive || { log "/mnt/archive is not mounted"; exit 1; }
+log "backup start -> $DEST"
+run mongo backup_mongo
+run bet-tracker backup_bet_tracker
+run home-assistant backup_home_assistant
+run pihole backup_pihole
+run arr backup_arr
+run stacks backup_stacks
+run system backup_system
+
+if [ ${#FAILED[@]} -gt 0 ]; then
+  log "backup finished with failures: ${FAILED[*]}"
+  exit 1
+fi
+log "backup finished ok"
