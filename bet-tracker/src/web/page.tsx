@@ -86,7 +86,9 @@ export function Summary({ d }: { d: Dashboard }) {
       <div class="meta">
         <span>Updated {clock(d.updatedAt, d.timeZone)}</span>
         <span>
-          Odds API {d.quota.remaining == null ? '–' : d.quota.remaining} left
+          {d.quota.remaining == null
+            ? 'Odds API quota not checked yet'
+            : `Odds API ${d.quota.remaining} left`}
         </span>
         <span class="conn" id="conn" title="Live updates">
           ●
@@ -103,8 +105,11 @@ function priceLine(b: BetView) {
   return `${b.book} · ${american(b.priceAmerican)}${boost}`;
 }
 
+/** A game has begun (or ended); before that, probabilities are just the prior. */
+const legStarted = (l: LegView) => !!l.live && l.live.status !== 'pre';
+
 function LegRow({ l, showP }: { l: LegView; showP: boolean }) {
-  const t = tone(l.status, l.pWin);
+  const t = tone(l.status, l.pWin, legStarted(l));
   const sit = l.live ? situationText(l.live) : null;
   return (
     <li class={`leg ${t.tone}`}>
@@ -127,7 +132,7 @@ function LegRow({ l, showP }: { l: LegView; showP: boolean }) {
 }
 
 export function BetCard({ b }: { b: BetView }) {
-  const t = tone(b.status, b.now.pWin);
+  const t = tone(b.status, b.now.pWin, b.legs.some(legStarted));
   const placed = b.atPlacement;
   return (
     <article class={`bet ${t.tone}`}>

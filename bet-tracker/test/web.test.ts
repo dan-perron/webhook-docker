@@ -9,7 +9,13 @@ import { OddsApiClient } from '../src/odds/oddsApi.js';
 import { loadSeed } from '../src/seed/load.js';
 import { Tracker } from '../src/tracker/tracker.js';
 import type { LiveView } from '../src/tracker/views.js';
-import { signedUsd, situationText, tone } from '../src/web/format.js';
+import {
+  legStatusLine,
+  signedUsd,
+  situationText,
+  tone,
+} from '../src/web/format.js';
+import type { LegView } from '../src/tracker/views.js';
 import { fakeFetcher, SEED_ROUTES } from './helpers/fixtures.js';
 import { PARAMS } from './helpers/states.js';
 
@@ -80,6 +86,50 @@ describe('format', () => {
       "67'"
     );
     expect(situationText({ ...live(null), status: 'final' })).toBeNull();
+  });
+
+  it('a game that has not started is "Not started", not "in trouble"', () => {
+    expect(tone('open', 0.2, false)).toMatchObject({
+      tone: 'idle',
+      icon: '🕒',
+    });
+    expect(tone('open', 0.2, true)).toMatchObject({ tone: 'bad' });
+    expect(tone('won', 1, false)).toMatchObject({ tone: 'won' });
+  });
+
+  it('status line: no duplicate inning, no fake fight score', () => {
+    const leg = (l: Partial<LiveView>) =>
+      ({
+        match: { status: 'matched' },
+        live: { ...live(null), ...l },
+      }) as unknown as LegView;
+    expect(
+      legStatusLine(
+        leg({
+          score: 'SD 2 @ MIL 2',
+          detail: 'Bot 3rd, 2 out',
+          situation: {
+            kind: 'baseball',
+            inning: 3,
+            half: 'bottom',
+            outs: 2,
+            first: true,
+            second: true,
+            third: true,
+            scheduledInnings: 9,
+            extraInningRunner: false,
+          },
+        })
+      )
+    ).toBe('SD 2 @ MIL 2');
+    expect(
+      legStatusLine(leg({ status: 'final', score: '', detail: 'Final' }))
+    ).toBe('Final');
+    expect(
+      legStatusLine(
+        leg({ status: 'in', score: 'UCF 17 @ HOU 27', detail: '1:08 - 4th' })
+      )
+    ).toBe('UCF 17 @ HOU 27 · 1:08 - 4th');
   });
 
   it('signs money with a true minus', () => {
@@ -167,6 +217,11 @@ describe('web page', () => {
     expect(html).toContain('+128 → +160 (25% profit boost)');
     expect(html).toContain('$10.00 → $26.00');
     expect(html).toContain('Touchdown Tally token used');
+    // Pregame legs (Rams, Sunday) are "Not started", and the quota is unknown.
+    expect(html).toContain('Not started');
+    expect(html).toContain('Odds API quota not checked yet');
+    // Fights show no score.
+    expect(html).not.toMatch(/Roman Kopylov 0/);
   });
 
   it('renders the settled tab', async () => {

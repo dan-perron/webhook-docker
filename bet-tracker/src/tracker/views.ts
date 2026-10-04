@@ -56,7 +56,11 @@ export function liveView(e: EventRow | undefined): LiveView | null {
   return {
     status: s.status,
     detail: s.cancelled ? 'Cancelled' : s.detail,
-    score: `${tag(s.away)} ${s.away.score} @ ${tag(s.home)} ${s.home.score}`,
+    // Fights have no score; the leg's label already names both fighters.
+    score:
+      s.sport === 'mma'
+        ? ''
+        : `${tag(s.away)} ${s.away.score} @ ${tag(s.home)} ${s.home.score}`,
     home: s.home,
     away: s.away,
     situation: s.situation,

@@ -29,12 +29,14 @@ export function clock(iso: string | null, timeZone: string): string {
 export type Tone = 'good' | 'warn' | 'bad' | 'won' | 'lost' | 'push' | 'idle';
 
 /**
- * Status for a leg or bet: settled results first, then the live
- * probability bands (on track >= 0.7, live 0.3-0.7, in trouble < 0.3).
+ * Status for a leg or bet: settled results first, then "not started" for
+ * games that haven't begun (a pregame longshot isn't "in trouble"), then the
+ * live probability bands (on track >= 0.7, live 0.3-0.7, in trouble < 0.3).
  */
 export function tone(
   status: BetStatus,
-  p: number | null
+  p: number | null,
+  started = true
 ): { tone: Tone; icon: string; label: string } {
   switch (status) {
     case 'won':
@@ -47,6 +49,7 @@ export function tone(
       return { tone: 'push', icon: '⊘', label: 'Void' };
   }
   if (p == null) return { tone: 'idle', icon: '…', label: 'Pending' };
+  if (!started) return { tone: 'idle', icon: '🕒', label: 'Not started' };
   if (p >= 0.7) return { tone: 'good', icon: '✅', label: 'On track' };
   if (p >= 0.3) return { tone: 'warn', icon: '⚠️', label: 'Live' };
   return { tone: 'bad', icon: '❌', label: 'In trouble' };
@@ -86,13 +89,16 @@ export function situationText(live: LiveView): string | null {
   }
 }
 
-/** Short leg line: what's backed and where the game is. */
+/** Short leg line: score and game clock (the situation line adds detail). */
 export function legStatusLine(l: LegView): string {
   if (l.match.status === 'needs_confirmation')
     return 'Needs event confirmation';
   if (l.match.status === 'unmatched') return 'Not matched to an event yet';
   if (!l.live) return 'Waiting for first update';
-  return l.live.status === 'pre'
-    ? l.live.detail
-    : `${l.live.score} · ${l.live.detail}`;
+  const { live } = l;
+  if (live.status === 'pre' || !live.score) return live.detail;
+  // Baseball's situation line already carries the inning and outs.
+  if (live.status === 'in' && live.situation?.kind === 'baseball')
+    return live.score;
+  return `${live.score} · ${live.detail}`;
 }
