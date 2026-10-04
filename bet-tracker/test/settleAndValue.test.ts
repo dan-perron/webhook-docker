@@ -276,3 +276,102 @@ describe('betStatus', () => {
     expect(betStatus(statuses.map((status) => ({ status })))).toBe(expected);
   });
 });
+
+describe('valueBet: same-game groups', () => {
+  const sgp = {
+    stakeCents: 1000,
+    priceAmerican: 1153,
+    boostPct: null,
+    boostedPriceAmerican: null,
+    statedPayoutCents: 15984,
+  };
+  const sg = (over: Partial<LegValueInput>) => leg({ eventId: 'g', ...over });
+
+  it('without a joint model: falls back to the book price (unboosted)', () => {
+    const v = valueBet(sgp, [sg({}), sg({}), leg({ eventId: 'other' })]);
+    expect(v.pWinSource).toBe('book_implied');
+    // +1153 -> 1 / 12.53
+    expect(v.pWin).toBeCloseTo(1 / 12.53, 10);
+    expect(v.valueCents).toBeCloseTo(15984 / 12.53, 6);
+  });
+
+  it('with a joint model: the group is one unit, other legs multiply', () => {
+    const joint = new Map([['g', [{ p: 0.07, pushed: [] }]]]);
+    const v = valueBet(
+      sgp,
+      [
+        sg({}),
+        sg({}),
+        leg({ eventId: 'other', outcome: { win: 0.5, push: 0 } }),
+      ],
+      joint
+    );
+    expect(v.pWinSource).toBe('model');
+    // 0.07 x 0.5
+    expect(v.pWin).toBeCloseTo(0.035, 12);
+    expect(v.valueCents).toBeCloseTo(0.035 * 15984, 6);
+  });
+
+  it('joint push outcomes recompute the payout without the pushed leg', () => {
+    const bet = {
+      stakeCents: 1000,
+      priceAmerican: 300,
+      boostPct: null,
+      boostedPriceAmerican: null,
+      statedPayoutCents: null,
+    };
+    // Two legs on g at +100 each (product 4.0 = +300, factor 1).
+    const legs = [sg({ priceAmerican: 100 }), sg({ priceAmerican: 100 })];
+    const joint = new Map([
+      [
+        'g',
+        [
+          { p: 0.2, pushed: [] },
+          { p: 0.1, pushed: [1] },
+          { p: 0.05, pushed: [0, 1] },
+        ],
+      ],
+    ]);
+    const v = valueBet(bet, legs, joint);
+    // 0.2 x $40 + 0.1 x $20 (one leg left) + 0.05 x $10 refund
+    expect(v.valueCents).toBeCloseTo(0.2 * 4000 + 0.1 * 2000 + 0.05 * 1000, 6);
+    expect(v.pWin).toBeCloseTo(0.3, 12);
+    expect(v.pPush).toBeCloseTo(0.05, 12);
+  });
+
+  it('a group down to one open leg needs no joint model', () => {
+    const v = valueBet(sgp, [
+      sg({ status: 'won' }),
+      sg({ outcome: { win: 0.4, push: 0 } }),
+    ]);
+    expect(v.pWinSource).toBe('model');
+    expect(v.pWin).toBeCloseTo(0.4, 12);
+  });
+
+  it('two independent push-able legs: exact over all four paths', () => {
+    const bet = {
+      stakeCents: 1000,
+      priceAmerican: 300,
+      boostPct: null,
+      boostedPriceAmerican: null,
+      statedPayoutCents: null,
+    };
+    const legs = [
+      leg({
+        priceAmerican: 100,
+        outcome: { win: 0.4, push: 0.1 },
+        eventId: 'a',
+      }),
+      leg({
+        priceAmerican: 100,
+        outcome: { win: 0.5, push: 0.2 },
+        eventId: 'b',
+      }),
+    ];
+    // ww 0.2 x $40, wp 0.08 x $20, pw 0.05 x $20, pp 0.02 x $10 refund
+    expect(valueBet(bet, legs).valueCents).toBeCloseTo(
+      0.2 * 4000 + 0.08 * 2000 + 0.05 * 2000 + 0.02 * 1000,
+      6
+    );
+  });
+});

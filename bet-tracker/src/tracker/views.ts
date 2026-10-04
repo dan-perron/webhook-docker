@@ -135,6 +135,8 @@ function legView(l: LegRow, e: EventRow | undefined, full: boolean): LegView {
 }
 
 export interface ValueView {
+  /** 'model', or 'book_implied' (same-game legs without a joint model). */
+  source: 'model' | 'book_implied';
   pWin: number;
   pPush: number;
   /** Expected return (dollars): P(win) x payout + push refunds. */
@@ -167,7 +169,7 @@ export interface BetView {
   notes: string | null;
   now: ValueView;
   atPlacement: ValueView | null;
-  /** Events with more than one leg in this bet: correlated, not modeled. */
+  /** Events with more than one leg in this bet (correlated legs). */
   sameGameEventIds: string[];
   legs: LegView[];
 }
@@ -177,8 +179,10 @@ function valueView(v: {
   pPush: number;
   valueCents: number;
   evCents: number;
+  pWinSource?: ValueView['source'];
 }): ValueView {
   return {
+    source: v.pWinSource ?? 'model',
     pWin: prob(v.pWin)!,
     pPush: prob(v.pPush)!,
     value: dollars(v.valueCents),
