@@ -1,5 +1,6 @@
 import { serveStatic } from '@hono/node-server/serve-static';
-import { Hono, type MiddlewareHandler } from 'hono';
+import { Hono, type Context, type MiddlewareHandler } from 'hono';
+import { getCookie } from 'hono/cookie';
 import { streamSSE } from 'hono/streaming';
 import { clientKey } from '../auth/oauth.js';
 import type { FailureLimiter } from '../auth/rateLimit.js';
@@ -13,6 +14,7 @@ import {
   loadDashboard,
   type Tab,
 } from './page.js';
+import { validTimeZone } from './daily.js';
 import {
   hasSession,
   startSession,
@@ -29,11 +31,16 @@ export interface WebConfig {
   now?: () => Date;
 }
 
+/** The viewer's zone, from the cookie public/app.js sets (validated). */
+const TZ_COOKIE = 'tz';
+
 const tabOf = (q: string | undefined): Tab =>
   q === 'settled' ? 'settled' : 'open';
 
 export function webRoutes(s: Services, cfg: WebConfig): Hono {
   const r = new Hono();
+  const viewerZone = (c: Context) =>
+    validTimeZone(getCookie(c, TZ_COOKIE), cfg.timeZone);
 
   // CSS/JS from ./public at <base>/static/*.
   r.use(
@@ -73,7 +80,7 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
     const d = loadDashboard(
       s,
       tabOf(c.req.query('tab')),
-      cfg.timeZone,
+      viewerZone(c),
       cfg.now?.()
     );
     return c.html(<Layout d={d} />);
@@ -84,7 +91,7 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
     const res = streamSSE(c, async (stream) => {
       let closed = false;
       const render = async () => {
-        const d = loadDashboard(s, tab, cfg.timeZone, cfg.now?.());
+        const d = loadDashboard(s, tab, viewerZone(c), cfg.now?.());
         return JSON.stringify({
           summary: (await (<Summary d={d} />).toString()) as string,
           content: (await (<Content d={d} />).toString()) as string,

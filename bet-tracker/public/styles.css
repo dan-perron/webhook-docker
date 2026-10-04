@@ -447,3 +447,43 @@ h2 {
   border-radius: 8px;
   pointer-events: none;
 }
+
+/* Today's results line under the totals; settled days. */
+.today {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+.today .muted {
+  font-weight: 400;
+}
+.day-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.day-head h2 {
+  margin: 0;
+}
+.day-head .net {
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.day-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 2px 0 8px;
+  font-variant-numeric: tabular-nums;
+}
+.bet .pwin .big.pos {
+  color: var(--good);
+}
+.bet .pwin .big.neg {
+  color: var(--bad);
+}

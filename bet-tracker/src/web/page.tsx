@@ -16,6 +16,7 @@ import {
 } from '../tracker/views.js';
 import { home, url } from '../util/url.js';
 import { Calibration } from './calibration.js';
+import { record, settledByDay, type DayResults } from './daily.js';
 import {
   american,
   legStatusLine,
@@ -44,6 +45,10 @@ export interface Dashboard {
   now: Date;
   /** Settled tab only. */
   calibration: SportCalibration[];
+  /** Settled bets by settle day (viewer's zone), newest first. */
+  days: DayResults[];
+  /** Bets settled today, if any. */
+  today: DayResults | null;
 }
 
 export function loadDashboard(
@@ -57,6 +62,7 @@ export function loadDashboard(
   const settled = all
     .filter((b) => b.status !== 'open')
     .sort((a, b) => (b.settledAt ?? '').localeCompare(a.settledAt ?? ''));
+  const days = settledByDay(settled, timeZone, now);
   const updatedAt =
     s.db
       .select({ t: max(legs.evaluatedAt) })
@@ -72,6 +78,8 @@ export function loadDashboard(
     timeZone,
     now,
     calibration: tab === 'settled' ? calibrationReport(s.db) : [],
+    days,
+    today: days.find((g) => g.label === 'Today') ?? null,
   };
 }
 
@@ -106,6 +114,19 @@ export function Summary({ d }: { d: Dashboard }) {
           </span>
         </div>
       </div>
+      <a class="today" href={`${home}?tab=settled`}>
+        {d.today ? (
+          <>
+            Today{' '}
+            <span class={d.today.net >= 0 ? 'pos' : 'neg'}>
+              {signedUsd(d.today.net)}
+            </span>{' '}
+            · {record(d.today)} · {d.today.bets.length} settled
+          </>
+        ) : (
+          <span class="muted">Today · no bets settled yet</span>
+        )}
+      </a>
       <div class="meta">
         <span>
           Updated{' '}
@@ -182,25 +203,50 @@ export function BetCard({ b, d }: { b: BetView; d: Dashboard }) {
           <div class="label">{b.label}</div>
           <div class="sub">{priceLine(b)}</div>
         </div>
-        <div class="pwin">
-          <div class="big">
-            {b.status === 'open' ? pct(b.now.pWin) : t.label}
+        {b.status === 'open' ? (
+          <div class="pwin">
+            <div class="big">{pct(b.now.pWin)}</div>
+            <div class="sub">P(win)</div>
           </div>
-          <div class="sub">{b.status === 'open' ? 'P(win)' : ''}</div>
-        </div>
+        ) : (
+          <div class="pwin">
+            <div
+              class={`big ${b.now.ev > 0 ? 'pos' : b.now.ev < 0 ? 'neg' : ''}`}
+            >
+              {signedUsd(b.now.ev)}
+            </div>
+            <div class="sub">{t.label}</div>
+          </div>
+        )}
       </header>
-      <div class="money">
-        <span>
-          {usd(b.stake)} → {usd(b.payout)}
-        </span>
-        <span>value {usd(b.now.value)}</span>
-        <span class={b.now.ev >= 0 ? 'pos' : 'neg'}>
-          EV {signedUsd(b.now.ev)}
-        </span>
-        {placed ? (
-          <span class="muted">at placement {signedUsd(placed.ev)}</span>
-        ) : null}
-      </div>
+      {b.status === 'open' ? (
+        <div class="money">
+          <span>
+            {usd(b.stake)} → {usd(b.payout)}
+          </span>
+          <span>value {usd(b.now.value)}</span>
+          <span class={b.now.ev >= 0 ? 'pos' : 'neg'}>
+            EV {signedUsd(b.now.ev)}
+          </span>
+          {placed ? (
+            <span class="muted">at placement {signedUsd(placed.ev)}</span>
+          ) : null}
+        </div>
+      ) : (
+        <div class="money">
+          <span>
+            staked {usd(b.stake)} · returned {usd(b.now.value)}
+          </span>
+          {placed ? (
+            <span class="muted">EV at placement {signedUsd(placed.ev)}</span>
+          ) : null}
+          {b.settledAt ? (
+            <span class="muted">
+              settled <LocalTime iso={b.settledAt} kind="start" d={d} />
+            </span>
+          ) : null}
+        </div>
+      )}
       {b.tokenInfo ? <div class="note">🎟 {b.tokenInfo}</div> : null}
       {b.now.source === 'book_implied' ? (
         <div class="note">
@@ -276,6 +322,26 @@ function ExposureTable({ e, d }: { e: Exposure; d: Dashboard }) {
   );
 }
 
+/** One settle day: its record and money, then its bets. */
+function DaySection({ g, d }: { g: DayResults; d: Dashboard }) {
+  return (
+    <section class="day">
+      <div class="day-head">
+        <h2>{g.label}</h2>
+        <span class={`net ${g.net > 0 ? 'pos' : g.net < 0 ? 'neg' : ''}`}>
+          {signedUsd(g.net)}
+        </span>
+      </div>
+      <div class="day-sub">
+        {record(g)} · staked {usd(g.staked)} · returned {usd(g.returned)}
+      </div>
+      {g.bets.map((b) => (
+        <BetCard b={b} d={d} />
+      ))}
+    </section>
+  );
+}
+
 export function Content({ d }: { d: Dashboard }) {
   const s = d.portfolio.settled;
   return (
@@ -305,16 +371,24 @@ export function Content({ d }: { d: Dashboard }) {
           </span>
         </div>
       ) : null}
-      {d.tab === 'settled' ? <Calibration report={d.calibration} /> : null}
-      <section>
-        {d.bets.length ? (
-          d.bets.map((b) => <BetCard b={b} d={d} />)
-        ) : (
-          <p class="empty">
-            {d.tab === 'open' ? 'No open bets.' : 'Nothing settled yet.'}
-          </p>
-        )}
-      </section>
+      {d.tab === 'open' ? (
+        <section>
+          {d.bets.length ? (
+            d.bets.map((b) => <BetCard b={b} d={d} />)
+          ) : (
+            <p class="empty">No open bets.</p>
+          )}
+        </section>
+      ) : (
+        <>
+          {d.days.length ? (
+            d.days.map((g) => <DaySection g={g} d={d} />)
+          ) : (
+            <p class="empty">Nothing settled yet.</p>
+          )}
+          <Calibration report={d.calibration} />
+        </>
+      )}
     </div>
   );
 }
@@ -350,6 +424,8 @@ export function Layout({
           src={url('/static/app.js')}
           defer
           data-events={url(`/events?tab=${d.tab}`)}
+          data-base={home}
+          data-tz={d.timeZone}
         />
       </head>
       <body>

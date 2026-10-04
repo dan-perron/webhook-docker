@@ -6,6 +6,17 @@
   const script = document.currentScript;
   const eventsUrl = script && script.dataset.events;
 
+  // Tell the server our time zone (it groups settled bets by *our* day).
+  // Set before the SSE stream opens, so its first update uses it.
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (tz && script && tz !== script.dataset.tz) {
+      document.cookie = `tz=${encodeURIComponent(tz)}; path=${script.dataset.base || '/'}; max-age=31536000; samesite=lax`;
+    }
+  } catch {
+    /* keep the server's default zone */
+  }
+
   const timeFmt = new Intl.DateTimeFormat(undefined, {
     hour: 'numeric',
     minute: '2-digit',
