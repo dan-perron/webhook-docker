@@ -1,0 +1,292 @@
+{
+ "events": [
+  {
+   "id": "401918297",
+   "date": "2026-10-07T23:30Z",
+   "name": "New York Liberty at Atlanta Dream",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0.0",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Wed, October 7th at 7:30 PM EDT",
+     "shortDetail": "10/7 - 7:30 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2026,
+    "type": 3,
+    "slug": "post-season"
+   },
+   "competitions": [
+    {
+     "id": "401918297",
+     "date": "2026-10-07T23:30Z",
+     "startDate": "2026-10-07T23:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0.0",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Wed, October 7th at 7:30 PM EDT",
+       "shortDetail": "10/7 - 7:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "20",
+        "location": "Atlanta",
+        "name": "Dream",
+        "abbreviation": "ATL",
+        "displayName": "Atlanta Dream",
+        "shortDisplayName": "Dream"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "9",
+        "location": "New York",
+        "name": "Liberty",
+        "abbreviation": "NY",
+        "displayName": "New York Liberty",
+        "shortDisplayName": "Liberty"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -2.5,
+       "overUnder": 170.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-180"
+         },
+         "close": {
+          "odds": "-142"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+150"
+         },
+         "close": {
+          "odds": "+120"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "-4.5",
+          "odds": "-110"
+         },
+         "close": {
+          "line": "-2.5",
+          "odds": "-112"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "+4.5",
+          "odds": "-110"
+         },
+         "close": {
+          "line": "+2.5",
+          "odds": "-108"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o171.5",
+          "odds": "-110"
+         },
+         "close": {
+          "line": "o170.5",
+          "odds": "-110"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u171.5",
+          "odds": "-110"
+         },
+         "close": {
+          "line": "u170.5",
+          "odds": "-110"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401918298",
+   "date": "2026-10-08T01:30Z",
+   "name": "Las Vegas Aces at Golden State Valkyries",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0.0",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Wed, October 7th at 9:30 PM EDT",
+     "shortDetail": "10/7 - 9:30 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2026,
+    "type": 3,
+    "slug": "post-season"
+   },
+   "competitions": [
+    {
+     "id": "401918298",
+     "date": "2026-10-08T01:30Z",
+     "startDate": "2026-10-08T01:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0.0",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Wed, October 7th at 9:30 PM EDT",
+       "shortDetail": "10/7 - 9:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "129689",
+        "location": "Golden State",
+        "name": "Valkyries",
+        "abbreviation": "GS",
+        "displayName": "Golden State Valkyries",
+        "shortDisplayName": "Valkyries"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "17",
+        "location": "Las Vegas",
+        "name": "Aces",
+        "abbreviation": "LV",
+        "displayName": "Las Vegas Aces",
+        "shortDisplayName": "Aces"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 157.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-122"
+         },
+         "close": {
+          "odds": "-120"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+102"
+         },
+         "close": {
+          "odds": "+100"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "-1.5",
+          "odds": "-110"
+         },
+         "close": {
+          "line": "-1.5",
+          "odds": "-110"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "+1.5",
+          "odds": "-110"
+         },
+         "close": {
+          "line": "+1.5",
+          "odds": "-110"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o158.5",
+          "odds": "-110"
+         },
+         "close": {
+          "line": "o157.5",
+          "odds": "-105"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u158.5",
+          "odds": "-110"
+         },
+         "close": {
+          "line": "u157.5",
+          "odds": "-115"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

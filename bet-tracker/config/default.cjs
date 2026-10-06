@@ -73,7 +73,8 @@ const config = {
         sigmaRange: [11, 20],
       },
     },
-    mlb: { simulations: 10000 },
+    // WNBA final margin and total (points); σ fitted per game within the range.
+    wnba: { marginSigma: 11.5, totalSigma: 15, sigmaRange: [8, 16] },
   },
 };
 module.exports = config;

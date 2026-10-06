@@ -5,7 +5,6 @@ import { openDb } from '../src/db/client.js';
 import { createProviders } from '../src/gamestate/registry.js';
 import { matchLegs } from '../src/matching/service.js';
 import { createMcpServer, type Services } from '../src/mcp/server.js';
-import { seededRng } from '../src/models/stats.js';
 import { OddsApiClient, type OddsFetch } from '../src/odds/oddsApi.js';
 import { loadSeed } from '../src/seed/load.js';
 import { Tracker } from '../src/tracker/tracker.js';
@@ -25,6 +24,8 @@ const ROUTES = {
   'baseball/mlb/scoreboard?dates=20261003': 'espn/mlb-20261003-top8.json',
   'statsapi.mlb.com/api/v1/schedule?sportId=1&gamePks=':
     'mlb/schedule-20261003.json',
+  'hockey/nhl/scoreboard?dates=20261006': 'espn/nhl-20261006-pre.json',
+  'basketball/wnba/scoreboard?dates=20261007': 'espn/wnba-20261007-pre.json',
   ...SEED_ROUTES,
 };
 
@@ -58,10 +59,9 @@ beforeEach(async () => {
     db,
     providers,
     tracker: new Tracker(db, providers, {
-      params: { ...PARAMS, mlb: { simulations: 2000 } },
+      params: PARAMS,
       polling: { liveSeconds: 30, scheduledSeconds: 600 },
       now,
-      rng: seededRng(5),
     }),
     odds: new OddsApiClient(db, {
       apiKey: 'k',
@@ -144,10 +144,10 @@ describe('MCP tools', () => {
     });
     expect(leg.prior).toMatchObject({
       source: 'espn_lines',
-      expectedTotal: 6.5,
+      totalLine: { line: 6.5 },
     });
-    expect(leg.model).toBe('mlb_monte_carlo');
-    expect(leg.modelInputs).toMatchObject({ simulations: 2000 });
+    expect(leg.model).toBe('mlb_exact');
+    expect(leg.modelInputs).toHaveProperty('dispersion');
     expect((await call('get_bet', { id: 999 })).isError).toBe(true);
   });
 
@@ -275,5 +275,120 @@ describe('MCP tools', () => {
     });
     expect((await call('remove_bet', { id })).data).toEqual({ removed: id });
     expect((await call('get_bet', { id })).isError).toBe(true);
+  });
+});
+
+describe("Dan's NHL and WNBA parlays (FanDuel, 10/6-10/7)", () => {
+  const nhl = (
+    a: string,
+    b: string,
+    team: string,
+    market: 'moneyline' | 'spread',
+    price: number,
+    line?: number
+  ) => ({
+    sport: 'nhl',
+    eventDate: '2026-10-06',
+    participants: [a, b],
+    market,
+    selection: { kind: 'team', team },
+    ...(line != null ? { line } : {}),
+    price,
+  });
+
+  it('3-leg NHL parlay: matched, main lines at the market, P(win) = product', async () => {
+    const { data } = await call<{ bet: BetView; matching: unknown }>(
+      'add_bet',
+      {
+        book: 'FanDuel',
+        externalBetId: 'us-il:01m48tzbdsf0hap91tnjj4kvts',
+        stake: 10,
+        price: 1611,
+        boostPct: 30,
+        boostKind: 'profit_boost',
+        boostedPrice: 2094,
+        statedPayout: 219.45,
+        legs: [
+          nhl(
+            'Buffalo Sabres',
+            'Minnesota Wild',
+            'Buffalo Sabres',
+            'moneyline',
+            -104
+          ),
+          nhl(
+            'Carolina Hurricanes',
+            'Montreal Canadiens',
+            'Carolina Hurricanes',
+            'spread',
+            205,
+            -1.5
+          ),
+          nhl(
+            'New Jersey Devils',
+            'Utah Mammoth',
+            'New Jersey Devils',
+            'spread',
+            190,
+            -1.5
+          ),
+        ],
+      }
+    );
+    expect(data.matching).toBe('all legs matched');
+    const [sabres, canes, devils] = data.bet.legs;
+    expect(sabres!.side).toBe('home');
+    expect(canes!.side).toBe('away');
+    expect(devils!.side).toBe('home');
+    // Hurricanes -1.5 is DraftKings' main puck line (+205 / MTL +1.5 -250):
+    // the pregame model reproduces its fair price without an anchor.
+    expect(canes!.pWin!).toBeCloseTo(0.3146, 2);
+    expect(data.bet.payout).toBe(219.45);
+    const product = data.bet.legs.reduce((a, l) => a * l.pWin!, 1);
+    expect(data.bet.now.pWin).toBeCloseTo(product, 3);
+    expect(data.bet.now.source).toBe('model');
+  });
+
+  it('2-leg WNBA parlay across two games: P(win) = product', async () => {
+    const { data } = await call<{ bet: BetView; matching: unknown }>(
+      'add_bet',
+      {
+        book: 'FanDuel',
+        externalBetId: 'us-il:01m48v0ajhey58cty9vw2mpxpc',
+        stake: 10,
+        price: 274,
+        boostPct: 25,
+        boostKind: 'profit_boost',
+        boostedPrice: 342,
+        statedPayout: 44.29,
+        legs: [
+          {
+            sport: 'wnba',
+            eventDate: '2026-10-07',
+            participants: ['New York Liberty', 'Atlanta Dream'],
+            market: 'total',
+            selection: { kind: 'over' },
+            line: 170.5,
+            price: -105,
+          },
+          {
+            sport: 'wnba',
+            eventDate: '2026-10-07',
+            participants: ['Golden State Valkyries', 'Las Vegas Aces'],
+            market: 'spread',
+            selection: { kind: 'team', team: 'Golden State Valkyries' },
+            line: -1.5,
+            price: -108,
+          },
+        ],
+      }
+    );
+    expect(data.matching).toBe('all legs matched');
+    const [over, gsv] = data.bet.legs;
+    // DraftKings: o170.5 -110/-110 -> 50%; GSV -1.5 -110/-110 -> 50%.
+    expect(over!.pWin!).toBeCloseTo(0.5, 3);
+    expect(gsv!.side).toBe('home');
+    expect(gsv!.pWin!).toBeCloseTo(0.5, 3);
+    expect(data.bet.now.pWin).toBeCloseTo(over!.pWin! * gsv!.pWin!, 3);
   });
 });

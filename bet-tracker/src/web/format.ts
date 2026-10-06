@@ -111,6 +111,9 @@ export function situationText(live: LiveView): string | null {
     }
     case 'soccer':
       return `${s.minute}'`;
+    default:
+      // Hockey/basketball: the period and clock are already in the detail.
+      return null;
   }
 }
 

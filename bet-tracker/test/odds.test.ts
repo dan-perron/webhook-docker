@@ -93,13 +93,19 @@ describe('summarizeEvent', () => {
   });
 
   it('reduces to vig-free prior lines', () => {
-    // consensus PHI 0.373716 -> decimal 2.675831 -> +168; LAR -> -168
+    // consensus PHI 0.373716 -> decimal 2.675831 -> +168; LAR -> -168.
+    // Spread: FD -110/-110 -> 0.5, DK PHI -115/LAR -105 -> 0.510834; mean
+    // 0.505417 -> -102 / +102. Total 42.5 (FanDuel only, -110/-110) -> +100 each.
     expect(linesFromOdds(e)).toEqual({
       homeMoneyline: 168,
       awayMoneyline: -168,
       drawMoneyline: null,
       spreadHome: 3.5,
+      spreadHomePrice: -102,
+      spreadAwayPrice: 102,
       total: 42.5,
+      overPrice: 100,
+      underPrice: 100,
     });
   });
 });

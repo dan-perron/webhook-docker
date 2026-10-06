@@ -25,16 +25,20 @@ import {
   type OddsMarket,
 } from '../odds/oddsApi.js';
 import type { JointOutcome } from '../domain/value.js';
-import { evaluateEvent } from '../models/evaluate.js';
-import { footballJoint } from '../models/football.js';
 import {
+  anchorShift,
+  evaluateEvent,
+  jointOutcomes,
+} from '../models/evaluate.js';
+import { ensureFit } from '../models/fit.js';
+import {
+  marketFor,
   resolvePrior,
   type EnteredLeg,
   type LinesInput,
   type ModelParams,
   type Prior,
 } from '../models/prior.js';
-import { seededRng, type Rng } from '../models/stats.js';
 import type { ModelSelection } from '../models/types.js';
 import { devigSingle } from '../odds/math.js';
 
@@ -46,7 +50,6 @@ export interface TrackerOptions {
   /** Minutes between retries for legs that matched no event. */
   rematchEveryMinutes?: number;
   now?: () => Date;
-  rng?: Rng;
   /**
    * Optional one-time Odds API snapshot per event shortly before it starts,
    * used as the prior only when ESPN publishes no lines (e.g. UFC).
@@ -109,7 +112,6 @@ const selectionOf = (l: LegRow): ModelSelection => ({
  */
 export class Tracker extends EventEmitter {
   private readonly now: () => Date;
-  private readonly rng: Rng;
   private lastRematch = 0;
   private readonly matchAttempted = new Set<number>();
   private running = false;
@@ -121,7 +123,6 @@ export class Tracker extends EventEmitter {
   ) {
     super();
     this.now = opts.now ?? (() => new Date());
-    this.rng = opts.rng ?? seededRng(Date.now() & 0xffffffff);
   }
 
   /** One polling pass. Safe to call often; does nothing until work is due. */
@@ -395,9 +396,20 @@ export class Tracker extends EventEmitter {
   }
 
   /** The prior for an event: refreshed until it starts, then frozen on the legs. */
-  private priorFor(e: EventRow, eventLegs: LegRow[]): Prior {
+  /** The event's prior, fitted: refreshed until the event starts, then frozen. */
+  private priorFor(e: EventRow, eventLegs: LegRow[], state: GameState): Prior {
+    const postseason =
+      !!state.postseason ||
+      (state.situation?.kind === 'hockey' && state.situation.postseason);
     const stored = eventLegs.find((l) => l.priorJson)?.priorJson;
-    if (e.status !== 'pre' && stored) return JSON.parse(stored) as Prior;
+    if (e.status !== 'pre' && stored) {
+      return ensureFit(
+        e.sport,
+        JSON.parse(stored) as Prior,
+        this.opts.params,
+        postseason
+      );
+    }
     const placedLive = new Set(
       this.db
         .select({ id: bets.id })
@@ -425,7 +437,7 @@ export class Tracker extends EventEmitter {
       }));
     const parse = <T>(json: string | null) =>
       json ? (JSON.parse(json) as T) : null;
-    return resolvePrior(
+    const prior = resolvePrior(
       e.sport,
       {
         espnLines: parse<PregameLines>(e.providerLinesJson),
@@ -434,6 +446,38 @@ export class Tracker extends EventEmitter {
       },
       this.opts.params
     );
+    return ensureFit(e.sport, prior, this.opts.params, postseason);
+  }
+
+  /**
+   * Per open leg, the log-odds shift that makes the pregame model match the
+   * market's fair price for that exact line. Recomputed while pregame,
+   * frozen after (like the prior); legs without a market price get none.
+   */
+  private anchors(e: EventRow, prior: Prior, open: LegRow[]) {
+    const refresh =
+      e.status === 'pre' || open.some((l) => l.anchorSource == null);
+    if (!refresh) {
+      return open.map((l) => ({
+        shift: l.anchorLogit,
+        source: l.anchorSource,
+      }));
+    }
+    const sels = open.map(selectionOf);
+    const pre = evaluateEvent(e.sport, preState(e), prior, sels, {
+      params: this.opts.params,
+    });
+    return open.map((l, i) => {
+      if (e.status !== 'pre' && l.anchorSource != null) {
+        return { shift: l.anchorLogit, source: l.anchorSource };
+      }
+      const m = marketFor(prior, sels[i]!);
+      const shift = m ? anchorShift(pre[i]!.outcome, m.p) : null;
+      return {
+        shift,
+        source: m ? `${m.source}: ${(m.p * 100).toFixed(1)}%` : 'none',
+      };
+    });
   }
 
   /**
@@ -475,10 +519,20 @@ export class Tracker extends EventEmitter {
     const state = e.stateJson
       ? (JSON.parse(e.stateJson) as GameState)
       : preState(e);
-    const prior = this.priorFor(e, allLegs);
+    const prior = this.priorFor(e, allLegs, state);
     const priorJson = JSON.stringify(prior);
     const now = iso(this.now());
-    const params = { params: this.opts.params, rng: this.rng };
+    let anchors: { shift: number | null; source: string | null }[];
+    try {
+      anchors = this.anchors(e, prior, open);
+    } catch (err) {
+      result.errors.push(`anchor ${eventId}: ${(err as Error).message}`);
+      anchors = open.map(() => ({ shift: null, source: null }));
+    }
+    const params = {
+      params: this.opts.params,
+      anchors: anchors.map((a) => a.shift),
+    };
 
     let evals;
     try {
@@ -529,6 +583,8 @@ export class Tracker extends EventEmitter {
     const affectedBets = new Set<number>();
     this.db.transaction((tx) => {
       for (const j of joints) {
+        if (!j.now) continue; // no joint model (UFC): stays book-implied
+        const now = j.now;
         const bet = tx.select().from(bets).where(eq(bets.id, j.betId)).get();
         if (!bet) continue;
         const merge = (json: string | null, outcomes: StoredJoint[]) =>
@@ -541,7 +597,7 @@ export class Tracker extends EventEmitter {
           e.id in JSON.parse(bet.jointPlacementJson);
         tx.update(bets)
           .set({
-            jointJson: merge(bet.jointJson, j.now),
+            jointJson: merge(bet.jointJson, now),
             ...(j.placement && !placementKnown
               ? {
                   jointPlacementJson: merge(
@@ -576,6 +632,8 @@ export class Tracker extends EventEmitter {
             modelInputsJson: JSON.stringify(ev.inputs),
             evaluatedAt: now,
             status: ev.status,
+            anchorLogit: anchors[i]!.shift,
+            anchorSource: anchors[i]!.source,
             ...(e.status === 'pre' || !leg.priorJson
               ? { priorSource: prior.source, priorJson }
               : {}),
@@ -624,10 +682,9 @@ export class Tracker extends EventEmitter {
   }
 
   /**
-   * For each bet with two or more open legs on this (football) event, the
-   * exact joint outcome of those legs now, and pregame for placement
-   * (pregame bets only). Other sports have no joint model yet: those bets
-   * stay book-implied.
+   * For each bet with two or more open legs on this event, the exact joint
+   * outcome of those legs now, and pregame for placement (pregame bets only),
+   * from the same game model. UFC has none: those bets stay book-implied.
    */
   private sameGameJoints(
     e: EventRow,
@@ -635,14 +692,12 @@ export class Tracker extends EventEmitter {
     prior: Prior,
     open: LegRow[]
   ) {
-    if ((e.sport !== 'nfl' && e.sport !== 'ncaaf') || state.status === 'final')
-      return [];
+    if (state.status === 'final') return [];
     const byBet = new Map<number, LegRow[]>();
     for (const l of open)
       byBet.set(l.betId, [...(byBet.get(l.betId) ?? []), l]);
     const groups = [...byBet].filter(([, ls]) => ls.length > 1);
     if (groups.length === 0) return [];
-    const sigmas = this.opts.params.football[e.sport];
     const live = new Set(
       this.db
         .select({ id: bets.id })
@@ -666,12 +721,14 @@ export class Tracker extends EventEmitter {
       }));
     return groups.map(([betId, ls]) => {
       const sels = ls.map(selectionOf);
+      const now = jointOutcomes(e.sport, state, prior, sels, this.opts.params);
+      const pre = live.has(betId)
+        ? null
+        : jointOutcomes(e.sport, preState(e), prior, sels, this.opts.params);
       return {
         betId,
-        now: toStored(ls, footballJoint(state, prior, sels, sigmas)),
-        placement: live.has(betId)
-          ? null
-          : toStored(ls, footballJoint(preState(e), prior, sels, sigmas)),
+        now: now ? toStored(ls, now) : null,
+        placement: pre ? toStored(ls, pre) : null,
       };
     });
   }

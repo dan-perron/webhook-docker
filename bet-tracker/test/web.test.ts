@@ -5,7 +5,6 @@ import { legs, predictionSnapshots } from '../src/db/schema.js';
 import { createProviders } from '../src/gamestate/registry.js';
 import { matchLegs } from '../src/matching/service.js';
 import type { Services } from '../src/mcp/server.js';
-import { seededRng } from '../src/models/stats.js';
 import { OddsApiClient } from '../src/odds/oddsApi.js';
 import { loadSeed } from '../src/seed/load.js';
 import { Tracker } from '../src/tracker/tracker.js';
@@ -174,10 +173,9 @@ describe('web page', () => {
       db,
       providers,
       tracker: new Tracker(db, providers, {
-        params: { ...PARAMS, mlb: { simulations: 1000 } },
+        params: PARAMS,
         polling: { liveSeconds: 30, scheduledSeconds: 600 },
         now: () => new Date('2026-10-03T19:40:00.000Z'),
-        rng: seededRng(3),
       }),
       odds: new OddsApiClient(db, {
         apiKey: '',

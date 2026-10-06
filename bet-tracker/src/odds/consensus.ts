@@ -137,11 +137,19 @@ export function linesFromOdds(e: EventOdds): LinesInput {
   const main = (m: OddsMarket) => e.markets.find((x) => x.market === m);
   const h2h = main('h2h')?.consensus;
   const draw = h2h ? (h2h['Draw'] ?? null) : null;
+  const spreads = main('spreads');
+  const totals = main('totals');
+  const price = (p: number | undefined) =>
+    p != null && p > 0 && p < 1 ? fairPrice(p) : null;
   return {
     homeMoneyline: h2h?.[e.home] != null ? fairPrice(h2h[e.home]!) : null,
     awayMoneyline: h2h?.[e.away] != null ? fairPrice(h2h[e.away]!) : null,
     drawMoneyline: draw != null ? fairPrice(draw) : null,
-    spreadHome: main('spreads')?.point ?? null,
-    total: main('totals')?.point ?? null,
+    spreadHome: spreads?.point ?? null,
+    spreadHomePrice: price(spreads?.consensus[e.home]),
+    spreadAwayPrice: price(spreads?.consensus[e.away]),
+    total: totals?.point ?? null,
+    overPrice: price(totals?.consensus['Over']),
+    underPrice: price(totals?.consensus['Under']),
   };
 }

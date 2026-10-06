@@ -1,15 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import type { BaseballSituation } from '../src/gamestate/types.js';
+import { parseEvents } from '../src/gamestate/espn.js';
 import {
   basesMask,
-  mlbOutcome,
+  condBeat,
+  fitMlb,
+  halfInningPmf,
+  homeWinProb,
+  mlbScores,
   RE24,
   runRates,
-  sampleHalfInningRuns,
-  simulateMlb,
+  type MlbFit,
 } from '../src/models/mlb.js';
-import { seededRng } from '../src/models/stats.js';
-import { prior, state } from './helpers/states.js';
+import { resolvePrior } from '../src/models/prior.js';
+import { fixture } from './helpers/fixtures.js';
+import { PARAMS, prior, state } from './helpers/states.js';
 
 const bb = (s: Partial<BaseballSituation>): BaseballSituation => ({
   kind: 'baseball',
@@ -23,50 +28,27 @@ const bb = (s: Partial<BaseballSituation>): BaseballSituation => ({
   extraInningRunner: false,
   ...s,
 });
-const N = 20000;
-const sim = (
-  s: ReturnType<typeof state>,
-  p = prior({ expectedTotal: 8.8 }),
-  seed = 7
-) => simulateMlb(s, p, { simulations: N, rng: seededRng(seed) });
-const ML = (side: 'home' | 'away') => ({
-  market: 'moneyline' as const,
-  kind: 'team' as const,
-  side,
-  line: null,
-});
+// total 8.64, even split -> each team scores exactly league average (scale 1).
+const EVEN: MlbFit = { total: 8.64, share: 0.5, dispersion: 1 };
+const mean = (pmf: number[]) => pmf.reduce((a, p, r) => a + p * r, 0);
 
-describe('run rates from the prior', () => {
-  it('splits the total by Pythagorean share: 60% favorite, 8.8 total', () => {
-    // share = 0.6^(1/1.83) / (0.6^(1/1.83) + 0.4^(1/1.83)) = 0.555166
-    const r = runRates(
-      prior({ homeWin: 0.6, awayWin: 0.4, expectedTotal: 8.8 })
-    );
-    expect(r.home).toBeCloseTo(4.88546, 5);
-    expect(r.away).toBeCloseTo(3.91454, 5);
-  });
-});
-
-describe('half-inning sampler', () => {
-  it('matches RE24 mean and scoring probability for a fresh inning', () => {
-    const rng = seededRng(1);
-    let sum = 0;
-    let zeros = 0;
-    const n = 200000;
-    for (let i = 0; i < n; i++) {
-      const r = sampleHalfInningRuns(0, 0, 1, rng);
-      sum += r;
-      if (r === 0) zeros++;
-    }
-    expect(sum / n).toBeCloseTo(0.48, 2);
-    expect(zeros / n).toBeCloseTo(0.73, 2);
+describe('half-inning distribution', () => {
+  it('fresh inning at league average: mean 0.48, P(0) = 0.73', () => {
+    const pmf = halfInningPmf(0, 0, 1);
+    expect(mean(pmf)).toBeCloseTo(0.48, 9);
+    expect(pmf[0]).toBeCloseTo(0.73, 12);
+    expect(pmf.reduce((a, b) => a + b, 0)).toBeCloseTo(1, 9);
   });
 
-  it('bases loaded, 0 out averages 2.29', () => {
-    const rng = seededRng(2);
-    let sum = 0;
-    for (let i = 0; i < 100000; i++) sum += sampleHalfInningRuns(0, 7, 1, rng);
-    expect(sum / 100000).toBeCloseTo(RE24[0]![7]!, 1);
+  it('bases loaded, 0 out averages RE24 = 2.29', () => {
+    expect(mean(halfInningPmf(0, 7, 1))).toBeCloseTo(RE24[0]![7]!, 9);
+  });
+
+  it('dispersion changes how often an inning scores, not the mean', () => {
+    const tight = halfInningPmf(0, 0, 1, 0.7);
+    expect(mean(tight)).toBeCloseTo(0.48, 9);
+    // P(score) 0.27 x 0.7
+    expect(tight[0]).toBeCloseTo(1 - 0.189, 12);
   });
 
   it('encodes bases as a bitmask', () => {
@@ -74,66 +56,54 @@ describe('half-inning sampler', () => {
   });
 });
 
-describe('simulateMlb', () => {
-  it('pregame reproduces a 60% favorite within 2 points', () => {
-    const r = mlbOutcome(
-      sim(
-        state('mlb', { status: 'pre' }),
-        prior({ homeWin: 0.6, awayWin: 0.4, expectedTotal: 8.8 })
-      ),
-      ML('home')
-    );
-    expect(Math.abs(r.win - 0.6)).toBeLessThan(0.02);
-  });
-
-  it('even teams are close to 50/50 pregame and total near 8.6-8.8', () => {
-    const s = sim(state('mlb', { status: 'pre' }));
-    expect(Math.abs(mlbOutcome(s, ML('home')).win - 0.5)).toBeLessThan(0.025);
-    // Bottom 9ths skipped and walk-offs trim a little off the 8.8.
-    const mean = Array.from(s.totals).reduce((a, b) => a + b, 0) / s.n;
-    expect(mean).toBeGreaterThan(8.3);
-    expect(mean).toBeLessThan(8.9);
+describe('exact final-score distribution', () => {
+  it('is a proper distribution', () => {
+    expect(
+      mlbScores(state('mlb', { status: 'pre' }), EVEN).total()
+    ).toBeCloseTo(1, 9);
   });
 
   it('home ahead after the top of the 9th: game over, exactly', () => {
-    // A "Middle 9th" normalizes to bottom 9th, 0 out.
-    const s = sim(
+    const d = mlbScores(
       state('mlb', {
         homeScore: 4,
         awayScore: 2,
         situation: bb({ inning: 9, half: 'bottom' }),
-      })
+      }),
+      EVEN
     );
-    expect(mlbOutcome(s, ML('home')).win).toBe(1);
-    const over = mlbOutcome(s, {
-      market: 'total',
-      kind: 'over',
-      side: null,
-      line: 5.5,
-    });
-    expect(over.win).toBe(1);
-    const push = mlbOutcome(s, {
-      market: 'total',
-      kind: 'under',
-      side: null,
-      line: 6,
-    });
-    expect(push.push).toBe(1);
+    expect(homeWinProb(d)).toBe(1);
+    expect(d.get(4, 2)).toBeCloseTo(1, 12);
+  });
+
+  it('bottom 9th, home down 1, 2 out, bases empty: ends 3-2 with P(no run) = 0.93', () => {
+    // No run ends it right there; any run ties or walks off. P_SCORE[2 outs][empty] = 0.07.
+    const d = mlbScores(
+      state('mlb', {
+        homeScore: 2,
+        awayScore: 3,
+        situation: bb({ inning: 9, half: 'bottom', outs: 2 }),
+      }),
+      EVEN
+    );
+    expect(d.get(2, 3)).toBeCloseTo(0.93, 9);
+    expect(1 - homeWinProb(d)).toBeGreaterThan(0.93);
   });
 
   it('top 9th, 2 out, nobody on, home up 5: near-certain', () => {
-    const s = sim(
+    const d = mlbScores(
       state('mlb', {
         homeScore: 5,
         awayScore: 0,
         situation: bb({ inning: 9, outs: 2 }),
-      })
+      }),
+      EVEN
     );
-    expect(mlbOutcome(s, ML('home')).win).toBeGreaterThan(0.999);
+    expect(homeWinProb(d)).toBeGreaterThan(0.999);
   });
 
-  it('bottom 9th, tied, bases loaded, 0 out: 0.87 + 0.13 x ~0.52 in extras', () => {
-    const s = sim(
+  it('bottom 9th, tied, bases loaded, 0 out: 0.87 + 0.13 x extras', () => {
+    const d = mlbScores(
       state('mlb', {
         homeScore: 3,
         awayScore: 3,
@@ -144,59 +114,91 @@ describe('simulateMlb', () => {
           second: true,
           third: true,
         }),
-      })
+      }),
+      EVEN
     );
-    const win = mlbOutcome(s, ML('home')).win;
-    expect(win).toBeGreaterThan(0.92);
-    expect(win).toBeLessThan(0.955);
-    // A walk-off ends one run ahead, so the home run line -1.5 needs extras.
-    const rl = mlbOutcome(s, {
-      market: 'spread',
-      kind: 'team',
-      side: 'home',
-      line: -1.5,
-    }).win;
-    expect(rl).toBeLessThan(0.13);
+    expect(homeWinProb(d)).toBeGreaterThan(0.92);
+    expect(homeWinProb(d)).toBeLessThan(0.955);
+    // A walk-off ends one run ahead, so home -1.5 needs extras.
+    expect(condBeat(d, 1.5, 'margin')).toBeLessThan(0.13);
   });
 
   it('the regular-season extra-innings runner raises scoring in extras', () => {
-    // More runs per inning, partly offset by games ending sooner: ~+0.3.
     const tied = (runner: boolean) =>
-      sim(
+      mlbScores(
         state('mlb', {
           homeScore: 2,
           awayScore: 2,
           situation: bb({ inning: 10, extraInningRunner: runner }),
-        })
+        }),
+        EVEN
       );
-    const meanTotal = (r: ReturnType<typeof sim>) =>
-      Array.from(r.totals).reduce((a, b) => a + b, 0) / r.n;
+    const meanTotal = (d: ReturnType<typeof tied>) =>
+      [...d.cells()].reduce((a, [h, a2, p]) => a + (h + a2) * p, 0);
     expect(meanTotal(tied(true))).toBeGreaterThan(meanTotal(tied(false)) + 0.2);
   });
 
   it('recorded CWS 3 @ CLE 0, top 8th, 1 out: White Sox heavy favorites', () => {
-    const s = sim(
+    const d = mlbScores(
       state('mlb', {
         homeScore: 0,
         awayScore: 3,
         situation: bb({ inning: 8, outs: 1 }),
-      })
+      }),
+      EVEN
     );
-    const cws = mlbOutcome(s, ML('away')).win;
+    const cws = 1 - homeWinProb(d);
     expect(cws).toBeGreaterThan(0.88);
     expect(cws).toBeLessThan(0.97);
-    expect(cws + mlbOutcome(s, ML('home')).win).toBeCloseTo(1, 10);
   });
 
-  it('is deterministic for a seed', () => {
-    const a = mlbOutcome(
-      sim(state('mlb', { status: 'pre' }), undefined, 42),
-      ML('home')
+  it('home share and total set each side’s run rate', () => {
+    const r = runRates({ total: 8.8, share: 0.55, dispersion: 1 });
+    expect(r.home).toBeCloseTo(4.84, 12);
+    expect(r.away).toBeCloseTo(3.96, 12);
+  });
+});
+
+describe('fitMlb (bet #18 game: CLE @ CWS, 10/7, DraftKings via ESPN)', () => {
+  // ML CWS -121 / CLE +101, run line CWS +1.5 -206 / CLE -1.5 +169, o/u 7.5 -119/-101
+  const ev = parseEvents(
+    'mlb',
+    'mlb',
+    fixture('espn/mlb-20261007-pre.json')
+  ).find((e) => e.home.name.includes('White Sox'))!;
+  const p = resolvePrior('mlb', { espnLines: ev.pregameLines }, PARAMS);
+
+  it('reads the run line and total prices', () => {
+    expect(ev.pregameLines).toMatchObject({
+      spreadHome: 1.5,
+      spreadHomePrice: -206,
+      spreadAwayPrice: 169,
+      total: 7.5,
+      overPrice: -119,
+      underPrice: -101,
+    });
+  });
+
+  it('matches moneyline, run line and total together', () => {
+    const fit = fitMlb(p);
+    const d = mlbScores(state('mlb', { status: 'pre' }), fit);
+    expect(homeWinProb(d)).toBeCloseTo(p.homeWin, 3);
+    expect(condBeat(d, -p.spread!.line, 'margin')).toBeCloseTo(p.spread!.p, 3);
+    expect(condBeat(d, p.totalLine!.line, 'total')).toBeCloseTo(
+      p.totalLine!.p,
+      3
     );
-    const b = mlbOutcome(
-      sim(state('mlb', { status: 'pre' }), undefined, 42),
-      ML('home')
-    );
-    expect(a).toEqual(b);
+    // The alternate line White Sox -1.5 moves from the old ~30% toward the market.
+    const alt = condBeat(d, 1.5, 'margin');
+    expect(alt).toBeGreaterThan(0.31);
+    expect(alt).toBeLessThan(0.34);
+  });
+
+  it('without a run-line price, dispersion stays 1', () => {
+    const noRl = {
+      ...prior({ homeWin: 0.6, awayWin: 0.4, expectedTotal: 8.5 }),
+      totalLine: { line: 8.5, p: 0.5 },
+    };
+    expect(fitMlb(noRl).dispersion).toBe(1);
   });
 });

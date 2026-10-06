@@ -1,0 +1,1300 @@
+{
+ "events": [
+  {
+   "id": "401891815",
+   "date": "2026-10-06T23:00Z",
+   "name": "Carolina Hurricanes at Montreal Canadiens",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Tue, October 6th at 7:00 PM EDT",
+     "shortDetail": "10/6 - 7:00 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401891815",
+     "date": "2026-10-06T23:00Z",
+     "startDate": "2026-10-06T23:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Tue, October 6th at 7:00 PM EDT",
+       "shortDetail": "10/6 - 7:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "10",
+        "location": "Montreal",
+        "name": "Canadiens",
+        "abbreviation": "MTL",
+        "displayName": "Montreal Canadiens",
+        "shortDisplayName": "Canadiens"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "7",
+        "location": "Carolina",
+        "name": "Hurricanes",
+        "abbreviation": "CAR",
+        "displayName": "Carolina Hurricanes",
+        "shortDisplayName": "Hurricanes"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 1.5,
+       "overUnder": 6.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+100"
+         },
+         "close": {
+          "odds": "+100"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-120"
+         },
+         "close": {
+          "odds": "-120"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "+1.5",
+          "odds": "-250"
+         },
+         "close": {
+          "line": "+1.5",
+          "odds": "-250"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "-1.5",
+          "odds": "+205"
+         },
+         "close": {
+          "line": "-1.5",
+          "odds": "+205"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o6.5",
+          "odds": "+100"
+         },
+         "close": {
+          "line": "o6.5",
+          "odds": "+110"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u6.5",
+          "odds": "-120"
+         },
+         "close": {
+          "line": "u6.5",
+          "odds": "-130"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401892449",
+   "date": "2026-10-06T23:00Z",
+   "name": "Nashville Predators at Toronto Maple Leafs",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Tue, October 6th at 7:00 PM EDT",
+     "shortDetail": "10/6 - 7:00 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401892449",
+     "date": "2026-10-06T23:00Z",
+     "startDate": "2026-10-06T23:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Tue, October 6th at 7:00 PM EDT",
+       "shortDetail": "10/6 - 7:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "21",
+        "location": "Toronto",
+        "name": "Maple Leafs",
+        "abbreviation": "TOR",
+        "displayName": "Toronto Maple Leafs",
+        "shortDisplayName": "Maple Leafs"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "27",
+        "location": "Nashville",
+        "name": "Predators",
+        "abbreviation": "NSH",
+        "displayName": "Nashville Predators",
+        "shortDisplayName": "Predators"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 5.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-148"
+         },
+         "close": {
+          "odds": "-155"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+124"
+         },
+         "close": {
+          "odds": "+130"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "-1.5",
+          "odds": "+180"
+         },
+         "close": {
+          "line": "-1.5",
+          "odds": "+160"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "+1.5",
+          "odds": "-218"
+         },
+         "close": {
+          "line": "+1.5",
+          "odds": "-192"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o6.5",
+          "odds": "+110"
+         },
+         "close": {
+          "line": "o5.5",
+          "odds": "-135"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u6.5",
+          "odds": "-130"
+         },
+         "close": {
+          "line": "u5.5",
+          "odds": "+114"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401892450",
+   "date": "2026-10-06T23:00Z",
+   "name": "Ottawa Senators at Detroit Red Wings",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Tue, October 6th at 7:00 PM EDT",
+     "shortDetail": "10/6 - 7:00 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401892450",
+     "date": "2026-10-06T23:00Z",
+     "startDate": "2026-10-06T23:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Tue, October 6th at 7:00 PM EDT",
+       "shortDetail": "10/6 - 7:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "5",
+        "location": "Detroit",
+        "name": "Red Wings",
+        "abbreviation": "DET",
+        "displayName": "Detroit Red Wings",
+        "shortDisplayName": "Red Wings"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "14",
+        "location": "Ottawa",
+        "name": "Senators",
+        "abbreviation": "OTT",
+        "displayName": "Ottawa Senators",
+        "shortDisplayName": "Senators"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 6.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-115"
+         },
+         "close": {
+          "odds": "-110"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-105"
+         },
+         "close": {
+          "odds": "-110"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "-1.5",
+          "odds": "+210"
+         },
+         "close": {
+          "line": "-1.5",
+          "odds": "+220"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "+1.5",
+          "odds": "-258"
+         },
+         "close": {
+          "line": "+1.5",
+          "odds": "-270"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o5.5",
+          "odds": "OFF"
+         },
+         "close": {
+          "line": "o6.5",
+          "odds": "OFF"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u5.5",
+          "odds": "OFF"
+         },
+         "close": {
+          "line": "u6.5",
+          "odds": "OFF"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401892451",
+   "date": "2026-10-06T23:00Z",
+   "name": "Utah Mammoth at New Jersey Devils",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Tue, October 6th at 7:00 PM EDT",
+     "shortDetail": "10/6 - 7:00 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401892451",
+     "date": "2026-10-06T23:00Z",
+     "startDate": "2026-10-06T23:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Tue, October 6th at 7:00 PM EDT",
+       "shortDetail": "10/6 - 7:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "11",
+        "location": "New Jersey",
+        "name": "Devils",
+        "abbreviation": "NJ",
+        "displayName": "New Jersey Devils",
+        "shortDisplayName": "Devils"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "129764",
+        "location": "Utah",
+        "name": "Mammoth",
+        "abbreviation": "UTA",
+        "displayName": "Utah Mammoth",
+        "shortDisplayName": "Mammoth"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 6.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-135"
+         },
+         "close": {
+          "odds": "-130"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+114"
+         },
+         "close": {
+          "odds": "+110"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "-1.5",
+          "odds": "+185"
+         },
+         "close": {
+          "line": "-1.5",
+          "odds": "+195"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "+1.5",
+          "odds": "-225"
+         },
+         "close": {
+          "line": "+1.5",
+          "odds": "-238"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o5.5",
+          "odds": "-135"
+         },
+         "close": {
+          "line": "o6.5",
+          "odds": "+105"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u5.5",
+          "odds": "+114"
+         },
+         "close": {
+          "line": "u6.5",
+          "odds": "-125"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401892453",
+   "date": "2026-10-06T23:00Z",
+   "name": "Minnesota Wild at Buffalo Sabres",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Tue, October 6th at 7:00 PM EDT",
+     "shortDetail": "10/6 - 7:00 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401892453",
+     "date": "2026-10-06T23:00Z",
+     "startDate": "2026-10-06T23:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Tue, October 6th at 7:00 PM EDT",
+       "shortDetail": "10/6 - 7:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "2",
+        "location": "Buffalo",
+        "name": "Sabres",
+        "abbreviation": "BUF",
+        "displayName": "Buffalo Sabres",
+        "shortDisplayName": "Sabres"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "30",
+        "location": "Minnesota",
+        "name": "Wild",
+        "abbreviation": "MIN",
+        "displayName": "Minnesota Wild",
+        "shortDisplayName": "Wild"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 1.5,
+       "overUnder": 6.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-112"
+         },
+         "close": {
+          "odds": "-108"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-108"
+         },
+         "close": {
+          "odds": "-112"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "-1.5",
+          "odds": "+205"
+         },
+         "close": {
+          "line": "+1.5",
+          "odds": "-270"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "+1.5",
+          "odds": "-250"
+         },
+         "close": {
+          "line": "-1.5",
+          "odds": "+220"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o5.5",
+          "odds": "-125"
+         },
+         "close": {
+          "line": "o6.5",
+          "odds": "+102"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u5.5",
+          "odds": "+105"
+         },
+         "close": {
+          "line": "u6.5",
+          "odds": "-122"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401892452",
+   "date": "2026-10-06T23:30Z",
+   "name": "New York Islanders at New York Rangers",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Tue, October 6th at 7:30 PM EDT",
+     "shortDetail": "10/6 - 7:30 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401892452",
+     "date": "2026-10-06T23:30Z",
+     "startDate": "2026-10-06T23:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Tue, October 6th at 7:30 PM EDT",
+       "shortDetail": "10/6 - 7:30 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "13",
+        "location": "New York",
+        "name": "Rangers",
+        "abbreviation": "NYR",
+        "displayName": "New York Rangers",
+        "shortDisplayName": "Rangers"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "12",
+        "location": "New York",
+        "name": "Islanders",
+        "abbreviation": "NYI",
+        "displayName": "New York Islanders",
+        "shortDisplayName": "Islanders"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": -1.5,
+       "overUnder": 5.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-130"
+         },
+         "close": {
+          "odds": "-155"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+110"
+         },
+         "close": {
+          "odds": "+130"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "-1.5",
+          "odds": "+195"
+         },
+         "close": {
+          "line": "-1.5",
+          "odds": "+170"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "+1.5",
+          "odds": "-238"
+         },
+         "close": {
+          "line": "+1.5",
+          "odds": "-205"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o5.5",
+          "odds": "-108"
+         },
+         "close": {
+          "line": "o5.5",
+          "odds": "-120"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u5.5",
+          "odds": "-112"
+         },
+         "close": {
+          "line": "u5.5",
+          "odds": "+100"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401891779",
+   "date": "2026-10-07T00:00Z",
+   "name": "St. Louis Blues at Chicago Blackhawks",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Tue, October 6th at 8:00 PM EDT",
+     "shortDetail": "10/6 - 8:00 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401891779",
+     "date": "2026-10-07T00:00Z",
+     "startDate": "2026-10-07T00:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Tue, October 6th at 8:00 PM EDT",
+       "shortDetail": "10/6 - 8:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "4",
+        "location": "Chicago",
+        "name": "Blackhawks",
+        "abbreviation": "CHI",
+        "displayName": "Chicago Blackhawks",
+        "shortDisplayName": "Blackhawks"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "19",
+        "location": "St. Louis",
+        "name": "Blues",
+        "abbreviation": "STL",
+        "displayName": "St. Louis Blues",
+        "shortDisplayName": "Blues"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 1.5,
+       "overUnder": 5.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "-110"
+         },
+         "close": {
+          "odds": "+124"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-110"
+         },
+         "close": {
+          "odds": "-148"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "-1.5",
+          "odds": "+220"
+         },
+         "close": {
+          "line": "+1.5",
+          "odds": "-218"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "+1.5",
+          "odds": "-270"
+         },
+         "close": {
+          "line": "-1.5",
+          "odds": "+180"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o5.5",
+          "odds": "-110"
+         },
+         "close": {
+          "line": "o5.5",
+          "odds": "-120"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u5.5",
+          "odds": "-110"
+         },
+         "close": {
+          "line": "u5.5",
+          "odds": "+100"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401892454",
+   "date": "2026-10-07T01:00Z",
+   "name": "Vegas Golden Knights at Seattle Kraken",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Tue, October 6th at 9:00 PM EDT",
+     "shortDetail": "10/6 - 9:00 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401892454",
+     "date": "2026-10-07T01:00Z",
+     "startDate": "2026-10-07T01:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Tue, October 6th at 9:00 PM EDT",
+       "shortDetail": "10/6 - 9:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "124292",
+        "location": "Seattle",
+        "name": "Kraken",
+        "abbreviation": "SEA",
+        "displayName": "Seattle Kraken",
+        "shortDisplayName": "Kraken"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "37",
+        "location": "Vegas",
+        "name": "Golden Knights",
+        "abbreviation": "VGK",
+        "displayName": "Vegas Golden Knights",
+        "shortDisplayName": "Golden Knights"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 1.5,
+       "overUnder": 6.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+145"
+         },
+         "close": {
+          "odds": "+145"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-175"
+         },
+         "close": {
+          "odds": "-175"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "+1.5",
+          "odds": "-175"
+         },
+         "close": {
+          "line": "+1.5",
+          "odds": "-180"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "-1.5",
+          "odds": "+145"
+         },
+         "close": {
+          "line": "-1.5",
+          "odds": "+150"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o5.5",
+          "odds": "-130"
+         },
+         "close": {
+          "line": "o6.5",
+          "odds": "+110"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u5.5",
+          "odds": "+110"
+         },
+         "close": {
+          "line": "u6.5",
+          "odds": "-130"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401891806",
+   "date": "2026-10-07T02:00Z",
+   "name": "Florida Panthers at Los Angeles Kings",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Tue, October 6th at 10:00 PM EDT",
+     "shortDetail": "10/6 - 10:00 PM EDT"
+    }
+   },
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401891806",
+     "date": "2026-10-07T02:00Z",
+     "startDate": "2026-10-07T02:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Tue, October 6th at 10:00 PM EDT",
+       "shortDetail": "10/6 - 10:00 PM EDT"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "score": "0",
+       "team": {
+        "id": "8",
+        "location": "Los Angeles",
+        "name": "Kings",
+        "abbreviation": "LA",
+        "displayName": "Los Angeles Kings",
+        "shortDisplayName": "Kings"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "score": "0",
+       "team": {
+        "id": "26",
+        "location": "Florida",
+        "name": "Panthers",
+        "abbreviation": "FLA",
+        "displayName": "Florida Panthers",
+        "shortDisplayName": "Panthers"
+       }
+      }
+     ],
+     "odds": [
+      {
+       "spread": 1.5,
+       "overUnder": 5.5,
+       "provider": {
+        "name": "DraftKings"
+       },
+       "moneyline": {
+        "home": {
+         "open": {
+          "odds": "+110"
+         },
+         "close": {
+          "odds": "+102"
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "-130"
+         },
+         "close": {
+          "odds": "-122"
+         }
+        }
+       },
+       "pointSpread": {
+        "home": {
+         "open": {
+          "line": "+1.5",
+          "odds": "-238"
+         },
+         "close": {
+          "line": "+1.5",
+          "odds": "-250"
+         }
+        },
+        "away": {
+         "open": {
+          "line": "-1.5",
+          "odds": "+195"
+         },
+         "close": {
+          "line": "-1.5",
+          "odds": "+205"
+         }
+        }
+       },
+       "total": {
+        "over": {
+         "open": {
+          "line": "o5.5",
+          "odds": "-130"
+         },
+         "close": {
+          "line": "o5.5",
+          "odds": "-130"
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u5.5",
+          "odds": "+110"
+         },
+         "close": {
+          "line": "u5.5",
+          "odds": "+110"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

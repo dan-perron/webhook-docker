@@ -1,0 +1,2539 @@
+{
+ "events": [
+  {
+   "id": "401803298",
+   "date": "2026-03-01T18:00Z",
+   "name": "Vegas Golden Knights at Pittsburgh Penguins",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 3,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401803298",
+     "date": "2026-03-01T18:00Z",
+     "startDate": "2026-03-01T18:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 3,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      },
+      "featuredAthletes": [
+       {
+        "name": "winningGoalie",
+        "displayName": "Winning Goalie",
+        "shortDisplayName": "Winning Goalie",
+        "abbreviation": "W",
+        "playerId": 4576894,
+        "athlete": {
+         "id": "4576894",
+         "fullName": "Arturs Silovs",
+         "displayName": "Arturs Silovs",
+         "shortName": "A. Silovs",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4576894"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4576894.png",
+         "jersey": "37",
+         "position": "G",
+         "team": {
+          "id": "16"
+         }
+        },
+        "team": {
+         "id": "16"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "22"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": "1.000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "losingGoalie",
+        "displayName": "Losing Goalie",
+        "shortDisplayName": "Losing Goalie",
+        "abbreviation": "L",
+        "playerId": 3939714,
+        "athlete": {
+         "id": "3939714",
+         "fullName": "Adin Hill",
+         "displayName": "Adin Hill",
+         "shortName": "A. Hill",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/3939714"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/3939714.png",
+         "jersey": "33",
+         "position": "G",
+         "team": {
+          "id": "37"
+         }
+        },
+        "team": {
+         "id": "37"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "17"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".773"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "firstStar",
+        "displayName": "First Star",
+        "shortDisplayName": "First Star",
+        "abbreviation": "FS",
+        "playerId": 5291947,
+        "athlete": {
+         "id": "5291947",
+         "fullName": "Ben Kindel",
+         "displayName": "Ben Kindel",
+         "shortName": "B. Kindel",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/5291947"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/5291947.png",
+         "jersey": "81",
+         "position": "C",
+         "team": {
+          "id": "16"
+         }
+        },
+        "team": {
+         "id": "16"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "2"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "1"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "15"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "1"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "2"
+         }
+        ]
+       },
+       {
+        "name": "secondStar",
+        "displayName": "Second Star",
+        "shortDisplayName": "Second Star",
+        "abbreviation": "SS",
+        "playerId": 4576894,
+        "athlete": {
+         "id": "4576894",
+         "fullName": "Arturs Silovs",
+         "displayName": "Arturs Silovs",
+         "shortName": "A. Silovs",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4576894"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4576894.png",
+         "jersey": "37",
+         "position": "G",
+         "team": {
+          "id": "16"
+         }
+        },
+        "team": {
+         "id": "16"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "22"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": "1.000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "thirdStar",
+        "displayName": "Third Star",
+        "shortDisplayName": "Third Star",
+        "abbreviation": "TS",
+        "playerId": 5164,
+        "athlete": {
+         "id": "5164",
+         "fullName": "Erik Karlsson",
+         "displayName": "Erik Karlsson",
+         "shortName": "E. Karlsson",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/5164"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/5164.png",
+         "jersey": "65",
+         "position": "D",
+         "team": {
+          "id": "16"
+         }
+        },
+        "team": {
+         "id": "16"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "2"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "4"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "2"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "2"
+         }
+        ]
+       }
+      ]
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "5",
+       "team": {
+        "id": "16",
+        "location": "Pittsburgh",
+        "name": "Penguins",
+        "abbreviation": "PIT",
+        "displayName": "Pittsburgh Penguins",
+        "shortDisplayName": "Penguins"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "37",
+        "location": "Vegas",
+        "name": "Golden Knights",
+        "abbreviation": "VGK",
+        "displayName": "Vegas Golden Knights",
+        "shortDisplayName": "Golden Knights"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401803300",
+   "date": "2026-03-01T21:00Z",
+   "name": "Chicago Blackhawks at Utah Mammoth",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 3,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401803300",
+     "date": "2026-03-01T21:00Z",
+     "startDate": "2026-03-01T21:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 3,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      },
+      "featuredAthletes": [
+       {
+        "name": "winningGoalie",
+        "displayName": "Winning Goalie",
+        "shortDisplayName": "Winning Goalie",
+        "abbreviation": "W",
+        "playerId": 4894729,
+        "athlete": {
+         "id": "4894729",
+         "fullName": "Arvid Soderblom",
+         "displayName": "Arvid Soderblom",
+         "shortName": "A. Soderblom",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4894729"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4894729.png",
+         "jersey": "40",
+         "position": "G",
+         "team": {
+          "id": "4"
+         }
+        },
+        "team": {
+         "id": "4"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "22"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": "1.000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "losingGoalie",
+        "displayName": "Losing Goalie",
+        "shortDisplayName": "Losing Goalie",
+        "abbreviation": "L",
+        "playerId": 3942065,
+        "athlete": {
+         "id": "3942065",
+         "fullName": "Karel Vejmelka",
+         "displayName": "Karel Vejmelka",
+         "shortName": "K. Vejmelka",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/3942065"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/3942065.png",
+         "jersey": "70",
+         "position": "G",
+         "team": {
+          "id": "129764"
+         }
+        },
+        "team": {
+         "id": "129764"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "24"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".857"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "firstStar",
+        "displayName": "First Star",
+        "shortDisplayName": "First Star",
+        "abbreviation": "FS",
+        "playerId": 4894729,
+        "athlete": {
+         "id": "4894729",
+         "fullName": "Arvid Soderblom",
+         "displayName": "Arvid Soderblom",
+         "shortName": "A. Soderblom",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4894729"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4894729.png",
+         "jersey": "40",
+         "position": "G",
+         "team": {
+          "id": "4"
+         }
+        },
+        "team": {
+         "id": "4"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "22"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": "1.000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "secondStar",
+        "displayName": "Second Star",
+        "shortDisplayName": "Second Star",
+        "abbreviation": "SS",
+        "playerId": 2592095,
+        "athlete": {
+         "id": "2592095",
+         "fullName": "Teuvo Teravainen",
+         "displayName": "Teuvo Teravainen",
+         "shortName": "T. Teravainen",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/2592095"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/2592095.png",
+         "jersey": "86",
+         "position": "C",
+         "team": {
+          "id": "4"
+         }
+        },
+        "team": {
+         "id": "4"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "1"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "2"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "12"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "2"
+         }
+        ]
+       },
+       {
+        "name": "thirdStar",
+        "displayName": "Third Star",
+        "shortDisplayName": "Third Star",
+        "abbreviation": "TS",
+        "playerId": 3535,
+        "athlete": {
+         "id": "3535",
+         "fullName": "Nick Foligno",
+         "displayName": "Nick Foligno",
+         "shortName": "N. Foligno",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/3535"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/3535.png",
+         "jersey": "71",
+         "position": "LW",
+         "team": {
+          "id": "30"
+         }
+        },
+        "team": {
+         "id": "4"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "2"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "1"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "3"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "1"
+         }
+        ]
+       }
+      ]
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "129764",
+        "location": "Utah",
+        "name": "Mammoth",
+        "abbreviation": "UTA",
+        "displayName": "Utah Mammoth",
+        "shortDisplayName": "Mammoth"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": true,
+       "score": "4",
+       "team": {
+        "id": "4",
+        "location": "Chicago",
+        "name": "Blackhawks",
+        "abbreviation": "CHI",
+        "displayName": "Chicago Blackhawks",
+        "shortDisplayName": "Blackhawks"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401803301",
+   "date": "2026-03-01T21:00Z",
+   "name": "Winnipeg Jets at San Jose Sharks",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final/OT",
+     "shortDetail": "Final/OT",
+     "altDetail": "OT"
+    }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401803301",
+     "date": "2026-03-01T21:00Z",
+     "startDate": "2026-03-01T21:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final/OT",
+       "shortDetail": "Final/OT",
+       "altDetail": "OT"
+      },
+      "featuredAthletes": [
+       {
+        "name": "winningGoalie",
+        "displayName": "Winning Goalie",
+        "shortDisplayName": "Winning Goalie",
+        "abbreviation": "W",
+        "playerId": 3114994,
+        "athlete": {
+         "id": "3114994",
+         "fullName": "Alex Nedeljkovic",
+         "displayName": "Alex Nedeljkovic",
+         "shortName": "A. Nedeljkovic",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/3114994"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/3114994.png",
+         "jersey": "33",
+         "position": "G",
+         "team": {
+          "id": "18"
+         }
+        },
+        "team": {
+         "id": "18"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "27"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".964"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "losingGoalie",
+        "displayName": "Losing Goalie",
+        "shortDisplayName": "Losing Goalie",
+        "abbreviation": "L",
+        "playerId": 3020225,
+        "athlete": {
+         "id": "3020225",
+         "fullName": "Connor Hellebuyck",
+         "displayName": "Connor Hellebuyck",
+         "shortName": "C. Hellebuyck",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/3020225"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/3020225.png",
+         "jersey": "37",
+         "position": "G",
+         "team": {
+          "id": "28"
+         }
+        },
+        "team": {
+         "id": "28"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "31"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".939"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "firstStar",
+        "displayName": "First Star",
+        "shortDisplayName": "First Star",
+        "abbreviation": "FS",
+        "playerId": 3114994,
+        "athlete": {
+         "id": "3114994",
+         "fullName": "Alex Nedeljkovic",
+         "displayName": "Alex Nedeljkovic",
+         "shortName": "A. Nedeljkovic",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/3114994"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/3114994.png",
+         "jersey": "33",
+         "position": "G",
+         "team": {
+          "id": "18"
+         }
+        },
+        "team": {
+         "id": "18"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "27"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".964"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "secondStar",
+        "displayName": "Second Star",
+        "shortDisplayName": "Second Star",
+        "abbreviation": "SS",
+        "playerId": 3020225,
+        "athlete": {
+         "id": "3020225",
+         "fullName": "Connor Hellebuyck",
+         "displayName": "Connor Hellebuyck",
+         "shortName": "C. Hellebuyck",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/3020225"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/3020225.png",
+         "jersey": "37",
+         "position": "G",
+         "team": {
+          "id": "28"
+         }
+        },
+        "team": {
+         "id": "28"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "31"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".939"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "thirdStar",
+        "displayName": "Third Star",
+        "shortDisplayName": "Third Star",
+        "abbreviation": "TS",
+        "playerId": 5291934,
+        "athlete": {
+         "id": "5291934",
+         "fullName": "Michael Misa",
+         "displayName": "Michael Misa",
+         "shortName": "M. Misa",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/5291934"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/5291934.png",
+         "jersey": "77",
+         "position": "C",
+         "team": {
+          "id": "18"
+         }
+        },
+        "team": {
+         "id": "18"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "2"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "1"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "4"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "1"
+         }
+        ]
+       }
+      ]
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "2",
+       "team": {
+        "id": "18",
+        "location": "San Jose",
+        "name": "Sharks",
+        "abbreviation": "SJ",
+        "displayName": "San Jose Sharks",
+        "shortDisplayName": "Sharks"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "1",
+       "team": {
+        "id": "28",
+        "location": "Winnipeg",
+        "name": "Jets",
+        "abbreviation": "WPG",
+        "displayName": "Winnipeg Jets",
+        "shortDisplayName": "Jets"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401803302",
+   "date": "2026-03-01T22:00Z",
+   "name": "St. Louis Blues at Minnesota Wild",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 3,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401803302",
+     "date": "2026-03-01T22:00Z",
+     "startDate": "2026-03-01T22:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 3,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      },
+      "featuredAthletes": [
+       {
+        "name": "winningGoalie",
+        "displayName": "Winning Goalie",
+        "shortDisplayName": "Winning Goalie",
+        "abbreviation": "W",
+        "playerId": 4587909,
+        "athlete": {
+         "id": "4587909",
+         "fullName": "Joel Hofer",
+         "displayName": "Joel Hofer",
+         "shortName": "J. Hofer",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4587909"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4587909.png",
+         "jersey": "30",
+         "position": "G",
+         "team": {
+          "id": "19"
+         }
+        },
+        "team": {
+         "id": "19"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "22"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".957"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "losingGoalie",
+        "displayName": "Losing Goalie",
+        "shortDisplayName": "Losing Goalie",
+        "abbreviation": "L",
+        "playerId": 4272674,
+        "athlete": {
+         "id": "4272674",
+         "fullName": "Filip Gustavsson",
+         "displayName": "Filip Gustavsson",
+         "shortName": "F. Gustavsson",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4272674"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4272674.png",
+         "jersey": "32",
+         "position": "G",
+         "team": {
+          "id": "30"
+         }
+        },
+        "team": {
+         "id": "30"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "21"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".913"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "firstStar",
+        "displayName": "First Star",
+        "shortDisplayName": "First Star",
+        "abbreviation": "FS",
+        "playerId": 4587909,
+        "athlete": {
+         "id": "4587909",
+         "fullName": "Joel Hofer",
+         "displayName": "Joel Hofer",
+         "shortName": "J. Hofer",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4587909"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4587909.png",
+         "jersey": "30",
+         "position": "G",
+         "team": {
+          "id": "19"
+         }
+        },
+        "team": {
+         "id": "19"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "22"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".957"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "secondStar",
+        "displayName": "Second Star",
+        "shortDisplayName": "Second Star",
+        "abbreviation": "SS",
+        "playerId": 4233637,
+        "athlete": {
+         "id": "4233637",
+         "fullName": "Robert Thomas",
+         "displayName": "Robert Thomas",
+         "shortName": "R. Thomas",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4233637"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4233637.png",
+         "jersey": "18",
+         "position": "C",
+         "team": {
+          "id": "19"
+         }
+        },
+        "team": {
+         "id": "19"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "3"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "1"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "12"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "1"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "2"
+         }
+        ]
+       },
+       {
+        "name": "thirdStar",
+        "displayName": "Third Star",
+        "shortDisplayName": "Third Star",
+        "abbreviation": "TS",
+        "playerId": 3942335,
+        "athlete": {
+         "id": "3942335",
+         "fullName": "Kirill Kaprizov",
+         "displayName": "Kirill Kaprizov",
+         "shortName": "K. Kaprizov",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/3942335"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/3942335.png",
+         "jersey": "97",
+         "position": "LW",
+         "team": {
+          "id": "30"
+         }
+        },
+        "team": {
+         "id": "30"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "-1"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "1"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "34"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "1"
+         }
+        ]
+       }
+      ]
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "1",
+       "team": {
+        "id": "30",
+        "location": "Minnesota",
+        "name": "Wild",
+        "abbreviation": "MIN",
+        "displayName": "Minnesota Wild",
+        "shortDisplayName": "Wild"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": true,
+       "score": "3",
+       "team": {
+        "id": "19",
+        "location": "St. Louis",
+        "name": "Blues",
+        "abbreviation": "STL",
+        "displayName": "St. Louis Blues",
+        "shortDisplayName": "Blues"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401803299",
+   "date": "2026-03-01T23:30Z",
+   "name": "Florida Panthers at New York Islanders",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 3,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401803299",
+     "date": "2026-03-01T23:30Z",
+     "startDate": "2026-03-01T23:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 3,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      },
+      "featuredAthletes": [
+       {
+        "name": "winningGoalie",
+        "displayName": "Winning Goalie",
+        "shortDisplayName": "Winning Goalie",
+        "abbreviation": "W",
+        "playerId": 4063288,
+        "athlete": {
+         "id": "4063288",
+         "fullName": "David Rittich",
+         "displayName": "David Rittich",
+         "shortName": "D. Rittich",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4063288"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4063288.png",
+         "position": "G",
+         "team": {
+          "id": "12"
+         }
+        },
+        "team": {
+         "id": "12"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "29"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".879"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "losingGoalie",
+        "displayName": "Losing Goalie",
+        "shortDisplayName": "Losing Goalie",
+        "abbreviation": "L",
+        "playerId": 5571,
+        "athlete": {
+         "id": "5571",
+         "fullName": "Sergei Bobrovsky",
+         "displayName": "Sergei Bobrovsky",
+         "shortName": "S. Bobrovsky",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/5571"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/5571.png",
+         "jersey": "72",
+         "position": "G",
+         "team": {
+          "id": "26"
+         }
+        },
+        "team": {
+         "id": "26"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "21"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".808"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "1"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "1"
+         }
+        ]
+       },
+       {
+        "name": "firstStar",
+        "displayName": "First Star",
+        "shortDisplayName": "First Star",
+        "abbreviation": "FS",
+        "playerId": 5291933,
+        "athlete": {
+         "id": "5291933",
+         "fullName": "Matthew Schaefer",
+         "displayName": "Matthew Schaefer",
+         "shortName": "M. Schaefer",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/5291933"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/5291933.png",
+         "jersey": "48",
+         "position": "D",
+         "team": {
+          "id": "12"
+         }
+        },
+        "team": {
+         "id": "12"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "4"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "2"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "20"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "1"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "3"
+         }
+        ]
+       },
+       {
+        "name": "secondStar",
+        "displayName": "Second Star",
+        "shortDisplayName": "Second Star",
+        "abbreviation": "SS",
+        "playerId": 5793,
+        "athlete": {
+         "id": "5793",
+         "fullName": "Anders Lee",
+         "displayName": "Anders Lee",
+         "shortName": "A. Lee",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/5793"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/5793.png",
+         "jersey": "72",
+         "position": "LW",
+         "team": {
+          "id": "12"
+         }
+        },
+        "team": {
+         "id": "12"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "1"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "14"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "1"
+         }
+        ]
+       },
+       {
+        "name": "thirdStar",
+        "displayName": "Third Star",
+        "shortDisplayName": "Third Star",
+        "abbreviation": "TS",
+        "playerId": 3114732,
+        "athlete": {
+         "id": "3114732",
+         "fullName": "Sam Bennett",
+         "displayName": "Sam Bennett",
+         "shortName": "S. Bennett",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/3114732"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/3114732.png",
+         "jersey": "9",
+         "position": "C",
+         "team": {
+          "id": "26"
+         }
+        },
+        "team": {
+         "id": "26"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "-1"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "2"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "22"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "2"
+         }
+        ]
+       }
+      ]
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "5",
+       "team": {
+        "id": "12",
+        "location": "New York",
+        "name": "Islanders",
+        "abbreviation": "NYI",
+        "displayName": "New York Islanders",
+        "shortDisplayName": "Islanders"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "4",
+       "team": {
+        "id": "26",
+        "location": "Florida",
+        "name": "Panthers",
+        "abbreviation": "FLA",
+        "displayName": "Florida Panthers",
+        "shortDisplayName": "Panthers"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401803303",
+   "date": "2026-03-02T01:00Z",
+   "name": "Calgary Flames at Anaheim Ducks",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 5,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final/SO",
+     "shortDetail": "Final/SO",
+     "altDetail": "SO"
+    }
+   },
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401803303",
+     "date": "2026-03-02T01:00Z",
+     "startDate": "2026-03-02T01:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 5,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final/SO",
+       "shortDetail": "Final/SO",
+       "altDetail": "SO"
+      },
+      "featuredAthletes": [
+       {
+        "name": "winningGoalie",
+        "displayName": "Winning Goalie",
+        "shortDisplayName": "Winning Goalie",
+        "abbreviation": "W",
+        "playerId": 4588165,
+        "athlete": {
+         "id": "4588165",
+         "fullName": "Lukas Dostal",
+         "displayName": "Lukas Dostal",
+         "shortName": "L. Dostal",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4588165"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4588165.png",
+         "jersey": "1",
+         "position": "G",
+         "team": {
+          "id": "25"
+         }
+        },
+        "team": {
+         "id": "25"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "32"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".941"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "losingGoalie",
+        "displayName": "Losing Goalie",
+        "shortDisplayName": "Losing Goalie",
+        "abbreviation": "L",
+        "playerId": 4319911,
+        "athlete": {
+         "id": "4319911",
+         "fullName": "Devin Cooley",
+         "displayName": "Devin Cooley",
+         "shortName": "D. Cooley",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4319911"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4319911.png",
+         "jersey": "1",
+         "position": "G",
+         "team": {
+          "id": "3"
+         }
+        },
+        "team": {
+         "id": "3"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "34"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".944"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       },
+       {
+        "name": "firstStar",
+        "displayName": "First Star",
+        "shortDisplayName": "First Star",
+        "abbreviation": "FS",
+        "playerId": 5080145,
+        "athlete": {
+         "id": "5080145",
+         "fullName": "Cutter Gauthier",
+         "displayName": "Cutter Gauthier",
+         "shortName": "C. Gauthier",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/5080145"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/5080145.png",
+         "jersey": "61",
+         "position": "LW",
+         "team": {
+          "id": "25"
+         }
+        },
+        "team": {
+         "id": "25"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "1"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "2"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "28"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "2"
+         }
+        ]
+       },
+       {
+        "name": "secondStar",
+        "displayName": "Second Star",
+        "shortDisplayName": "Second Star",
+        "abbreviation": "SS",
+        "playerId": 5149153,
+        "athlete": {
+         "id": "5149153",
+         "fullName": "Leo Carlsson",
+         "displayName": "Leo Carlsson",
+         "shortName": "L. Carlsson",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/5149153"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/5149153.png",
+         "jersey": "91",
+         "position": "C",
+         "team": {
+          "id": "25"
+         }
+        },
+        "team": {
+         "id": "25"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "0"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".000"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "1"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "20"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "1"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "1"
+         }
+        ]
+       },
+       {
+        "name": "thirdStar",
+        "displayName": "Third Star",
+        "shortDisplayName": "Third Star",
+        "abbreviation": "TS",
+        "playerId": 4588165,
+        "athlete": {
+         "id": "4588165",
+         "fullName": "Lukas Dostal",
+         "displayName": "Lukas Dostal",
+         "shortName": "L. Dostal",
+         "links": [
+          {
+           "rel": [
+            "playercard",
+            "desktop",
+            "athlete"
+           ],
+           "href": "https://www.espn.com/nhl/player/_/id/4588165"
+          }
+         ],
+         "headshot": "https://a.espncdn.com/i/headshots/nhl/players/full/4588165.png",
+         "jersey": "1",
+         "position": "G",
+         "team": {
+          "id": "25"
+         }
+        },
+        "team": {
+         "id": "25"
+        },
+        "statistics": [
+         {
+          "name": "saves",
+          "abbreviation": "SV",
+          "displayValue": "32"
+         },
+         {
+          "name": "savePct",
+          "abbreviation": "SV%",
+          "displayValue": ".941"
+         },
+         {
+          "name": "plusMinus",
+          "abbreviation": "+/-",
+          "displayValue": "0"
+         },
+         {
+          "name": "goals",
+          "abbreviation": "G",
+          "displayValue": "0"
+         },
+         {
+          "name": "ytdGoals",
+          "abbreviation": "YTDG",
+          "displayValue": "0"
+         },
+         {
+          "name": "assists",
+          "abbreviation": "A",
+          "displayValue": "0"
+         },
+         {
+          "name": "points",
+          "abbreviation": "PTS",
+          "displayValue": "0"
+         }
+        ]
+       }
+      ]
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "3",
+       "team": {
+        "id": "25",
+        "location": "Anaheim",
+        "name": "Ducks",
+        "abbreviation": "ANA",
+        "displayName": "Anaheim Ducks",
+        "shortDisplayName": "Ducks"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "2",
+       "team": {
+        "id": "3",
+        "location": "Calgary",
+        "name": "Flames",
+        "abbreviation": "CGY",
+        "displayName": "Calgary Flames",
+        "shortDisplayName": "Flames"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

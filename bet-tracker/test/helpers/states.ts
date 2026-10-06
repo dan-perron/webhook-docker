@@ -7,7 +7,7 @@ export const PARAMS: ModelParams = {
     nfl: { marginSigma: 13.5, totalSigma: 13, sigmaRange: [10, 16] },
     ncaaf: { marginSigma: 15, totalSigma: 14, sigmaRange: [11, 20] },
   },
-  mlb: { simulations: 20000 },
+  wnba: { marginSigma: 11.5, totalSigma: 15, sigmaRange: [8, 16] },
 };
 
 /** Build a GameState with sensible defaults for model tests. */

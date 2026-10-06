@@ -36,6 +36,13 @@
       "when": 1791124010512,
       "tag": "0004_bet_joint",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1791323380832,
+      "tag": "0005_leg_anchor",
+      "breakpoints": true
     }
   ]
 }

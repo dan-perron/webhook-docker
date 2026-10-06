@@ -1,0 +1,79 @@
+{
+ "pickcenter": [
+  {
+   "spread": 1.5,
+   "overUnder": 8.0,
+   "provider": {
+    "name": "DraftKings"
+   },
+   "moneyline": {
+    "home": {
+     "open": {
+      "odds": "-120"
+     },
+     "close": {
+      "odds": "-120"
+     }
+    },
+    "away": {
+     "open": {
+      "odds": "-101"
+     },
+     "close": {
+      "odds": "+100"
+     }
+    }
+   },
+   "pointSpread": {
+    "home": {
+     "open": {
+      "line": "+1.5",
+      "odds": "-198"
+     },
+     "close": {
+      "line": "+1.5",
+      "odds": "-200"
+     }
+    },
+    "away": {
+     "open": {
+      "line": "-1.5",
+      "odds": "+162"
+     },
+     "close": {
+      "line": "-1.5",
+      "odds": "+164"
+     }
+    }
+   },
+   "total": {
+    "over": {
+     "open": {
+      "line": "o8",
+      "odds": "-110"
+     },
+     "close": {
+      "line": "o8",
+      "odds": "-104"
+     }
+    },
+    "under": {
+     "open": {
+      "line": "u8",
+      "odds": "-110"
+     },
+     "close": {
+      "line": "u8",
+      "odds": "-116"
+     }
+    }
+   },
+   "homeTeamOdds": {
+    "moneyLine": -120
+   },
+   "awayTeamOdds": {
+    "moneyLine": 100
+   }
+  }
+ ]
+}

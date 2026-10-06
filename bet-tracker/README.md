@@ -21,30 +21,42 @@ and an MCP server so Claude can add and manage bets and check odds.
    team/fighter names (`src/matching/`). Anything short of one confident match
    is held with candidates for confirmation; it never guesses.
 2. **Game state.** `GameStateProvider` adapters (`src/gamestate/`) normalize
-   ESPN scoreboards (NFL, NCAAF, soccer, UFC) and the MLB Stats API into one
+   ESPN scoreboards (NFL, NCAAF, NHL, WNBA, soccer, UFC) and the MLB Stats API into one
    `GameState`. Polling is batched: one ESPN scoreboard per sport, league and
    date; one Stats API call for all MLB games.
 3. **Priors.** Each game starts from a pregame prior, from the first of:
    ESPN's DraftKings lines (the summary keeps the closing line after kickoff),
    an optional Odds API snapshot shortly before start (only when ESPN has
    none, e.g. UFC), the odds entered with pregame bets, or neutral.
-4. **Models** (`src/models/`), pure `(state, prior, selection) → {win, push}`:
-   - **Football:** an integer final-margin distribution, normal × NFL
-     key-number weights fitted on 2002–2026 results, with σ fitted per game
-     so the model reproduces the moneyline; totals normal. Same-game parlays
-     are summed exactly over (margin, total).
-   - **MLB:** Monte Carlo of the remaining half-innings from the current
-     base/out state (RE24), with extras and walk-offs.
-   - **Soccer:** Poisson goals over the minutes left, including stoppage time.
+4. **Models** (`src/models/`), pure `(state, prior, selection) → {win, push}`,
+   each fitted pregame (`fit.ts`) so it reproduces the de-vigged main lines:
+   - **NFL / NCAAF / WNBA:** integer final-margin distribution (normal × NFL
+     key-number weights fitted on 2002–2026 results; none for NCAAF/WNBA),
+     mean and σ fitted to the moneyline and spread price, total mean to the
+     over/under price. Only the NFL can tie. Same-game legs summed exactly.
+   - **MLB:** exact final-score distribution, half-inning by half-inning from
+     the base/out state (RE24), with extras and walk-offs. Total runs, home
+     share and an inning-dispersion knob fitted to moneyline, run line, total.
+   - **NHL:** Poisson goals stepped over the clock, with the trailing team
+     pulling its goalie late (empty-net goals), then 3-on-3 OT and a shootout
+     (playoffs: sudden death); the OT/SO winner wins by one and that goal
+     counts in the total. Goal rates and empty-net strength fitted to
+     moneyline, puck line and total.
+   - **Soccer:** Poisson goals over the minutes left (incl. stoppage) with the
+     Dixon–Coles low-score correction, fitted to home/draw/away and the total.
    - **UFC:** the prior until the fight is final.
+   - **Exact-line anchor:** when the market prices a leg's exact line (ESPN,
+     Odds API, else the entered price de-vigged), pregame P(win) is shifted
+     onto it in log-odds; the shift fades linearly as the game is played.
 5. **Tracker** (`src/tracker/tracker.ts`) polls every 30 s live and 10 min
    pregame, stores each leg's probability, settles finals, prices same-game
    groups, and logs calibration snapshots. Bets are valued exactly over every
    win/push path (`src/domain/value.ts`); the book's stated payout always wins
    over price math.
 
-Same-game legs in MLB, soccer or UFC have no joint model yet: those bets show
-P(win) from the book's unboosted price, labeled "book-implied".
+Same-game legs are priced jointly from the same game model in every sport
+except UFC, where those bets show P(win) from the book's unboosted price,
+labeled "book-implied".
 
 ## Configuration
 

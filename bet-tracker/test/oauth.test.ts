@@ -5,7 +5,6 @@ import { isAllowedRedirect } from '../src/auth/oauthStore.js';
 import { openDb } from '../src/db/client.js';
 import { createProviders } from '../src/gamestate/registry.js';
 import type { Services } from '../src/mcp/server.js';
-import { seededRng } from '../src/models/stats.js';
 import { OddsApiClient } from '../src/odds/oddsApi.js';
 import { Tracker } from '../src/tracker/tracker.js';
 import { fakeFetcher } from './helpers/fixtures.js';
@@ -30,7 +29,6 @@ beforeEach(() => {
     tracker: new Tracker(db, providers, {
       params: PARAMS,
       polling: { liveSeconds: 30, scheduledSeconds: 600 },
-      rng: seededRng(1),
     }),
     odds: new OddsApiClient(db, {
       apiKey: '',

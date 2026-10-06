@@ -65,7 +65,7 @@ export function createMcpServer(s: Services): McpServer {
         sport: z
           .string()
           .describe(
-            'nfl, ncaaf, mlb, mma, soccer (with league), an ESPN soccer league like uefa.nations, or an Odds API sport key like soccer_epl'
+            'nfl, ncaaf, mlb, nhl, wnba, mma, soccer (with league), an ESPN soccer league like uefa.nations, or an Odds API sport key like soccer_epl'
           ),
         league: z
           .string()
@@ -143,7 +143,7 @@ export function createMcpServer(s: Services): McpServer {
     'add_bet',
     {
       title: 'Add a bet',
-      description: `Create a tracked bet (single or parlay) from structured input and match each leg to a live event by sport, date (America/Chicago) and fuzzy team/fighter names. Legs with exactly one confident match are linked; others come back with candidates to confirm via confirm_match (never guess). Returns the bet with current model P(win)/value/EV. ${UNITS} stake/statedPayout in dollars; price/boostedPrice/leg price in American odds; boostPct in percent. Set placedLive for bets placed during the game. ${PROVENANCE}`,
+      description: `Create a tracked bet (single or parlay) from structured input and match each leg to a live event by sport, date (America/Chicago) and fuzzy team/fighter names. Legs with exactly one confident match are linked; others come back with candidates to confirm via confirm_match (never guess). Returns the bet with current model P(win)/value/EV. ${UNITS} stake/statedPayout in dollars; price/boostedPrice/leg price in American odds; boostPct in percent. Sports: nfl, ncaaf, mlb, nhl, wnba, soccer, mma. Markets: moneyline (NHL includes OT/shootout), moneyline3way (soccer), spread (incl. MLB run line and NHL puck line), total. Set placedLive for bets placed during the game. Pregame, each leg's P(win) is matched to the market's fair price for that exact line when one is known (ESPN/Odds API, else the entered price de-vigged); that adjustment fades as the game plays. ${PROVENANCE}`,
       inputSchema: betInputSchema,
     },
     async (input) => {

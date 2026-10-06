@@ -1,0 +1,136 @@
+{
+ "dates": [
+  {
+   "games": [
+    {
+     "gamePk": 849833,
+     "gameDate": "2026-10-07T20:00:00Z",
+     "gameType": "D",
+     "status": {
+      "abstractGameState": "Preview",
+      "codedGameState": "S",
+      "detailedState": "Scheduled",
+      "statusCode": "S",
+      "startTimeTBD": false,
+      "abstractGameCode": "P"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 114,
+        "name": "Cleveland Guardians",
+        "abbreviation": "CLE",
+        "teamName": "Guardians"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 145,
+        "name": "Chicago White Sox",
+        "abbreviation": "CWS",
+        "teamName": "White Sox"
+       }
+      }
+     },
+     "scheduledInnings": 9
+    },
+    {
+     "gamePk": 849822,
+     "gameDate": "2026-10-07T22:00:00Z",
+     "gameType": "D",
+     "status": {
+      "abstractGameState": "Preview",
+      "codedGameState": "S",
+      "detailedState": "Scheduled",
+      "statusCode": "S",
+      "startTimeTBD": false,
+      "abstractGameCode": "P"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "abbreviation": "LAD",
+        "teamName": "Dodgers"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 144,
+        "name": "Atlanta Braves",
+        "abbreviation": "ATL",
+        "teamName": "Braves"
+       }
+      }
+     },
+     "scheduledInnings": 9
+    },
+    {
+     "gamePk": 849838,
+     "gameDate": "2026-10-08T00:00:00Z",
+     "gameType": "D",
+     "status": {
+      "abstractGameState": "Preview",
+      "codedGameState": "S",
+      "detailedState": "Scheduled",
+      "statusCode": "S",
+      "startTimeTBD": false,
+      "abstractGameCode": "P"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays",
+        "abbreviation": "TB",
+        "teamName": "Rays"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees",
+        "abbreviation": "NYY",
+        "teamName": "Yankees"
+       }
+      }
+     },
+     "scheduledInnings": 9
+    },
+    {
+     "gamePk": 849827,
+     "gameDate": "2026-10-08T02:00:00Z",
+     "gameType": "D",
+     "status": {
+      "abstractGameState": "Preview",
+      "codedGameState": "S",
+      "detailedState": "Scheduled",
+      "statusCode": "S",
+      "startTimeTBD": false,
+      "abstractGameCode": "P"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers",
+        "abbreviation": "MIL",
+        "teamName": "Brewers"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 135,
+        "name": "San Diego Padres",
+        "abbreviation": "SD",
+        "teamName": "Padres"
+       }
+      }
+     },
+     "scheduledInnings": 9
+    }
+   ]
+  }
+ ]
+}

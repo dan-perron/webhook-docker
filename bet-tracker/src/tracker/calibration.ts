@@ -119,7 +119,7 @@ export function calibrate(
   };
 }
 
-const SPORT_ORDER = ['nfl', 'ncaaf', 'mlb', 'soccer', 'mma'];
+const SPORT_ORDER = ['nfl', 'ncaaf', 'mlb', 'nhl', 'wnba', 'soccer', 'mma'];
 
 /** Per sport (in a fixed order) plus 'all', from logged snapshots. */
 export function calibrationReport(db: Db): SportCalibration[] {
