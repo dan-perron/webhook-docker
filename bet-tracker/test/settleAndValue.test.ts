@@ -5,8 +5,14 @@ import {
   valueBet,
   type LegValueInput,
 } from '../src/domain/value.js';
-import { evaluateEvent, settleSelection } from '../src/models/evaluate.js';
-import { seededRng } from '../src/models/stats.js';
+import {
+  anchorShift,
+  applyAnchor,
+  conditionalWin,
+  evaluateEvent,
+  settleSelection,
+} from '../src/models/evaluate.js';
+import { logit } from '../src/models/stats.js';
 import type { ModelSelection } from '../src/models/types.js';
 import { PARAMS, prior, state } from './helpers/states.js';
 
@@ -111,7 +117,7 @@ describe('settleSelection', () => {
 });
 
 describe('evaluateEvent', () => {
-  const opts = { params: PARAMS, rng: seededRng(1) };
+  const opts = { params: PARAMS };
 
   it('settles every selection on a final game', () => {
     const r = evaluateEvent(
@@ -148,10 +154,10 @@ describe('evaluateEvent', () => {
       s,
       prior({ expectedTotal: 8.8 }),
       [sel({}), sel({ side: 'away' })],
-      { params: { ...PARAMS, mlb: { simulations: 5000 } }, rng: seededRng(3) }
+      { params: PARAMS }
     );
     expect(r[0]!.outcome.win + r[1]!.outcome.win).toBeCloseTo(1, 10);
-    expect(r[0]!.inputs.simulations).toBe(5000);
+    expect(r[0]!.model).toBe('mlb_exact');
   });
 });
 
@@ -373,5 +379,51 @@ describe('valueBet: same-game groups', () => {
       0.2 * 4000 + 0.08 * 2000 + 0.05 * 2000 + 0.02 * 1000,
       6
     );
+  });
+});
+
+describe('market anchor', () => {
+  it('pregame: the shift moves the model exactly to the market', () => {
+    const model = { win: 0.32, push: 0 };
+    const shift = anchorShift(model, 0.352)!;
+    expect(shift).toBeCloseTo(logit(0.352) - logit(0.32), 12);
+    expect(applyAnchor(model, shift, 1).win).toBeCloseTo(0.352, 12);
+  });
+
+  it('fades linearly in log-odds with the share of the game left', () => {
+    const model = { win: 0.32, push: 0 };
+    const shift = anchorShift(model, 0.352)!;
+    const half = applyAnchor(model, shift, 0.5).win;
+    expect(logit(half)).toBeCloseTo(logit(0.32) + shift / 2, 12);
+    expect(applyAnchor(model, shift, 0)).toEqual(model);
+  });
+
+  it('works on P(win | no push) and keeps the push probability', () => {
+    const model = { win: 0.45, push: 0.1 };
+    const shift = anchorShift(model, 0.55)!;
+    const a = applyAnchor(model, shift, 1);
+    expect(a.push).toBe(0.1);
+    expect(conditionalWin(a)).toBeCloseTo(0.55, 12);
+  });
+});
+
+describe('multi-sport parlays', () => {
+  it('NHL + MLB legs on different games: P(win) is the product of the legs', () => {
+    const bet = {
+      stakeCents: 1000,
+      priceAmerican: 600,
+      boostPct: null,
+      boostedPriceAmerican: null,
+      statedPayoutCents: 7000,
+    };
+    const legs = [
+      leg({ eventId: 'espn:nhl:401892453', outcome: { win: 0.51, push: 0 } }),
+      leg({ eventId: 'espn:nhl:401891815', outcome: { win: 0.315, push: 0 } }),
+      leg({ eventId: 'mlb:849833', outcome: { win: 0.352, push: 0 } }),
+    ];
+    const v = valueBet(bet, legs);
+    expect(v.pWinSource).toBe('model');
+    expect(v.pWin).toBeCloseTo(0.51 * 0.315 * 0.352, 12);
+    expect(v.valueCents).toBeCloseTo(0.51 * 0.315 * 0.352 * 7000, 9);
   });
 });

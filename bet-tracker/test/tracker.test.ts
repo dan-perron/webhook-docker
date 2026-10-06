@@ -4,7 +4,6 @@ import { openDb, type Db } from '../src/db/client.js';
 import { events, predictionSnapshots } from '../src/db/schema.js';
 import { createProviders } from '../src/gamestate/registry.js';
 import { matchLegs } from '../src/matching/service.js';
-import { seededRng } from '../src/models/stats.js';
 import { loadSeed } from '../src/seed/load.js';
 import { footballJoint } from '../src/models/football.js';
 import { preState, Tracker, type TickResult } from '../src/tracker/tracker.js';
@@ -45,10 +44,9 @@ beforeEach(async () => {
   await matchLegs(db, providers);
   clock = NOW;
   tracker = new Tracker(db, providers, {
-    params: { ...PARAMS, mlb: { simulations: 4000 } },
+    params: PARAMS,
     polling: { liveSeconds: 30, scheduledSeconds: 600 },
     now: () => clock,
-    rng: seededRng(11),
   });
   requested.length = 0;
 });
@@ -82,9 +80,15 @@ describe('Tracker.tick', () => {
     const prior = JSON.parse(cws.priorJson!);
     // DraftKings close: CLE -149 / CWS +124, total 6.5
     expect(prior.homeWin).toBeCloseTo(devig([-149, 124]).fair[0]!, 10);
-    expect(prior.expectedTotal).toBe(6.5);
-    expect(prior.detail).toBe('DraftKings via ESPN: ML -149/+124, o/u 6.5');
-    expect(cws.model).toBe('mlb_monte_carlo');
+    expect(prior.totalLine.line).toBe(6.5);
+    // The fitted total runs (MLB model) need not equal the line.
+    expect(prior.fit.total).toBeGreaterThan(5);
+    // The run line in this recording has no prices, so it is not a target.
+    expect(prior.detail).toMatch(
+      /^DraftKings via ESPN: ML -149\/\+124, o\/u 6\.5; fit: /
+    );
+    expect(prior.spread).toBeNull();
+    expect(cws.model).toBe('mlb_exact');
     // Up 3-0 in the 8th: White Sox heavy favorites; the two sides sum to 1.
     const cle = betWith('Cleveland Guardians').legs[0]!;
     expect(cws.pWin!).toBeGreaterThan(0.85);
@@ -180,10 +184,9 @@ describe('matching bets added while running', () => {
     const empty = openDb(':memory:');
     const providers = createProviders(fakeFetcher(ROUTES).fetcher);
     const t = new Tracker(empty, providers, {
-      params: { ...PARAMS, mlb: { simulations: 1000 } },
+      params: PARAMS,
       polling: { liveSeconds: 30, scheduledSeconds: 600 },
       now: () => NOW,
-      rng: seededRng(2),
     });
     await t.tick();
     loadSeed(empty);
@@ -267,7 +270,7 @@ describe('same-game parlays (football joint model)', () => {
     expect(v.atPlacement!.pWin).toBeCloseTo(direct, 10);
   });
 
-  it('other sports keep the book-implied fallback', async () => {
+  it('MLB same-game legs are priced jointly from the exact score distribution', async () => {
     const { bet } = createBet(db, {
       book: 'FanDuel',
       stake: 10,
@@ -294,6 +297,57 @@ describe('same-game parlays (football joint model)', () => {
     });
     await tracker.tick();
     const b = getBet(db, bet.id)!;
-    expect(valueBetRow(b.bet, b.legs).now.pWinSource).toBe('book_implied');
+    const v = valueBetRow(b.bet, b.legs);
+    expect(v.now.pWinSource).toBe('model');
+    // Padres ML + Over 7.5 together is not the product of the two legs.
+    expect(
+      Math.abs(v.now.pWin - b.legs[0]!.pWin! * b.legs[1]!.pWin!)
+    ).toBeGreaterThan(0.005);
+  });
+});
+
+describe('market anchor for an exact line (bet #18: White Sox -1.5 +172, 10/7)', () => {
+  it("pregame P(win) is the market's fair price for that line; the model alone is lower", async () => {
+    const db18 = openDb(':memory:');
+    const routes = {
+      'statsapi.mlb.com/api/v1/schedule?sportId=1&date=2026-10-07':
+        'mlb/schedule-20261007.json',
+      'statsapi.mlb.com/api/v1/schedule?sportId=1&gamePks=':
+        'mlb/schedule-20261007.json',
+      'baseball/mlb/scoreboard?dates=20261007': 'espn/mlb-20261007-pre.json',
+      'baseball/mlb/summary?event=401907992':
+        'espn/summary-mlb-401907992-pre.json',
+    };
+    const providers = createProviders(fakeFetcher(routes).fetcher);
+    const t = new Tracker(db18, providers, {
+      params: PARAMS,
+      polling: { liveSeconds: 30, scheduledSeconds: 600 },
+      now: () => new Date('2026-10-07T15:00:00.000Z'),
+    });
+    const { bet } = createBet(db18, {
+      book: 'FanDuel',
+      stake: 10,
+      price: 172,
+      legs: [
+        {
+          sport: 'mlb',
+          eventDate: '2026-10-07',
+          participants: ['Chicago White Sox', 'Cleveland Guardians'],
+          market: 'spread',
+          selection: { kind: 'team', team: 'Chicago White Sox' },
+          line: -1.5,
+          price: 172,
+        },
+      ],
+    });
+    await t.tick();
+    const leg = getBet(db18, bet.id)!.legs[0]!;
+    expect(leg.matchStatus).toBe('matched');
+    // ESPN prices only CWS +1.5 / CLE -1.5, so the exact line's price is the
+    // leg's own: (1 / 2.72) / 1.045 = 0.351822.
+    expect(leg.anchorSource).toBe('entered +172: 35.2%');
+    expect(leg.anchorLogit!).toBeGreaterThan(0); // the fitted model alone is lower
+    expect(leg.pWin!).toBeCloseTo(1 / 2.72 / 1.045, 6);
+    expect(leg.pWinPlacement!).toBeCloseTo(1 / 2.72 / 1.045, 6);
   });
 });

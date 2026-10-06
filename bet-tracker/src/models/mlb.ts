@@ -1,13 +1,19 @@
 import type { BaseballSituation, GameState } from '../gamestate/types.js';
 import type { Prior } from './prior.js';
-import { samplePoisson, type Rng } from './stats.js';
-import { beatLine, type ModelSelection, type Outcome } from './types.js';
+import { ScoreDist } from './scoreDist.js';
+import { leastSquares, logit, poissonPmf } from './stats.js';
+import { beatLine } from './types.js';
 
-// MLB: Monte Carlo of the remaining half-innings. Team run rates come from
-// the prior (pregame total split by the moneyline). The current half-inning
-// finishes from its base/out state using RE24-style tables; later ones start
-// clean. Extras are played out (with the regular-season runner on 2nd), the
-// home team skips the bottom of the 9th+ when ahead, and walk-offs end it.
+// MLB: exact distribution of the final score, carried half-inning by
+// half-inning over every (home runs, away runs) pair. The current
+// half-inning finishes from its base/out state (RE24-style tables); later
+// ones start clean. Extras are played out (regular-season runner on 2nd),
+// the home team skips the bottom of the 9th+ when ahead, and walk-offs end
+// the game one run ahead.
+//
+// Three parameters, fitted pregame to the moneyline, run line and total:
+// expected total runs, the home share of them, and a dispersion that trades
+// how often an inning scores against how big the innings are (same mean).
 
 // Index: [outs][bases] with bases as a bitmask 1st=1, 2nd=2, 3rd=4.
 /** Expected runs scored from this state to the end of the half-inning. */
@@ -25,62 +31,63 @@ export const P_SCORE: readonly (readonly number[])[] = [
 /** League-average runs per half-inning (RE24 for a fresh inning). */
 export const LEAGUE_RUNS_PER_INNING = RE24[0]![0]!;
 
-/** Pythagenpat-style exponent linking run share to win share. */
+/** Pythagenpat-style exponent: the starting point for the run share. */
 const PYTH_EXPONENT = 1.83;
 const MAX_INNINGS = 30;
+/** Runs per team tracked; mass beyond is folded into the cap (negligible). */
+const CAP = 30;
+const MAX_INNING_RUNS = 20;
+
+export interface MlbFit {
+  /** Expected total runs over nine innings. */
+  total: number;
+  /** Home team's share of them. */
+  share: number;
+  /** 1 = league-typical innings; < 1 fewer, bigger innings (more variance). */
+  dispersion: number;
+}
 
 export const basesMask = (
   s: Pick<BaseballSituation, 'first' | 'second' | 'third'>
 ) => (s.first ? 1 : 0) | (s.second ? 2 : 0) | (s.third ? 4 : 0);
 
 /**
- * Runs from a base/out state to the end of the half-inning for a team whose
- * scoring is `scale` x league average. Hurdle model: score at all with the
- * table probability, then 1 + Poisson for the rest, matching the table mean.
+ * Runs from a base/out state to the end of the half-inning, for a team
+ * scoring `scale` x league average: score at all with the table probability
+ * (adjusted by `dispersion`), then 1 + Poisson, keeping the table's mean.
  */
-export function sampleHalfInningRuns(
+export function halfInningPmf(
   outs: number,
   bases: number,
   scale: number,
-  rng: Rng
-): number {
+  dispersion = 1
+): number[] {
   const mean = RE24[outs]![bases]! * scale;
-  const p = 1 - Math.pow(1 - P_SCORE[outs]![bases]!, scale);
-  if (rng() >= p) return 0;
-  return 1 + samplePoisson(Math.max(0, mean / p - 1), rng);
+  const p0 = 1 - Math.pow(1 - P_SCORE[outs]![bases]!, scale);
+  const p = Math.min(0.999, mean, Math.max(0.005, p0 * dispersion));
+  const rest = poissonPmf(Math.max(0, mean / p - 1), MAX_INNING_RUNS - 1);
+  return [1 - p, ...rest.map((q) => p * q)];
 }
 
-/** Expected runs per 9 innings for each team, from the prior. */
-export function runRates(prior: Prior): { home: number; away: number } {
-  const total = prior.expectedTotal ?? 8.8;
-  const h = Math.pow(prior.homeWin, 1 / PYTH_EXPONENT);
-  const a = Math.pow(prior.awayWin, 1 / PYTH_EXPONENT);
-  const share = h / (h + a);
-  return { home: total * share, away: total * (1 - share) };
+/** Pythagorean starting point for the home share of runs. */
+export function pythagShare(homeWin: number): number {
+  const h = Math.pow(homeWin, 1 / PYTH_EXPONENT);
+  const a = Math.pow(1 - homeWin, 1 / PYTH_EXPONENT);
+  return h / (h + a);
 }
 
-export interface MlbSimResult {
-  n: number;
-  /** Final home-minus-away margin per simulation. */
-  margins: Int16Array;
-  /** Final total runs per simulation. */
-  totals: Int16Array;
+/** Runs per nine innings for each team. */
+export function runRates(fit: MlbFit): { home: number; away: number } {
+  return { home: fit.total * fit.share, away: fit.total * (1 - fit.share) };
 }
 
-export interface MlbSimOptions {
-  simulations: number;
-  rng: Rng;
-}
-
-/** Simulate the rest of the game `n` times from the current state. */
-export function simulateMlb(
-  state: GameState,
-  prior: Prior,
-  opts: MlbSimOptions
-): MlbSimResult {
-  const rates = runRates(prior);
-  const scaleHome = rates.home / 9 / LEAGUE_RUNS_PER_INNING;
-  const scaleAway = rates.away / 9 / LEAGUE_RUNS_PER_INNING;
+/** Distribution of the final score from the current state. */
+export function mlbScores(state: GameState, fit: MlbFit): ScoreDist {
+  const rates = runRates(fit);
+  const scale = {
+    home: rates.home / 9 / LEAGUE_RUNS_PER_INNING,
+    away: rates.away / 9 / LEAGUE_RUNS_PER_INNING,
+  };
   const sit: BaseballSituation =
     state.status === 'in' && state.situation?.kind === 'baseball'
       ? state.situation
@@ -96,76 +103,180 @@ export function simulateMlb(
           extraInningRunner: false,
         };
   const scheduled = sit.scheduledInnings;
-  const margins = new Int16Array(opts.simulations);
-  const totals = new Int16Array(opts.simulations);
+  const d = fit.dispersion;
+  const fresh = {
+    home: halfInningPmf(0, 0, scale.home, d),
+    away: halfInningPmf(0, 0, scale.away, d),
+  };
+  const ghost = {
+    home: halfInningPmf(0, 2, scale.home, d),
+    away: halfInningPmf(0, 2, scale.away, d),
+  };
 
-  for (let i = 0; i < opts.simulations; i++) {
-    let home = state.home.score;
-    let away = state.away.score;
-    let inning = sit.inning;
-    let half = sit.half;
-    let first = true;
-    for (;;) {
-      // Home doesn't bat in the bottom of the 9th+ when already ahead; a
-      // tie-free score after a full 9th+ inning ends the game.
-      if (half === 'bottom' && inning >= scheduled && home > away) break;
-      if (half === 'top' && inning > scheduled && home !== away) break;
-      if (inning > MAX_INNINGS) {
-        if (home === away) home += opts.rng() < 0.5 ? 1 : 0;
-        if (home === away) away += 1;
-        break;
-      }
-      const extra = inning > scheduled && sit.extraInningRunner;
-      const outs = first ? sit.outs : 0;
-      const bases = first ? basesMask(sit) : extra ? 2 : 0;
-      const runs = sampleHalfInningRuns(
-        outs,
-        bases,
-        half === 'top' ? scaleAway : scaleHome,
-        opts.rng
-      );
-      first = false;
-      if (half === 'top') {
-        away += runs;
-        half = 'bottom';
-      } else if (inning >= scheduled && home + runs > away) {
-        // Walk-off: the game ends when the winning run scores (home trails or
-        // is tied here, so it finishes one run ahead).
-        home = away + 1;
-        break;
-      } else {
-        home += runs;
-        half = 'top';
-        inning++;
+  const W = CAP + 1;
+  let cur = new Float64Array(W * W);
+  cur[Math.min(state.home.score, CAP) * W + Math.min(state.away.score, CAP)] =
+    1;
+  const out = new ScoreDist(CAP);
+  let inning = sit.inning;
+  let half = sit.half;
+  let first = true;
+
+  for (;;) {
+    // Game-over rules before a half-inning starts.
+    for (let h = 0; h <= CAP; h++) {
+      for (let a = 0; a <= CAP; a++) {
+        const p = cur[h * W + a]!;
+        if (p === 0) continue;
+        const homeAhead = half === 'bottom' && inning >= scheduled && h > a;
+        const decided = half === 'top' && inning > scheduled && h !== a;
+        if (homeAhead || decided) {
+          out.add(h, a, p);
+          cur[h * W + a] = 0;
+        }
       }
     }
-    margins[i] = home - away;
-    totals[i] = home + away;
+    let mass = 0;
+    for (const p of cur) mass += p;
+    if (mass < 1e-12) break;
+    if (inning > MAX_INNINGS) {
+      // Still tied after 30 innings: call it a coin flip.
+      for (let h = 0; h <= CAP; h++) {
+        for (let a = 0; a <= CAP; a++) {
+          const p = cur[h * W + a]!;
+          if (p > 0) {
+            out.add(Math.min(h + 1, CAP), a, p / 2);
+            out.add(h, Math.min(a + 1, CAP), p / 2);
+          }
+        }
+      }
+      break;
+    }
+
+    const team = half === 'top' ? 'away' : 'home';
+    const extra = inning > scheduled && sit.extraInningRunner;
+    const pmf = first
+      ? halfInningPmf(sit.outs, basesMask(sit), scale[team], d)
+      : extra
+        ? ghost[team]
+        : fresh[team];
+    const next = new Float64Array(W * W);
+    for (let h = 0; h <= CAP; h++) {
+      for (let a = 0; a <= CAP; a++) {
+        const p = cur[h * W + a]!;
+        if (p === 0) continue;
+        for (let r = 0; r < pmf.length; r++) {
+          const q = p * pmf[r]!;
+          if (q === 0) continue;
+          if (team === 'away') {
+            next[h * W + Math.min(a + r, CAP)]! += q;
+          } else if (inning >= scheduled && h + r > a) {
+            // Walk-off: the game ends when the winning run scores.
+            out.add(Math.min(a + 1, CAP), a, q);
+          } else {
+            next[Math.min(h + r, CAP) * W + a]! += q;
+          }
+        }
+      }
+    }
+    cur = next;
+    first = false;
+    if (half === 'top') half = 'bottom';
+    else {
+      half = 'top';
+      inning++;
+    }
   }
-  return { n: opts.simulations, margins, totals };
+  return out;
 }
 
-/** Evaluate a selection against simulated finals (empirical CDF). */
-export function mlbOutcome(sim: MlbSimResult, sel: ModelSelection): Outcome {
-  const values = sel.market === 'total' ? sim.totals : sim.margins;
-  const sign = sel.market !== 'total' && sel.side === 'away' ? -1 : 1;
+// --- Fitting ------------------------------------------------------------------
+
+const pregame: GameState = {
+  eventId: 'fit',
+  sport: 'mlb',
+  status: 'pre',
+  cancelled: false,
+  startTime: '',
+  home: { name: 'home', abbr: null, score: 0 },
+  away: { name: 'away', abbr: null, score: 0 },
+  period: null,
+  clockSeconds: null,
+  detail: '',
+  fractionRemaining: 1,
+  situation: null,
+  winner: null,
+  providerWinProb: null,
+  fetchedAt: '',
+};
+
+/**
+ * P(the margin, or the total, beats t | not a push) from a score
+ * distribution; `sign` -1 reads the margin from the away side.
+ */
+export function condBeat(
+  dist: ScoreDist,
+  t: number,
+  of: 'margin' | 'total',
+  sign = 1
+): number {
   const cdfAt = (y: number) => {
     let c = 0;
-    for (let i = 0; i < sim.n; i++) if (sign * values[i]! <= y) c++;
-    return c / sim.n;
+    for (const [h, a, p] of dist.cells())
+      if (sign * (of === 'margin' ? h - a : h + a) <= y) c += p;
+    return c;
   };
-  if (sel.market === 'total') {
-    if (sel.line == null) throw new Error('total needs a line');
-    const over = beatLine(sel.line, cdfAt);
-    return sel.kind === 'over'
-      ? over
-      : { win: 1 - over.win - over.push, push: over.push };
-  }
-  if (!sel.side) throw new Error(`${sel.market} needs a side`);
-  if (sel.market === 'moneyline') return { win: 1 - cdfAt(0), push: 0 };
-  if (sel.market === 'spread') {
-    if (sel.line == null) throw new Error('spread needs a line');
-    return beatLine(-sel.line, cdfAt);
-  }
-  throw new Error(`mlb does not support ${sel.market}`);
+  const o = beatLine(t, cdfAt);
+  return o.win / Math.max(1e-12, 1 - o.push);
+}
+
+export function homeWinProb(dist: ScoreDist): number {
+  let w = 0;
+  for (const [h, a, p] of dist.cells()) if (h > a) w += p;
+  return w;
+}
+
+/**
+ * Fit total, share and dispersion so the pregame model prices the
+ * moneyline, the main run line and the main total at the market's fair
+ * probabilities. Without a run-line price the dispersion stays at 1;
+ * without a total price the total is the line.
+ */
+export function fitMlb(prior: Prior): MlbFit {
+  const spread = prior.spread ?? null;
+  const total = prior.totalLine ?? null;
+  const baseTotal = total?.line ?? prior.expectedTotal ?? 8.8;
+  const start: MlbFit = {
+    total: baseTotal,
+    share: pythagShare(prior.homeWin),
+    dispersion: 1,
+  };
+  const resid = (f: MlbFit) => {
+    const dist = mlbScores(pregame, f);
+    const r = [logit(homeWinProb(dist)) - logit(prior.homeWin)];
+    // Home covers when margin + home line > 0, i.e. margin beats -line.
+    if (spread)
+      r.push(logit(condBeat(dist, -spread.line, 'margin')) - logit(spread.p));
+    if (total)
+      r.push(logit(condBeat(dist, total.line, 'total')) - logit(total.p));
+    return r;
+  };
+  const free: ('total' | 'share' | 'dispersion')[] = ['share'];
+  if (total) free.push('total');
+  if (spread) free.push('dispersion');
+  const bounds = {
+    total: { lo: 3, hi: 20 },
+    share: { lo: 0.15, hi: 0.85 },
+    dispersion: { lo: 0.5, hi: 1.75 },
+  };
+  const { x } = leastSquares(
+    (v) =>
+      resid({
+        ...start,
+        ...Object.fromEntries(free.map((k, i) => [k, v[i]!])),
+      }),
+    free.map((k) => start[k]),
+    free.map((k) => bounds[k])
+  );
+  return { ...start, ...Object.fromEntries(free.map((k, i) => [k, x[i]!])) };
 }

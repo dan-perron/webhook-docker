@@ -42,6 +42,12 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
 - Prior order: ESPN/DraftKings lines (summary `pickcenter` keeps the closing
   line after kickoff) -> Odds API pregame snapshot -> entered odds (pregame
   bets only) -> neutral. Priors refresh until the event starts, then freeze.
+- Every model is fitted (`models/fit.ts`) so the pregame model reproduces the
+  de-vigged main moneyline, spread/run/puck line and total;
+  `test/marketFit.test.ts` holds every sport to 1 point. Legs on other lines
+  get a per-leg log-odds anchor to that exact line's market price (stored on
+  the leg, fading with fraction remaining). MLB/NHL lines only count when
+  priced (they are not 50/50 lines).
 - `Tracker.tick()` (every 5 s from `server.ts`) polls due events with an open
   leg (even on a settled bet, so calibration gets outcomes), stores each leg's latest P(win)/P(push), settles
   finals, and logs calibration snapshots (max one per leg per 5 min).

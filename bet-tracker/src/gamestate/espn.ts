@@ -45,6 +45,8 @@ const PATHS: Record<
     league: 'college-football',
   },
   mlb: { path: 'baseball/mlb', query: '', league: 'mlb' },
+  nhl: { path: 'hockey/nhl', query: '', league: 'nhl' },
+  wnba: { path: 'basketball/wnba', query: '', league: 'wnba' },
   mma: { path: 'mma/ufc', query: '', league: 'ufc' },
 };
 
@@ -80,8 +82,8 @@ interface EspnCompetitor {
 }
 
 interface EspnOddsSide {
-  close?: { odds?: string };
-  open?: { odds?: string };
+  close?: { odds?: string; line?: string };
+  open?: { odds?: string; line?: string };
 }
 
 interface EspnOdds {
@@ -89,6 +91,9 @@ interface EspnOdds {
   spread?: number;
   overUnder?: number;
   moneyline?: { home?: EspnOddsSide; away?: EspnOddsSide; draw?: EspnOddsSide };
+  /** Spread / run line / puck line: line and price per side. */
+  pointSpread?: { home?: EspnOddsSide; away?: EspnOddsSide };
+  total?: { over?: EspnOddsSide; under?: EspnOddsSide };
   homeTeamOdds?: { moneyLine?: number };
   awayTeamOdds?: { moneyLine?: number };
   drawOdds?: { moneyLine?: number };
@@ -176,13 +181,39 @@ function pregameLines(odds: EspnOdds[] | undefined): PregameLines | null {
           ? o.awayTeamOdds?.moneyLine
           : o.drawOdds?.moneyLine
     );
+  // Closing price when there is one, else the opener.
+  const price = (s?: EspnOddsSide) =>
+    parseAmerican(s?.close?.odds) ?? parseAmerican(s?.open?.odds);
+  const lineOf = (s?: EspnOddsSide) => {
+    const raw = s?.close?.line ?? s?.open?.line;
+    const n = raw == null ? NaN : Number(raw.replace(/^[ou]/i, ''));
+    return Number.isFinite(n) ? n : null;
+  };
+  // The point-spread object names each side's line; prefer it to `spread`,
+  // whose sign is not reliable for MLB.
+  const spreadHome =
+    lineOf(o.pointSpread?.home) ??
+    (lineOf(o.pointSpread?.away) != null
+      ? -lineOf(o.pointSpread?.away)!
+      : null) ??
+    (typeof o.spread === 'number' ? o.spread : null);
+  const total =
+    lineOf(o.total?.over) ??
+    (typeof o.overUnder === 'number' ? o.overUnder : null);
+  const spreadPriced = lineOf(o.pointSpread?.home) != null;
+  const totalPriced =
+    lineOf(o.total?.over) != null && lineOf(o.total?.over) === total;
   const lines: PregameLines = {
     source: `espn:${o.provider?.name ?? 'unknown'}`,
     homeMoneyline: ml('home'),
     awayMoneyline: ml('away'),
     drawMoneyline: ml('draw'),
-    spreadHome: typeof o.spread === 'number' ? o.spread : null,
-    total: typeof o.overUnder === 'number' ? o.overUnder : null,
+    spreadHome,
+    spreadHomePrice: spreadPriced ? price(o.pointSpread?.home) : null,
+    spreadAwayPrice: spreadPriced ? price(o.pointSpread?.away) : null,
+    total,
+    overPrice: totalPriced ? price(o.total?.over) : null,
+    underPrice: totalPriced ? price(o.total?.under) : null,
   };
   const any =
     lines.homeMoneyline ??
@@ -360,6 +391,21 @@ export function parseScoreboard(
           const minute = Math.floor((clock ?? 0) / 60);
           situation = { kind: 'soccer', minute, period: period ?? 1 };
           fractionRemaining = Math.max(0, (90 - minute) / 90);
+        } else if (sport === 'nhl') {
+          const p = period ?? 1;
+          situation = {
+            kind: 'hockey',
+            period: p,
+            clock: clock ?? 0,
+            postseason: ev.season?.type === 3,
+          };
+          fractionRemaining =
+            p > 3 ? 0 : Math.max(0, ((3 - p) * 1200 + (clock ?? 0)) / 3600);
+        } else if (sport === 'wnba') {
+          const p = period ?? 1;
+          situation = { kind: 'basketball', period: p, clock: clock ?? 0 };
+          fractionRemaining =
+            p > 4 ? 0 : Math.max(0, ((4 - p) * 600 + (clock ?? 0)) / 2400);
         }
       }
 
@@ -387,6 +433,7 @@ export function parseScoreboard(
         detail: st.type.shortDetail ?? st.type.detail ?? '',
         fractionRemaining,
         situation,
+        postseason: ev.season?.type === 3,
         winner,
         providerWinProb:
           status === 'in' && prob?.homeWinPercentage != null

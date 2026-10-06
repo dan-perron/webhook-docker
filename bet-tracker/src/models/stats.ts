@@ -112,3 +112,115 @@ export function samplePoisson(lambda: number, rng: Rng): number {
   }
   return k;
 }
+
+export const logit = (p: number) => {
+  const q = Math.min(1 - 1e-9, Math.max(1e-9, p));
+  return Math.log(q / (1 - q));
+};
+export const sigmoid = (x: number) => 1 / (1 + Math.exp(-x));
+
+/** A parameter's bounds; the solver works on an unbounded transform. */
+export interface Bound {
+  lo: number;
+  hi: number;
+}
+
+const toInner = (x: number, b: Bound) => logit((x - b.lo) / (b.hi - b.lo));
+const toOuter = (u: number, b: Bound) => b.lo + (b.hi - b.lo) * sigmoid(u);
+
+/**
+ * Bounded least squares (Levenberg–Marquardt, finite-difference Jacobian):
+ * minimize sum(residuals(x)^2) with each x[i] inside bounds[i]. Small and
+ * dependable for the 1–3 parameter fits the priors need.
+ */
+export function leastSquares(
+  residuals: (x: number[]) => number[],
+  x0: number[],
+  bounds: Bound[],
+  opts: { maxIter?: number; tol?: number } = {}
+): { x: number[]; cost: number } {
+  const maxIter = opts.maxIter ?? 40;
+  const tol = opts.tol ?? 1e-10;
+  const clampStart = (x: number, b: Bound) =>
+    Math.min(
+      b.hi - (b.hi - b.lo) * 1e-6,
+      Math.max(b.lo + (b.hi - b.lo) * 1e-6, x)
+    );
+  let u = x0.map((x, i) => toInner(clampStart(x, bounds[i]!), bounds[i]!));
+  const outer = (v: number[]) => v.map((x, i) => toOuter(x, bounds[i]!));
+  const cost = (r: number[]) => r.reduce((a, b) => a + b * b, 0);
+  let r = residuals(outer(u));
+  let c = cost(r);
+  let lambda = 1e-2;
+  const n = u.length;
+  for (let iter = 0; iter < maxIter && c > tol; iter++) {
+    // Jacobian by forward differences in the inner coordinates.
+    const J: number[][] = r.map(() => new Array(n).fill(0));
+    for (let j = 0; j < n; j++) {
+      const h = 1e-5 * Math.max(1, Math.abs(u[j]!));
+      const up = [...u];
+      up[j]! += h;
+      const rj = residuals(outer(up));
+      for (let i = 0; i < r.length; i++) J[i]![j] = (rj[i]! - r[i]!) / h;
+    }
+    // Normal equations (J^T J + lambda diag) dx = -J^T r.
+    const A: number[][] = Array.from({ length: n }, () => new Array(n).fill(0));
+    const g = new Array(n).fill(0);
+    for (let i = 0; i < r.length; i++) {
+      for (let a = 0; a < n; a++) {
+        g[a] += J[i]![a]! * r[i]!;
+        const row = A[a]!;
+        for (let b = 0; b < n; b++) row[b] = row[b]! + J[i]![a]! * J[i]![b]!;
+      }
+    }
+    let improved = false;
+    for (let attempt = 0; attempt < 8 && !improved; attempt++) {
+      const M = A.map((row, a) =>
+        row.map((v, b) => v + (a === b ? lambda * (1 + v) : 0))
+      );
+      const dx = solveLinear(
+        M,
+        g.map((v) => -v)
+      );
+      if (!dx) {
+        lambda *= 10;
+        continue;
+      }
+      const un = u.map((v, i) => v + dx[i]!);
+      const rn = residuals(outer(un));
+      const cn = cost(rn);
+      if (cn < c) {
+        u = un;
+        r = rn;
+        const gain = c - cn;
+        c = cn;
+        lambda = Math.max(1e-7, lambda / 3);
+        improved = true;
+        if (gain < tol) iter = maxIter;
+      } else {
+        lambda *= 4;
+      }
+    }
+    if (!improved) break;
+  }
+  return { x: outer(u), cost: c };
+}
+
+/** Gaussian elimination with partial pivoting; null if singular. */
+function solveLinear(A: number[][], b: number[]): number[] | null {
+  const n = b.length;
+  const M = A.map((row, i) => [...row, b[i]!]);
+  for (let col = 0; col < n; col++) {
+    let piv = col;
+    for (let r = col + 1; r < n; r++)
+      if (Math.abs(M[r]![col]!) > Math.abs(M[piv]![col]!)) piv = r;
+    if (Math.abs(M[piv]![col]!) < 1e-14) return null;
+    [M[col], M[piv]] = [M[piv]!, M[col]!];
+    for (let r = 0; r < n; r++) {
+      if (r === col) continue;
+      const f = M[r]![col]! / M[col]![col]!;
+      for (let k = col; k <= n; k++) M[r]![k]! -= f * M[col]![k]!;
+    }
+  }
+  return M.map((row, i) => row[n]! / row[i]!);
+}

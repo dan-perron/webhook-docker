@@ -94,6 +94,11 @@ describe('ESPN pregame lines', () => {
       drawMoneyline: null,
       spreadHome: 3.5,
       total: 42.5,
+      // This recording predates price capture: no spread/total prices.
+      spreadHomePrice: null,
+      spreadAwayPrice: null,
+      overPrice: null,
+      underPrice: null,
     });
   });
 
@@ -119,6 +124,103 @@ describe('ESPN pregame lines', () => {
     expect(parseAmerican('EVEN')).toBe(100);
     expect(parseAmerican('o3.5')).toBeNull();
     expect(parseAmerican(undefined)).toBeNull();
+  });
+});
+
+describe('ESPN spread and total prices', () => {
+  it('NHL: CAR @ MTL puck line and total prices (pointSpread / total objects)', () => {
+    const e = parseEvents(
+      'nhl',
+      'nhl',
+      fixture('espn/nhl-20261006-pre.json')
+    ).find((x) => x.home.name.includes('Canadiens'))!;
+    expect(e.pregameLines).toEqual({
+      source: 'espn:DraftKings',
+      homeMoneyline: 100,
+      awayMoneyline: -120,
+      drawMoneyline: null,
+      spreadHome: 1.5,
+      spreadHomePrice: -250,
+      spreadAwayPrice: 205,
+      total: 6.5,
+      overPrice: 110,
+      underPrice: -130,
+    });
+  });
+
+  it('WNBA: LV @ GSV spread -1.5 -110/-110, o/u 157.5', () => {
+    const e = parseEvents(
+      'wnba',
+      'wnba',
+      fixture('espn/wnba-20261007-pre.json')
+    ).find((x) => x.home.name.includes('Valkyries'))!;
+    expect(e.pregameLines).toMatchObject({
+      spreadHome: -1.5,
+      spreadHomePrice: -110,
+      spreadAwayPrice: -110,
+      total: 157.5,
+      overPrice: -105,
+      underPrice: -115,
+    });
+  });
+});
+
+describe('ESPN NHL and WNBA games', () => {
+  it('NHL finals: OT and shootout winners by one, shootout goal counted', () => {
+    const states = parseScoreboard(
+      'nhl',
+      fixture('espn/nhl-20260301-final.json')
+    );
+    const so = states.find((s) => s.detail === 'Final/SO')!;
+    expect(so).toMatchObject({
+      status: 'final',
+      winner: 'home',
+      home: { score: 3 },
+      away: { score: 2 },
+    });
+    const ot = states.find((s) => s.detail === 'Final/OT')!;
+    expect(Math.abs(ot.home.score - ot.away.score)).toBe(1);
+  });
+
+  it('NHL live clock: 2nd period, 12:00 left -> 32 of 60 minutes remain', () => {
+    const board = fixture<EspnScoreboard>('espn/nhl-20261006-pre.json');
+    const c = board.events![0]!.competitions[0]!;
+    c.status = {
+      clock: 720,
+      period: 2,
+      type: {
+        name: 'STATUS_IN_PROGRESS',
+        state: 'in',
+        completed: false,
+        shortDetail: '12:00 - 2nd',
+      },
+    };
+    const [s] = parseScoreboard('nhl', { events: [board.events![0]!] });
+    expect(s!.fractionRemaining).toBeCloseTo(1920 / 3600, 10);
+    expect(s!.situation).toEqual({
+      kind: 'hockey',
+      period: 2,
+      clock: 720,
+      postseason: false,
+    });
+  });
+
+  it('WNBA live clock: 4th quarter, 2:00 left; postseason flagged', () => {
+    const board = fixture<EspnScoreboard>('espn/wnba-20261007-pre.json');
+    const c = board.events![0]!.competitions[0]!;
+    c.status = {
+      clock: 120,
+      period: 4,
+      type: {
+        name: 'STATUS_IN_PROGRESS',
+        state: 'in',
+        completed: false,
+        shortDetail: '2:00 - 4th',
+      },
+    };
+    const [s] = parseScoreboard('wnba', { events: [board.events![0]!] });
+    expect(s!.fractionRemaining).toBeCloseTo(120 / 2400, 10);
+    expect(s!.postseason).toBe(true);
   });
 });
 

@@ -32,6 +32,6 @@ export const appConfig = {
       nfl: config.get<FootballSigmas>('models.football.nfl'),
       ncaaf: config.get<FootballSigmas>('models.football.ncaaf'),
     },
-    mlb: { simulations: config.get<number>('models.mlb.simulations') },
+    wnba: config.get<FootballSigmas>('models.wnba'),
   },
 };

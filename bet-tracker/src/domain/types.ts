@@ -1,7 +1,15 @@
 // Shared domain vocabulary. Money is integer cents in storage and dollars at
 // the edges (MCP/web); prices are American odds integers (e.g. +128, -210).
 
-export const SPORTS = ['nfl', 'ncaaf', 'mlb', 'soccer', 'mma'] as const;
+export const SPORTS = [
+  'nfl',
+  'ncaaf',
+  'mlb',
+  'nhl',
+  'wnba',
+  'soccer',
+  'mma',
+] as const;
 export type Sport = (typeof SPORTS)[number];
 
 export const MARKETS = [

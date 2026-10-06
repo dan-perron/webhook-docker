@@ -36,3 +36,29 @@ export function beatLine(t: number, cdfAt: (y: number) => number): Outcome {
   }
   return { win: 1 - cdfAt(t), push: 0 };
 }
+
+export type LegResult = 'won' | 'lost' | 'push';
+const cmp = (x: number): LegResult => (x > 0 ? 'won' : x < 0 ? 'lost' : 'push');
+
+/** A selection's result for a final margin (home − away) and total. */
+export function legResult(
+  sel: ModelSelection,
+  margin: number,
+  total: number
+): LegResult {
+  if (sel.market === 'total') {
+    if (sel.line == null) throw new Error('total needs a line');
+    return cmp(sel.kind === 'over' ? total - sel.line : sel.line - total);
+  }
+  if (sel.market === 'moneyline3way') {
+    const result = margin > 0 ? 'home' : margin < 0 ? 'away' : 'draw';
+    return result === (sel.kind === 'draw' ? 'draw' : sel.side)
+      ? 'won'
+      : 'lost';
+  }
+  if (!sel.side) throw new Error(`${sel.market} needs a side`);
+  const sideMargin = sel.side === 'home' ? margin : -margin;
+  if (sel.market === 'moneyline') return cmp(sideMargin); // a tie pushes
+  if (sel.line == null) throw new Error('spread needs a line');
+  return cmp(sideMargin + sel.line);
+}

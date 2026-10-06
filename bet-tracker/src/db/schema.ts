@@ -137,6 +137,11 @@ export const legs = sqliteTable(
     // de-vigged entered price (live bets). Set once.
     pWinPlacement: real('p_win_placement'),
     pPushPlacement: real('p_push_placement'),
+    // Log-odds shift matching the pregame model to the market's price for
+    // this exact line (null = no market price); frozen at kickoff with the
+    // prior. anchorSource names the price ('none' once checked and absent).
+    anchorLogit: real('anchor_logit'),
+    anchorSource: text('anchor_source'),
     ...timestamps,
   },
   (t) => [

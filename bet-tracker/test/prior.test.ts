@@ -3,7 +3,9 @@ import {
   homeWinShare,
   marginPmf,
   NFL_KEY_WEIGHTS,
+  pAt,
 } from '../src/models/football.js';
+import { ensureFit } from '../src/models/fit.js';
 import { resolvePrior } from '../src/models/prior.js';
 import { normalQuantile } from '../src/models/stats.js';
 import { PARAMS } from './helpers/states.js';
@@ -41,13 +43,27 @@ describe('resolvePrior', () => {
     expect(p.awayWin).toBeCloseTo(0.622466, 5);
     expect(p.expectedMargin).toBe(-3.5);
     expect(p.expectedTotal).toBe(42.5);
-    expect(p.detail).toMatch(
-      /^DraftKings via ESPN: ML \+154\/-185, home \+3\.5, o\/u 42\.5; σ \d+\.\d fitted to the moneyline$/
+    expect(p.detail).toBe(
+      'DraftKings via ESPN: ML +154/-185, home +3.5, o/u 42.5'
     );
-    // The fitted sigma makes the margin model reproduce the moneyline.
-    expect(
-      homeWinShare(marginPmf(-3.5, p.marginSigma!, NFL_KEY_WEIGHTS))
-    ).toBeCloseTo(0.377534, 5);
+    // Unpriced spread/total: fair 50/50 at the line.
+    expect(p.spread).toEqual({ line: 3.5, p: 0.5 });
+    expect(p.totalLine).toEqual({ line: 42.5, p: 0.5 });
+    // The fit moves mean and σ so the model reproduces both the moneyline
+    // and a 50/50 PHI +3.5.
+    const f = ensureFit('nfl', p, PARAMS);
+    const pmf = marginPmf(f.expectedMargin!, f.marginSigma!, NFL_KEY_WEIGHTS);
+    expect(homeWinShare(pmf)).toBeCloseTo(0.377534, 3);
+    let cover = 0;
+    let lose = 0;
+    for (let m = -80; m <= 80; m++) {
+      if (m + 3.5 > 0) cover += pAt(pmf, m);
+      else lose += pAt(pmf, m);
+    }
+    expect(cover / (cover + lose)).toBeCloseTo(0.5, 3);
+    expect(f.detail).toMatch(
+      /; fit: margin -?\d+\.\d, σ \d+\.\d, total 42\.5$/
+    );
   });
 
   it('the Odds API snapshot is next', () => {
@@ -91,7 +107,9 @@ describe('resolvePrior', () => {
     expect(p.homeWin).toBeCloseTo(0.336946, 5);
     expect(p.expectedMargin).toBeCloseTo(15 * normalQuantile(pHome), 8);
     expect(p.expectedTotal).toBe(41.5);
-    expect(p.detail).toBe('entered odds: home ML +184, o/u 41.5');
+    // Over 41.5 at +102: (1 / 2.02) / 1.045 = 0.473734
+    expect(p.totalLine!.p).toBeCloseTo(0.473734, 5);
+    expect(p.detail).toBe('entered odds: home ML +184, over 41.5 +102');
   });
 
   it('an entered spread sets the margin; win prob follows from it', () => {
@@ -136,7 +154,7 @@ describe('resolvePrior', () => {
     );
     expect(p.source).toBe('espn_lines');
     expect(p.expectedTotal).toBe(44.5);
-    expect(p.detail).toContain('entered odds: o/u 44.5');
+    expect(p.detail).toContain('entered odds: over 44.5 -110');
   });
 
   it('neutral when nothing prices the game', () => {

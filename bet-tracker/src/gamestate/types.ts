@@ -44,7 +44,29 @@ export interface SoccerSituation {
   period: number;
 }
 
-export type Situation = FootballSituation | BaseballSituation | SoccerSituation;
+/** NHL: clock within the period. Period 4 = overtime, 5 = shootout. */
+export interface HockeySituation {
+  kind: 'hockey';
+  period: number;
+  /** Seconds left in the period. */
+  clock: number;
+  /** Playoff overtime is sudden-death 5v5 with no shootout. */
+  postseason: boolean;
+}
+
+/** WNBA: clock within the quarter. Period 5+ = overtime. */
+export interface BasketballSituation {
+  kind: 'basketball';
+  period: number;
+  clock: number;
+}
+
+export type Situation =
+  | FootballSituation
+  | BaseballSituation
+  | SoccerSituation
+  | HockeySituation
+  | BasketballSituation;
 
 export interface GameState {
   eventId: string;
@@ -63,6 +85,8 @@ export interface GameState {
   /** Share of regulation still to play: 1 before start, 0 when final. */
   fractionRemaining: number;
   situation: Situation | null;
+  /** Postseason game (NHL overtime rules differ). */
+  postseason?: boolean;
   /** Set once final (and not cancelled). */
   winner: Side | 'draw' | null;
   /**
@@ -81,7 +105,11 @@ export interface PregameLines {
   drawMoneyline: number | null;
   /** Home team's spread (negative = home favored). */
   spreadHome: number | null;
+  spreadHomePrice?: number | null;
+  spreadAwayPrice?: number | null;
   total: number | null;
+  overPrice?: number | null;
+  underPrice?: number | null;
 }
 
 /** An event as listed by a provider, for matching legs and polling. */

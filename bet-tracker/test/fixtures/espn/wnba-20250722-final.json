@@ -1,0 +1,379 @@
+{
+ "events": [
+  {
+   "id": "401736257",
+   "date": "2025-07-22T23:30Z",
+   "name": "Los Angeles Sparks at Washington Mystics",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0.0",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "season": {
+    "year": 2025,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401736257",
+     "date": "2025-07-22T23:30Z",
+     "startDate": "2025-07-22T23:30Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0.0",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "86",
+       "team": {
+        "id": "16",
+        "location": "Washington",
+        "name": "Mystics",
+        "abbreviation": "WSH",
+        "displayName": "Washington Mystics",
+        "shortDisplayName": "Mystics"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": true,
+       "score": "93",
+       "team": {
+        "id": "6",
+        "location": "Los Angeles",
+        "name": "Sparks",
+        "abbreviation": "LA",
+        "displayName": "Los Angeles Sparks",
+        "shortDisplayName": "Sparks"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401736258",
+   "date": "2025-07-23T00:00Z",
+   "name": "Indiana Fever at New York Liberty",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0.0",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "season": {
+    "year": 2025,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401736258",
+     "date": "2025-07-23T00:00Z",
+     "startDate": "2025-07-23T00:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0.0",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "98",
+       "team": {
+        "id": "9",
+        "location": "New York",
+        "name": "Liberty",
+        "abbreviation": "NY",
+        "displayName": "New York Liberty",
+        "shortDisplayName": "Liberty"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "84",
+       "team": {
+        "id": "5",
+        "location": "Indiana",
+        "name": "Fever",
+        "abbreviation": "IND",
+        "displayName": "Indiana Fever",
+        "shortDisplayName": "Fever"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401736259",
+   "date": "2025-07-23T00:00Z",
+   "name": "Chicago Sky at Minnesota Lynx",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0.0",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "season": {
+    "year": 2025,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401736259",
+     "date": "2025-07-23T00:00Z",
+     "startDate": "2025-07-23T00:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0.0",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "91",
+       "team": {
+        "id": "8",
+        "location": "Minnesota",
+        "name": "Lynx",
+        "abbreviation": "MIN",
+        "displayName": "Minnesota Lynx",
+        "shortDisplayName": "Lynx"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "68",
+       "team": {
+        "id": "19",
+        "location": "Chicago",
+        "name": "Sky",
+        "abbreviation": "CHI",
+        "displayName": "Chicago Sky",
+        "shortDisplayName": "Sky"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401736260",
+   "date": "2025-07-23T02:00Z",
+   "name": "Atlanta Dream at Las Vegas Aces",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0.0",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "season": {
+    "year": 2025,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401736260",
+     "date": "2025-07-23T02:00Z",
+     "startDate": "2025-07-23T02:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0.0",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": true,
+       "score": "87",
+       "team": {
+        "id": "17",
+        "location": "Las Vegas",
+        "name": "Aces",
+        "abbreviation": "LV",
+        "displayName": "Las Vegas Aces",
+        "shortDisplayName": "Aces"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": false,
+       "score": "72",
+       "team": {
+        "id": "20",
+        "location": "Atlanta",
+        "name": "Dream",
+        "abbreviation": "ATL",
+        "displayName": "Atlanta Dream",
+        "shortDisplayName": "Dream"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401736261",
+   "date": "2025-07-23T02:00Z",
+   "name": "Dallas Wings at Seattle Storm",
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0.0",
+    "period": 4,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "season": {
+    "year": 2025,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401736261",
+     "date": "2025-07-23T02:00Z",
+     "startDate": "2025-07-23T02:00Z",
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0.0",
+      "period": 4,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "homeAway": "home",
+       "order": 0,
+       "winner": false,
+       "score": "63",
+       "team": {
+        "id": "14",
+        "location": "Seattle",
+        "name": "Storm",
+        "abbreviation": "SEA",
+        "displayName": "Seattle Storm",
+        "shortDisplayName": "Storm"
+       }
+      },
+      {
+       "homeAway": "away",
+       "order": 1,
+       "winner": true,
+       "score": "87",
+       "team": {
+        "id": "3",
+        "location": "Dallas",
+        "name": "Wings",
+        "abbreviation": "DAL",
+        "displayName": "Dallas Wings",
+        "shortDisplayName": "Wings"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

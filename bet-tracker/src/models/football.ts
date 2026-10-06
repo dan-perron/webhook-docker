@@ -3,8 +3,13 @@ import type { JointOutcome } from '../domain/value.js';
 import type { FootballSituation, GameState } from '../gamestate/types.js';
 import nflKeyNumbers from './data/nfl-key-numbers.json' with { type: 'json' };
 import type { FootballSigmas, Prior } from './prior.js';
-import { normalCdf } from './stats.js';
-import type { ModelSelection, Outcome } from './types.js';
+import { leastSquares, logit, normalCdf } from './stats.js';
+import {
+  beatLine,
+  legResult,
+  type ModelSelection,
+  type Outcome,
+} from './types.js';
 
 // Football (NFL/NCAAF). The final margin is an integer pmf:
 //   P(m) ∝ φ((m − mean) / sd) · w(|m|)
@@ -228,15 +233,15 @@ export function footballDistribution(
     (prior.expectedMargin ?? 0) * f +
     signed;
   const marginSd = sigma * Math.sqrt(f);
-  // Pregame, m = 0 is a true tie (historical finals include OT). Live, the
-  // weights fade out and a regulation tie goes to overtime.
+  // NFL pregame: m = 0 is a true tie (historical finals include OT). Live,
+  // and always in NCAAF/WNBA (no ties), a regulation tie goes to overtime.
   const margin = marginPmf(
     marginMean,
     marginSd,
     keyWeightsFor(state.sport),
     pre ? 1 : f
   );
-  if (!pre) {
+  if (!pre || state.sport !== 'nfl') {
     const tie = pAt(margin, 0);
     const home = overtimeWin(prior, 'home');
     margin[MARGIN_RANGE] = 0;
@@ -256,29 +261,6 @@ export function footballDistribution(
     totalSd: sigmas.totalSigma * Math.sqrt(f),
     possessionEp: signed,
   };
-}
-
-type LegResult = 'won' | 'lost' | 'push';
-const cmp = (x: number): LegResult => (x > 0 ? 'won' : x < 0 ? 'lost' : 'push');
-
-/** A leg's result for a final margin (home − away) and total. */
-function legResult(
-  sel: ModelSelection,
-  margin: number,
-  total: number
-): LegResult {
-  if (sel.market === 'total') {
-    if (sel.line == null) throw new Error('total needs a line');
-    return cmp(sel.kind === 'over' ? total - sel.line : sel.line - total);
-  }
-  if (!sel.side) throw new Error(`${sel.market} needs a side`);
-  const sideMargin = sel.side === 'home' ? margin : -margin;
-  if (sel.market === 'moneyline') return cmp(sideMargin); // a tie pushes
-  if (sel.market === 'spread') {
-    if (sel.line == null) throw new Error('spread needs a line');
-    return cmp(sideMargin + sel.line);
-  }
-  throw new Error(`football does not support ${sel.market}`);
 }
 
 /** Integer total pmf: Normal(mean, sd) with continuity correction. */
@@ -360,4 +342,95 @@ export function footballProbability(
     else win += o.p;
   }
   return { win, push };
+}
+
+export interface MarginFit {
+  /** Mean final margin, home − away. */
+  mean: number;
+  sigma: number;
+  /** Mean final total. */
+  total: number;
+}
+
+/**
+ * Fit the margin mean and σ so the pregame model prices the moneyline (ties
+ * excluded) and the main spread at the market's fair probabilities, and the
+ * total's mean so it prices the main total. Without a spread, σ stays at
+ * the league default and only the mean moves.
+ */
+export function fitMarginModel(
+  prior: Prior,
+  sport: 'nfl' | 'ncaaf' | 'wnba',
+  sigmas: FootballSigmas
+): MarginFit {
+  const pre = {
+    sport,
+    status: 'pre',
+    home: { score: 0 },
+    away: { score: 0 },
+    fractionRemaining: 1,
+    situation: null,
+  } as unknown as GameState;
+  const spread = prior.spread ?? null;
+  const resid = (mean: number, sigma: number) => {
+    const d = footballDistribution(
+      pre,
+      { ...prior, expectedMargin: mean, marginSigma: sigma },
+      sigmas
+    );
+    const r = [logit(homeWinShare(d.margin)) - logit(prior.homeWin)];
+    if (spread) {
+      // Home covers when m + line > 0.
+      let win = 0;
+      let lose = 0;
+      for (let m = -MARGIN_RANGE; m <= MARGIN_RANGE; m++) {
+        const x = m + spread.line;
+        if (x > 0) win += pAt(d.margin, m);
+        else if (x < 0) lose += pAt(d.margin, m);
+      }
+      r.push(logit(win / (win + lose)) - logit(spread.p));
+    }
+    return r;
+  };
+  const startMean = prior.expectedMargin ?? (spread ? -spread.line : 0);
+  const [lo, hi] = sigmas.sigmaRange;
+  let mean = startMean;
+  let sigma = sigmas.marginSigma;
+  if (spread) {
+    const { x } = leastSquares(
+      (v) => resid(v[0]!, v[1]!),
+      [startMean, Math.min(hi, Math.max(lo, sigmas.marginSigma))],
+      [
+        { lo: -60, hi: 60 },
+        { lo, hi },
+      ]
+    );
+    [mean, sigma] = [x[0]!, x[1]!];
+  } else {
+    mean = leastSquares(
+      (v) => resid(v[0]!, sigma),
+      [startMean],
+      [{ lo: -60, hi: 60 }]
+    ).x[0]!;
+  }
+
+  // Total: P(over | no push) at the line, from the discretized normal.
+  const t = prior.totalLine ?? null;
+  let total = t?.line ?? prior.expectedTotal ?? 0;
+  if (t) {
+    const sd = sigmas.totalSigma;
+    const over = (mu: number) => {
+      const o = beatLine(t.line, (y) => normalCdf((y - mu) / sd));
+      return o.win / (1 - o.push);
+    };
+    let a = t.line - 4 * sd;
+    let b = t.line + 4 * sd;
+    for (let k = 0; k < 60; k++) {
+      const mid = (a + b) / 2;
+      if (over(mid) < t.p) a = mid;
+      else b = mid;
+    }
+    total = (a + b) / 2;
+  }
+  return { mean, sigma, total };
 }

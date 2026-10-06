@@ -16,6 +16,8 @@ const SPORT_KEYS: Record<Exclude<Sport, 'soccer'>, string> = {
   nfl: 'americanfootball_nfl',
   ncaaf: 'americanfootball_ncaaf',
   mlb: 'baseball_mlb',
+  nhl: 'icehockey_nhl',
+  wnba: 'basketball_wnba',
   mma: 'mma_mixed_martial_arts',
 };
 export const SOCCER_LEAGUE_KEYS: Record<string, string> = {
