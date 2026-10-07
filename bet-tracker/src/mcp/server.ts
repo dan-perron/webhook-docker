@@ -6,13 +6,14 @@ import {
   removeBet,
   settleBet,
   updateBet,
+  updateLeg,
 } from '../db/bets.js';
 import type { Db } from '../db/client.js';
 import { betInputSchema } from '../domain/betInput.js';
-import { BET_STATUSES, BOOST_KINDS } from '../domain/types.js';
+import { BET_STATUSES, BOOST_KINDS, SELECTION_KINDS } from '../domain/types.js';
 import type { Providers } from '../gamestate/registry.js';
 import { confirmLegMatch, matchLegs } from '../matching/service.js';
-import { filterEvents, summarizeEvent } from '../odds/consensus.js';
+import { filterEvents, oddsView, summarizeEvent } from '../odds/consensus.js';
 import { ODDS_MARKETS, sportKey, type OddsApiClient } from '../odds/oddsApi.js';
 import type { Tracker } from '../tracker/tracker.js';
 import { betViewById, betViews, portfolio } from '../tracker/views.js';
@@ -60,7 +61,7 @@ export function createMcpServer(s: Services): McpServer {
     'check_odds',
     {
       title: 'Check current odds',
-      description: `Current lines from The Odds API for a sport, optionally filtered to teams/an event. Returns, per book and market: American prices (from the API), de-vigged fair probabilities and hold (computed from those prices), plus a cross-book consensus and best price, and the Odds API quota remaining after the call. Each call costs markets x regions requests (60 s cache is free); calls costing more than the confirmation threshold return the cost and need confirm: true. ${UNITS}`,
+      description: `Current lines from The Odds API for a sport, optionally filtered to teams/an event. Returns, per market, each outcome with its own point (spreads: e.g. Brewers -1.5 / Padres +1.5; totals: the line), every book's American price (from the API) and de-vigged fair probability (computed), the cross-book consensus and best price, and the market's average hold, and the Odds API quota remaining after the call. Each call costs markets x regions requests (60 s cache is free); calls costing more than the confirmation threshold return the cost and need confirm: true. ${UNITS}`,
       inputSchema: {
         sport: z
           .string()
@@ -131,7 +132,7 @@ export function createMcpServer(s: Services): McpServer {
           cached: r.cached,
           quota: { remaining: r.quota.remaining, used: r.quota.used },
           eventCount: matched.length,
-          events: matched.slice(0, 10).map(summarizeEvent),
+          events: matched.slice(0, 10).map((e) => oddsView(summarizeEvent(e))),
         });
       } catch (e) {
         return fail((e as Error).message);
@@ -262,7 +263,55 @@ export function createMcpServer(s: Services): McpServer {
     },
     async ({ id, fields }) => {
       const b = updateBet(s.db, id, fields);
-      return b ? json(betViewById(s.db, b)) : fail(`Bet ${id} not found`);
+      if (!b) return fail(`Bet ${id} not found`);
+      // Placement values depend on prices, boost and placed time: rebuild.
+      s.tracker.recomputeBet(id);
+      return json(betViewById(s.db, getBet(s.db, id)!));
+    }
+  );
+
+  server.registerTool(
+    'update_leg',
+    {
+      title: 'Update a leg',
+      description: `Fix one leg of a bet: its price (American odds, as placed), line (from the selection's side, e.g. -1.5) and/or selection (kind team/over/under/draw, and team for team picks; must be one of the leg's two participants). Re-validated like add_bet. Then the whole bet is recomputed: prior from its own prices, P(win) at placement and now, same-game joints, and settlement if the game is final. ${UNITS}`,
+      inputSchema: {
+        legId: z.number().int(),
+        fields: z
+          .object({
+            price: z.number().int(),
+            line: z.number().nullable(),
+            selection: z.object({
+              kind: z.enum(SELECTION_KINDS),
+              team: z.string().optional(),
+            }),
+          })
+          .partial(),
+      },
+    },
+    async ({ legId, fields }) => {
+      try {
+        const leg = updateLeg(s.db, legId, fields);
+        s.tracker.recomputeBet(leg.betId);
+        return json(betViewById(s.db, getBet(s.db, leg.betId)!));
+      } catch (e) {
+        return fail((e as Error).message);
+      }
+    }
+  );
+
+  server.registerTool(
+    'recompute_bet',
+    {
+      title: 'Recompute a bet',
+      description:
+        "Rebuild a bet's derived numbers from scratch: each leg's prior from the event's market lines plus this bet's own entered prices, P(win) and EV at placement (market lines as of the bet's placed time), market anchors, same-game joints, and settlement from final scores (the bet status is re-derived from its legs; a manual settle_bet result is replaced). Use after correcting data, or when a bet looks stale.",
+      inputSchema: { id: z.number().int() },
+    },
+    async ({ id }) => {
+      if (!getBet(s.db, id)) return fail(`Bet ${id} not found`);
+      s.tracker.recomputeBet(id);
+      return json(betViewById(s.db, getBet(s.db, id)!));
     }
   );
 

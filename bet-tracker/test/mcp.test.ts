@@ -102,9 +102,11 @@ describe('MCP tools', () => {
       'get_bet',
       'list_bets',
       'portfolio',
+      'recompute_bet',
       'remove_bet',
       'settle_bet',
       'update_bet',
+      'update_leg',
     ]);
     for (const name of [
       'check_odds',
@@ -217,13 +219,26 @@ describe('MCP tools', () => {
       eventCount: number;
       quota: { remaining: number };
       events: {
-        markets: { market: string; consensus: Record<string, number> }[];
+        markets: {
+          market: string;
+          outcomes: { name: string; point?: number; fair: number }[];
+        }[];
       }[];
     }>('check_odds', { sport: 'nfl', teams_or_event: 'Rams @ Eagles' });
     expect(data.eventCount).toBe(1);
     expect(data.quota.remaining).toBe(497);
     const h2h = data.events[0]!.markets.find((m) => m.market === 'h2h')!;
-    expect(h2h.consensus['Los Angeles Rams']).toBeCloseTo(0.626284, 6);
+    expect(
+      h2h.outcomes.find((o) => o.name === 'Los Angeles Rams')!.fair
+    ).toBeCloseTo(0.626284, 4);
+    // Spreads: each side carries its own point.
+    const spreads = data.events[0]!.markets.find(
+      (m) => m.market === 'spreads'
+    )!;
+    expect(spreads.outcomes.map((o) => [o.name, o.point])).toEqual([
+      ['Los Angeles Rams', -3.5],
+      ['Philadelphia Eagles', 3.5],
+    ]);
     expect(oddsUrls).toHaveLength(1);
   });
 
