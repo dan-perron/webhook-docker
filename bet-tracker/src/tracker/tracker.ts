@@ -7,6 +7,7 @@ import {
   legs,
   predictionSnapshots,
   type EventRow,
+  type BetRow,
   type LegRow,
 } from '../db/schema.js';
 import { betStatus } from '../domain/value.js';
@@ -14,6 +15,7 @@ import type { Providers } from '../gamestate/registry.js';
 import type { GameState, PregameLines } from '../gamestate/types.js';
 import { nameScore } from '../matching/match.js';
 import { matchLegs } from '../matching/service.js';
+import { linesAsOf, recordLines } from './lines.js';
 import {
   filterEvents,
   linesFromOdds,
@@ -75,6 +77,21 @@ export interface StoredJoint {
 }
 
 const iso = (d: Date) => d.toISOString();
+const fmtPrice = (p: number) => (p > 0 ? `+${p}` : `${p}`);
+
+function groupBy<T, K>(xs: T[], key: (x: T) => K): Map<K, T[]> {
+  const m = new Map<K, T[]>();
+  for (const x of xs) m.set(key(x), [...(m.get(key(x)) ?? []), x]);
+  return m;
+}
+
+/** Joint outcomes as stored on the bet (legs by id, not position). */
+function toStored(ls: LegRow[], outs: JointOutcome[]): StoredJoint[] {
+  return outs.map((o) => ({
+    p: o.p,
+    pushedLegIds: o.pushed.map((i) => ls[i]!.id),
+  }));
+}
 const addSeconds = (d: Date, s: number) => new Date(d.getTime() + s * 1000);
 
 /** A not-yet-fetched event, as a pre-game state. */
@@ -258,6 +275,7 @@ export class Tracker extends EventEmitter {
         })
         .where(eq(events.id, e.id))
         .run();
+      if (lines) recordLines(this.db, e.id, 'espn', lines, iso(now));
     }
   }
 
@@ -329,6 +347,8 @@ export class Tracker extends EventEmitter {
         .set({ pregameOddsJson: json, pregameOddsAt: iso(now) })
         .where(eq(events.id, e.id))
         .run();
+      if (json)
+        recordLines(this.db, e.id, 'snapshot', JSON.parse(json), iso(now));
     }
   }
 
@@ -395,89 +415,146 @@ export class Tracker extends EventEmitter {
     }
   }
 
-  /** The prior for an event: refreshed until it starts, then frozen on the legs. */
-  /** The event's prior, fitted: refreshed until the event starts, then frozen. */
-  private priorFor(e: EventRow, eventLegs: LegRow[], state: GameState): Prior {
-    const postseason =
+  private postseasonOf(state: GameState): boolean {
+    return (
       !!state.postseason ||
-      (state.situation?.kind === 'hockey' && state.situation.postseason);
-    const stored = eventLegs.find((l) => l.priorJson)?.priorJson;
-    if (e.status !== 'pre' && stored) {
-      return ensureFit(
-        e.sport,
-        JSON.parse(stored) as Prior,
-        this.opts.params,
-        postseason
-      );
-    }
-    const placedLive = new Set(
-      this.db
-        .select({ id: bets.id })
-        .from(bets)
-        .where(
-          and(
-            inArray(
-              bets.id,
-              eventLegs.map((l) => l.betId)
-            ),
-            eq(bets.placedLive, true)
-          )
-        )
-        .all()
-        .map((b) => b.id)
+      (state.situation?.kind === 'hockey' && state.situation.postseason)
     );
-    const entered: EnteredLeg[] = eventLegs
-      .filter((l) => !placedLive.has(l.betId))
-      .map((l) => ({
-        market: l.market,
-        selectionKind: l.selectionKind,
-        side: l.side,
-        line: l.line,
-        price: l.priceAmerican,
-      }));
-    const parse = <T>(json: string | null) =>
-      json ? (JSON.parse(json) as T) : null;
-    const prior = resolvePrior(
-      e.sport,
-      {
-        espnLines: parse<PregameLines>(e.providerLinesJson),
-        snapshot: parse<LinesInput>(e.pregameOddsJson),
-        entered,
-      },
-      this.opts.params
-    );
-    return ensureFit(e.sport, prior, this.opts.params, postseason);
   }
 
   /**
-   * Per open leg, the log-odds shift that makes the pregame model match the
-   * market's fair price for that exact line. Recomputed while pregame,
-   * frozen after (like the prior); legs without a market price get none.
+   * One bet's prior on an event: the event's market lines (shared by every
+   * bet) plus that bet's own entered prices (pregame bets only), fitted.
+   * With `asOf`, market lines come from the history as they stood then
+   * (placement); otherwise the event's current lines, which stop updating
+   * once it starts, so a started game's prior is effectively frozen.
    */
-  private anchors(e: EventRow, prior: Prior, open: LegRow[]) {
-    const refresh =
-      e.status === 'pre' || open.some((l) => l.anchorSource == null);
-    if (!refresh) {
-      return open.map((l) => ({
-        shift: l.anchorLogit,
-        source: l.anchorSource,
-      }));
-    }
-    const sels = open.map(selectionOf);
+  private betPrior(
+    e: EventRow,
+    bet: BetRow,
+    betLegs: LegRow[],
+    state: GameState,
+    asOf?: string
+  ): Prior {
+    const parse = <T>(json: string | null) =>
+      json ? (JSON.parse(json) as T) : null;
+    const espnLines =
+      (asOf ? linesAsOf<PregameLines>(this.db, e.id, 'espn', asOf) : null) ??
+      parse<PregameLines>(e.providerLinesJson);
+    const snapshot =
+      (asOf ? linesAsOf<LinesInput>(this.db, e.id, 'snapshot', asOf) : null) ??
+      parse<LinesInput>(e.pregameOddsJson);
+    const entered: EnteredLeg[] = bet.placedLive
+      ? []
+      : betLegs.map((l) => ({
+          market: l.market,
+          selectionKind: l.selectionKind,
+          side: l.side,
+          line: l.line,
+          price: l.priceAmerican,
+        }));
+    const prior = resolvePrior(
+      e.sport,
+      { espnLines, snapshot, entered },
+      this.opts.params
+    );
+    return ensureFit(
+      e.sport,
+      prior,
+      this.opts.params,
+      this.postseasonOf(state)
+    );
+  }
+
+  /**
+   * Per leg, the log-odds shift that makes the pregame model match the
+   * market's fair price for that exact line (from this bet's prior); legs
+   * without a market price get none.
+   */
+  private anchorsFor(e: EventRow, prior: Prior, ls: LegRow[]) {
+    const sels = ls.map(selectionOf);
     const pre = evaluateEvent(e.sport, preState(e), prior, sels, {
       params: this.opts.params,
     });
-    return open.map((l, i) => {
-      if (e.status !== 'pre' && l.anchorSource != null) {
-        return { shift: l.anchorLogit, source: l.anchorSource };
-      }
+    return ls.map((_, i) => {
       const m = marketFor(prior, sels[i]!);
-      const shift = m ? anchorShift(pre[i]!.outcome, m.p) : null;
       return {
-        shift,
+        shift: m ? anchorShift(pre[i]!.outcome, m.p) : null,
         source: m ? `${m.source}: ${(m.p * 100).toFixed(1)}%` : 'none',
       };
     });
+  }
+
+  /**
+   * Placement values for `targets` (any status): live bets use their own
+   * de-vigged price; pregame bets use their prior with market lines as of
+   * placement (placedAt, else when the bet was logged), anchored, evaluated
+   * pregame. Same-game groups also get their joint placement.
+   */
+  private placementFor(
+    e: EventRow,
+    targets: LegRow[],
+    allLegs: LegRow[],
+    state: GameState
+  ) {
+    const out = new Map<number, { win: number; push: number; json: string }>();
+    const joints: { betId: number; outcomes: StoredJoint[] }[] = [];
+    const byBet = groupBy(targets, (l) => l.betId);
+    for (const [betId, ls] of byBet) {
+      const bet = this.db.select().from(bets).where(eq(bets.id, betId)).get();
+      if (!bet) continue;
+      if (bet.placedLive) {
+        for (const l of ls) {
+          const hold = l.market === 'moneyline3way' ? 0.06 : undefined;
+          out.set(l.id, {
+            win: devigSingle(l.priceAmerican, hold),
+            push: 0,
+            json: JSON.stringify({
+              source: 'entered (live bet)',
+              detail: `${fmtPrice(l.priceAmerican)} de-vigged`,
+            }),
+          });
+        }
+        continue;
+      }
+      const asOf = bet.placedAt ?? bet.createdAt;
+      const betLegs = allLegs.filter((l) => l.betId === betId);
+      const prior = this.betPrior(e, bet, betLegs, state, asOf);
+      const anchors = this.anchorsFor(e, prior, ls);
+      const evals = evaluateEvent(
+        e.sport,
+        preState(e),
+        prior,
+        ls.map(selectionOf),
+        {
+          params: this.opts.params,
+          anchors: anchors.map((a) => a.shift),
+        }
+      );
+      ls.forEach((l, i) =>
+        out.set(l.id, {
+          win: evals[i]!.outcome.win,
+          push: evals[i]!.outcome.push,
+          json: JSON.stringify({
+            source: prior.source,
+            detail: prior.detail,
+            anchor: anchors[i]!.source,
+            linesAsOf: asOf,
+          }),
+        })
+      );
+      if (betLegs.length > 1) {
+        const j = jointOutcomes(
+          e.sport,
+          preState(e),
+          prior,
+          betLegs.map(selectionOf),
+          this.opts.params
+        );
+        if (j) joints.push({ betId, outcomes: toStored(betLegs, j) });
+      }
+    }
+    return { legs: out, joints };
   }
 
   /**
@@ -504,11 +581,85 @@ export class Tracker extends EventEmitter {
     return result;
   }
 
+  /**
+   * Rebuild one bet from scratch: priors from its own prices, placement
+   * values, anchors, same-game joints, and settlement of finished games
+   * (bet status re-derived from its legs; the settle time is kept when the
+   * result doesn't change). For corrected prices or edited legs.
+   */
+  recomputeBet(betId: number): TickResult {
+    const result: TickResult = {
+      polled: [],
+      evaluatedEvents: [],
+      changedBets: [],
+      errors: [],
+    };
+    const bet = this.db.select().from(bets).where(eq(bets.id, betId)).get();
+    if (!bet) throw new Error(`Bet ${betId} not found`);
+    const betLegs = this.db
+      .select()
+      .from(legs)
+      .where(eq(legs.betId, betId))
+      .all();
+    const eventIds = [
+      ...new Set(betLegs.map((l) => l.eventId).filter((x): x is string => !!x)),
+    ];
+    const finals = new Set(
+      eventIds.length
+        ? this.db
+            .select({ id: events.id })
+            .from(events)
+            .where(
+              and(inArray(events.id, eventIds), eq(events.status, 'final'))
+            )
+            .all()
+            .map((r) => r.id)
+        : []
+    );
+    this.db.transaction((tx) => {
+      for (const l of betLegs) {
+        tx.update(legs)
+          .set({
+            pWinPlacement: null,
+            pPushPlacement: null,
+            placementJson: null,
+            anchorLogit: null,
+            anchorSource: null,
+            priorJson: null,
+            priorSource: null,
+            evaluatedAt: null,
+            // Finished games re-settle from their final state.
+            ...(l.eventId && finals.has(l.eventId)
+              ? { status: 'open' as const }
+              : {}),
+          })
+          .where(eq(legs.id, l.id))
+          .run();
+      }
+      tx.update(bets)
+        .set({ jointJson: null, jointPlacementJson: null, status: 'open' })
+        .where(eq(bets.id, betId))
+        .run();
+    });
+    for (const id of eventIds) this.evaluate(id, result);
+    const after = this.db.select().from(bets).where(eq(bets.id, betId)).get()!;
+    if (after.status === bet.status) {
+      // Same result: keep when it originally settled.
+      this.db
+        .update(bets)
+        .set({ settledAt: bet.settledAt })
+        .where(eq(bets.id, betId))
+        .run();
+    }
+    result.changedBets.push(betId);
+    this.emit('change', result);
+    return result;
+  }
+
   /** Re-evaluate every open leg on an event (any bet), settle, snapshot. */
   evaluate(eventId: string, result: TickResult) {
     const e = this.db.select().from(events).where(eq(events.id, eventId)).get();
     if (!e) return;
-    // Every leg on the event, so priors see all entered odds; open ones get evaluated.
     const allLegs = this.db
       .select()
       .from(legs)
@@ -519,111 +670,93 @@ export class Tracker extends EventEmitter {
     const state = e.stateJson
       ? (JSON.parse(e.stateJson) as GameState)
       : preState(e);
-    const prior = this.priorFor(e, allLegs, state);
-    const priorJson = JSON.stringify(prior);
     const now = iso(this.now());
-    let anchors: { shift: number | null; source: string | null }[];
-    try {
-      anchors = this.anchors(e, prior, open);
-    } catch (err) {
-      result.errors.push(`anchor ${eventId}: ${(err as Error).message}`);
-      anchors = open.map(() => ({ shift: null, source: null }));
-    }
-    const params = {
-      params: this.opts.params,
-      anchors: anchors.map((a) => a.shift),
-    };
 
-    let evals;
+    // Each bet's legs are evaluated with that bet's own prior.
+    type LegUpdate = {
+      leg: LegRow;
+      ev: ReturnType<typeof evaluateEvent>[number];
+      anchor: { shift: number | null; source: string | null };
+      prior: Prior;
+    };
+    const updates: LegUpdate[] = [];
+    const jointsNow: { betId: number; outcomes: StoredJoint[] }[] = [];
     try {
-      evals = evaluateEvent(
-        e.sport,
-        state,
-        prior,
-        open.map(selectionOf),
-        params
-      );
+      for (const [betId, ls] of groupBy(open, (l) => l.betId)) {
+        const bet = this.db.select().from(bets).where(eq(bets.id, betId)).get();
+        if (!bet) continue;
+        const betLegs = allLegs.filter((l) => l.betId === betId);
+        const prior = this.betPrior(e, bet, betLegs, state);
+        const anchors = this.anchorsFor(e, prior, ls);
+        const evals = evaluateEvent(
+          e.sport,
+          state,
+          prior,
+          ls.map(selectionOf),
+          {
+            params: this.opts.params,
+            anchors: anchors.map((a) => a.shift),
+          }
+        );
+        ls.forEach((leg, i) =>
+          updates.push({ leg, ev: evals[i]!, anchor: anchors[i]!, prior })
+        );
+        if (ls.length > 1 && state.status !== 'final') {
+          const j = jointOutcomes(
+            e.sport,
+            state,
+            prior,
+            ls.map(selectionOf),
+            this.opts.params
+          );
+          if (j) jointsNow.push({ betId, outcomes: toStored(ls, j) });
+        }
+      }
     } catch (err) {
       result.errors.push(`evaluate ${eventId}: ${(err as Error).message}`);
       return;
     }
 
-    // Placement probabilities, once: the prior (pregame) or the entered price (live).
     const needPlacement = open.filter((l) => l.pWinPlacement == null);
-    const liveBets = new Set(
-      needPlacement.length
-        ? this.db
-            .select({ id: bets.id })
-            .from(bets)
-            .where(
-              and(
-                inArray(
-                  bets.id,
-                  needPlacement.map((l) => l.betId)
-                ),
-                eq(bets.placedLive, true)
-              )
-            )
-            .all()
-            .map((b) => b.id)
-        : []
-    );
-    const pregamePlacement = needPlacement.some((l) => !liveBets.has(l.betId))
-      ? evaluateEvent(
-          e.sport,
-          preState(e),
-          prior,
-          open.map(selectionOf),
-          params
-        )
-      : null;
-
-    const joints = this.sameGameJoints(e, state, prior, open);
+    let placement: ReturnType<Tracker['placementFor']> | null = null;
+    try {
+      placement = needPlacement.length
+        ? this.placementFor(e, needPlacement, allLegs, state)
+        : null;
+    } catch (err) {
+      result.errors.push(`placement ${eventId}: ${(err as Error).message}`);
+    }
 
     const affectedBets = new Set<number>();
+    const merge = (json: string | null, outcomes: StoredJoint[]) =>
+      JSON.stringify({ ...(json ? JSON.parse(json) : {}), [e.id]: outcomes });
     this.db.transaction((tx) => {
-      for (const j of joints) {
-        if (!j.now) continue; // no joint model (UFC): stays book-implied
-        const now = j.now;
+      for (const j of jointsNow) {
         const bet = tx.select().from(bets).where(eq(bets.id, j.betId)).get();
-        if (!bet) continue;
-        const merge = (json: string | null, outcomes: StoredJoint[]) =>
-          JSON.stringify({
-            ...(json ? JSON.parse(json) : {}),
-            [e.id]: outcomes,
-          });
-        const placementKnown =
-          !!bet.jointPlacementJson &&
-          e.id in JSON.parse(bet.jointPlacementJson);
-        tx.update(bets)
-          .set({
-            jointJson: merge(bet.jointJson, now),
-            ...(j.placement && !placementKnown
-              ? {
-                  jointPlacementJson: merge(
-                    bet.jointPlacementJson,
-                    j.placement
-                  ),
-                }
-              : {}),
-          })
-          .where(eq(bets.id, j.betId))
-          .run();
+        if (bet)
+          tx.update(bets)
+            .set({ jointJson: merge(bet.jointJson, j.outcomes) })
+            .where(eq(bets.id, j.betId))
+            .run();
       }
-      open.forEach((leg, i) => {
-        const ev = evals[i]!;
-        let placement: { win: number; push: number } | undefined;
-        if (leg.pWinPlacement == null) {
-          placement = liveBets.has(leg.betId)
-            ? {
-                win: devigSingle(
-                  leg.priceAmerican,
-                  leg.market === 'moneyline3way' ? 0.06 : undefined
-                ),
-                push: 0,
-              }
-            : pregamePlacement![i]!.outcome;
+      for (const j of placement?.joints ?? []) {
+        const bet = tx.select().from(bets).where(eq(bets.id, j.betId)).get();
+        if (
+          bet &&
+          !(
+            bet.jointPlacementJson && e.id in JSON.parse(bet.jointPlacementJson)
+          )
+        ) {
+          tx.update(bets)
+            .set({
+              jointPlacementJson: merge(bet.jointPlacementJson, j.outcomes),
+            })
+            .where(eq(bets.id, j.betId))
+            .run();
         }
+      }
+      for (const { leg, ev, anchor, prior } of updates) {
+        const placed = placement?.legs.get(leg.id);
         tx.update(legs)
           .set({
             pWin: ev.outcome.win,
@@ -632,13 +765,16 @@ export class Tracker extends EventEmitter {
             modelInputsJson: JSON.stringify(ev.inputs),
             evaluatedAt: now,
             status: ev.status,
-            anchorLogit: anchors[i]!.shift,
-            anchorSource: anchors[i]!.source,
-            ...(e.status === 'pre' || !leg.priorJson
-              ? { priorSource: prior.source, priorJson }
-              : {}),
-            ...(placement
-              ? { pWinPlacement: placement.win, pPushPlacement: placement.push }
+            anchorLogit: anchor.shift,
+            anchorSource: anchor.source,
+            priorSource: prior.source,
+            priorJson: JSON.stringify(prior),
+            ...(placed
+              ? {
+                  pWinPlacement: placed.win,
+                  pPushPlacement: placed.push,
+                  placementJson: placed.json,
+                }
               : {}),
             updatedAt: now,
           })
@@ -657,7 +793,7 @@ export class Tracker extends EventEmitter {
             .run();
         }
         affectedBets.add(leg.betId);
-      });
+      }
 
       for (const betId of affectedBets) {
         const bet = tx.select().from(bets).where(eq(bets.id, betId)).get();
@@ -679,58 +815,6 @@ export class Tracker extends EventEmitter {
     });
     result.evaluatedEvents.push(eventId);
     result.changedBets.push(...affectedBets);
-  }
-
-  /**
-   * For each bet with two or more open legs on this event, the exact joint
-   * outcome of those legs now, and pregame for placement (pregame bets only),
-   * from the same game model. UFC has none: those bets stay book-implied.
-   */
-  private sameGameJoints(
-    e: EventRow,
-    state: GameState,
-    prior: Prior,
-    open: LegRow[]
-  ) {
-    if (state.status === 'final') return [];
-    const byBet = new Map<number, LegRow[]>();
-    for (const l of open)
-      byBet.set(l.betId, [...(byBet.get(l.betId) ?? []), l]);
-    const groups = [...byBet].filter(([, ls]) => ls.length > 1);
-    if (groups.length === 0) return [];
-    const live = new Set(
-      this.db
-        .select({ id: bets.id })
-        .from(bets)
-        .where(
-          and(
-            inArray(
-              bets.id,
-              groups.map(([id]) => id)
-            ),
-            eq(bets.placedLive, true)
-          )
-        )
-        .all()
-        .map((b) => b.id)
-    );
-    const toStored = (ls: LegRow[], outs: JointOutcome[]): StoredJoint[] =>
-      outs.map((o) => ({
-        p: o.p,
-        pushedLegIds: o.pushed.map((i) => ls[i]!.id),
-      }));
-    return groups.map(([betId, ls]) => {
-      const sels = ls.map(selectionOf);
-      const now = jointOutcomes(e.sport, state, prior, sels, this.opts.params);
-      const pre = live.has(betId)
-        ? null
-        : jointOutcomes(e.sport, preState(e), prior, sels, this.opts.params);
-      return {
-        betId,
-        now: now ? toStored(ls, now) : null,
-        placement: pre ? toStored(ls, pre) : null,
-      };
-    });
   }
 
   private maybeSnapshot(

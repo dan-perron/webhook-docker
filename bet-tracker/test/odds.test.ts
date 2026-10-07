@@ -3,6 +3,7 @@ import { openDb, type Db } from '../src/db/client.js';
 import {
   filterEvents,
   linesFromOdds,
+  oddsView,
   summarizeEvent,
 } from '../src/odds/consensus.js';
 import {
@@ -203,5 +204,57 @@ describe('OddsApiClient', () => {
     await expect(
       c.getOdds({ sportKey: 'x_y', markets: ['h2h'] })
     ).rejects.toThrow(/ODDS_API_KEY/);
+  });
+});
+
+describe('oddsView: per-outcome points', () => {
+  it('MLB run line reads Brewers -1.5 +168 / Padres +1.5 -205', () => {
+    const ev: OddsEvent = {
+      id: 'x',
+      sport_key: 'baseball_mlb',
+      commence_time: '2026-10-08T02:00:00Z',
+      home_team: 'San Diego Padres',
+      away_team: 'Milwaukee Brewers',
+      bookmakers: [
+        {
+          key: 'fanduel',
+          title: 'FanDuel',
+          last_update: '2026-10-07T20:00:00Z',
+          markets: [
+            {
+              key: 'spreads',
+              outcomes: [
+                { name: 'Milwaukee Brewers', price: 168, point: -1.5 },
+                { name: 'San Diego Padres', price: -205, point: 1.5 },
+              ],
+            },
+            {
+              key: 'totals',
+              outcomes: [
+                { name: 'Over', price: -110, point: 7.5 },
+                { name: 'Under', price: -110, point: 7.5 },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const v = oddsView(summarizeEvent(ev));
+    const rl = v.markets.find((m) => m.market === 'spreads')!;
+    expect(
+      rl.outcomes.map((o) => [o.name, o.point, o.books[0]!.price])
+    ).toEqual([
+      ['Milwaukee Brewers', -1.5, 168],
+      ['San Diego Padres', 1.5, -205],
+    ]);
+    // De-vigged: 1/2.68 = 0.373134 and 205/305 = 0.672131 -> 0.357 / 0.643
+    expect(rl.outcomes[0]!.fair).toBeCloseTo(0.357, 3);
+    const tot = v.markets.find((m) => m.market === 'totals')!;
+    expect(tot.outcomes.map((o) => [o.name, o.point])).toEqual([
+      ['Over', 7.5],
+      ['Under', 7.5],
+    ]);
+    // No single ambiguous point on the market.
+    expect(rl).not.toHaveProperty('point');
   });
 });

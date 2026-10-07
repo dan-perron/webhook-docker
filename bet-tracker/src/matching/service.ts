@@ -4,6 +4,7 @@ import { events, legs, type LegRow } from '../db/schema.js';
 import type { Side, Sport } from '../domain/types.js';
 import type { Providers } from '../gamestate/registry.js';
 import type { ProviderEvent } from '../gamestate/types.js';
+import { recordLines } from '../tracker/lines.js';
 import { matchEvent, type Candidate } from './match.js';
 
 /** What we store/return per candidate so a later confirm needs no refetch. */
@@ -70,6 +71,9 @@ export function upsertEvent(db: DbOrTx, e: ProviderEvent): void {
       },
     })
     .run();
+  if (e.status === 'pre' && e.pregameLines) {
+    recordLines(db, e.id, 'espn', e.pregameLines, now);
+  }
 }
 
 /** Home/away of the backed team, given which side each participant matched. */

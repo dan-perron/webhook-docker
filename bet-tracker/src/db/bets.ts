@@ -1,8 +1,18 @@
 import { asc, count, eq, inArray } from 'drizzle-orm';
-import { betInputSchema, type BetInput } from '../domain/betInput.js';
+import {
+  betInputSchema,
+  legInputSchema,
+  type BetInput,
+} from '../domain/betInput.js';
 import type { BetStatus } from '../domain/types.js';
 import type { DbOrTx } from './client.js';
-import { bets, legs, type BetRow, type LegRow } from './schema.js';
+import {
+  bets,
+  legs,
+  predictionSnapshots,
+  type BetRow,
+  type LegRow,
+} from './schema.js';
 
 export interface BetWithLegs {
   bet: BetRow;
@@ -184,4 +194,79 @@ export function removeBet(db: DbOrTx, id: number): boolean {
     db.delete(bets).where(eq(bets.id, id)).returning({ id: bets.id }).all()
       .length > 0
   );
+}
+
+/** Editable leg fields (American odds; line from the selection's side). */
+export interface LegUpdate {
+  price?: number;
+  line?: number | null;
+  selection?: { kind: LegRow['selectionKind']; team?: string };
+}
+
+/**
+ * Edit a leg's price, line or selection, re-validated like a new leg. A
+ * single bet's price follows its leg. Changing the selection or line drops
+ * the leg's calibration snapshots (they predicted a different outcome).
+ * Callers recompute the bet afterwards (Tracker.recomputeBet).
+ */
+export function updateLeg(db: DbOrTx, legId: number, u: LegUpdate): LegRow {
+  const leg = db.select().from(legs).where(eq(legs.id, legId)).get();
+  if (!leg) throw new Error(`Leg ${legId} not found`);
+  const selection = u.selection ?? {
+    kind: leg.selectionKind,
+    ...(leg.selectionTeam ? { team: leg.selectionTeam } : {}),
+  };
+  const parsed = legInputSchema.parse({
+    sport: leg.sport,
+    eventDate: leg.eventDate,
+    participants: [leg.participantA, leg.participantB],
+    market: leg.market,
+    selection,
+    ...((u.line !== undefined ? u.line : leg.line) != null
+      ? { line: u.line !== undefined ? u.line : leg.line }
+      : {}),
+    price: u.price ?? leg.priceAmerican,
+  });
+  const newTeam = parsed.selection.team ?? null;
+  const selectionChanged =
+    parsed.selection.kind !== leg.selectionKind ||
+    newTeam !== leg.selectionTeam;
+  // Home/away of a new team pick: the other side when it switched teams;
+  // re-match when the side was never known.
+  let side = leg.side;
+  let matchStatus = leg.matchStatus;
+  if (parsed.selection.kind !== 'team') side = null;
+  else if (newTeam !== leg.selectionTeam) {
+    if (leg.side) side = leg.side === 'home' ? 'away' : 'home';
+    else if (leg.eventId) matchStatus = 'unmatched';
+  }
+  return db.transaction((tx) => {
+    const updated = tx
+      .update(legs)
+      .set({
+        priceAmerican: parsed.price,
+        line: parsed.line ?? null,
+        selectionKind: parsed.selection.kind,
+        selectionTeam: newTeam,
+        side,
+        matchStatus,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(legs.id, legId))
+      .returning()
+      .get();
+    if (selectionChanged || parsed.line !== (leg.line ?? undefined)) {
+      tx.delete(predictionSnapshots)
+        .where(eq(predictionSnapshots.legId, legId))
+        .run();
+    }
+    const bet = tx.select().from(bets).where(eq(bets.id, leg.betId)).get()!;
+    if (bet.betType === 'single' && bet.priceAmerican !== parsed.price) {
+      tx.update(bets)
+        .set({ priceAmerican: parsed.price })
+        .where(eq(bets.id, bet.id))
+        .run();
+    }
+    return updated;
+  });
 }

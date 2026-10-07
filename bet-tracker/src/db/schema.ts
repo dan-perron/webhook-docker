@@ -142,6 +142,8 @@ export const legs = sqliteTable(
     // prior. anchorSource names the price ('none' once checked and absent).
     anchorLogit: real('anchor_logit'),
     anchorSource: text('anchor_source'),
+    // How pWinPlacement was derived (JSON: source, detail, lines time).
+    placementJson: text('placement_json'),
     ...timestamps,
   },
   (t) => [
@@ -177,6 +179,24 @@ export const predictionSnapshots = sqliteTable(
     index('snapshots_bet_idx').on(t.betId),
     index('snapshots_leg_idx').on(t.legId),
   ]
+);
+
+/**
+ * Every market line fetch per event (ESPN lines, Odds API snapshot), so a
+ * bet's placement value can use the lines as they were when it was placed.
+ */
+export const eventLines = sqliteTable(
+  'event_lines',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    eventId: text('event_id')
+      .notNull()
+      .references(() => events.id, { onDelete: 'cascade' }),
+    source: text('source', { enum: ['espn', 'snapshot'] }).notNull(),
+    fetchedAt: text('fetched_at').notNull(),
+    linesJson: text('lines_json').notNull(),
+  },
+  (t) => [index('event_lines_event_idx').on(t.eventId, t.fetchedAt)]
 );
 
 /** Small key/value store (e.g. Odds API quota headers). */

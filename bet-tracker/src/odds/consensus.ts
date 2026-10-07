@@ -12,6 +12,8 @@ export interface BookLine {
   lastUpdate: string;
   /** American odds per outcome name, as offered. */
   prices: Record<string, number>;
+  /** Each outcome's own point (spreads: -1.5 / +1.5; totals: the line). */
+  points: Record<string, number>;
   /** De-vigged probability per outcome name. */
   fair: Record<string, number>;
   /** Overround, e.g. 0.045 = 4.5%. */
@@ -64,6 +66,11 @@ export function summarizeEvent(e: OddsEvent): EventOdds {
         title: b.title,
         lastUpdate: m.last_update ?? b.last_update,
         prices: Object.fromEntries(m.outcomes.map((o) => [o.name, o.price])),
+        points: Object.fromEntries(
+          m.outcomes
+            .filter((o) => o.point != null)
+            .map((o) => [o.name, o.point!])
+        ),
         fair: Object.fromEntries(m.outcomes.map((o, i) => [o.name, fair[i]!])),
         hold,
       });
@@ -151,5 +158,57 @@ export function linesFromOdds(e: EventOdds): LinesInput {
     total: totals?.point ?? null,
     overPrice: price(totals?.consensus['Over']),
     underPrice: price(totals?.consensus['Under']),
+  };
+}
+
+/** One outcome of a market line, with its own point. */
+export interface OutcomeView {
+  name: string;
+  /** Spreads: this side's line (e.g. -1.5); totals: the line; h2h: absent. */
+  point?: number;
+  /** De-vigged consensus probability. */
+  fair: number;
+  best: { price: number; book: string };
+  books: { book: string; price: number; fair: number }[];
+}
+
+export interface MarketView {
+  market: OddsMarket;
+  outcomes: OutcomeView[];
+  /** Mean overround across these books. */
+  hold: number;
+}
+
+/**
+ * check_odds output: every outcome carries its own point, so a spread reads
+ * "Brewers -1.5 +168 / Padres +1.5 -205" with no single ambiguous point.
+ */
+export function oddsView(e: EventOdds) {
+  const round = (x: number) => Math.round(x * 10000) / 10000;
+  return {
+    id: e.id,
+    commenceTime: e.commenceTime,
+    home: e.home,
+    away: e.away,
+    markets: e.markets.map((m): MarketView => ({
+      market: m.market,
+      hold: round(m.books.reduce((a, b) => a + b.hold, 0) / m.books.length),
+      outcomes: Object.keys(m.consensus).map((name) => {
+        const point = m.books.find((b) => b.points[name] != null)?.points[name];
+        return {
+          name,
+          ...(point != null ? { point } : {}),
+          fair: round(m.consensus[name]!),
+          best: m.bestPrice[name]!,
+          books: m.books
+            .filter((b) => b.prices[name] != null)
+            .map((b) => ({
+              book: b.title,
+              price: b.prices[name]!,
+              fair: round(b.fair[name]!),
+            })),
+        };
+      }),
+    })),
   };
 }

@@ -92,6 +92,8 @@ export interface LegView {
   pWin: number | null;
   pPush: number | null;
   pWinAtPlacement: number | null;
+  /** How pWinAtPlacement was derived (prior source, lines as of, anchor). */
+  placement?: Record<string, unknown> | null;
   model: string | null;
   modelInputs?: Record<string, unknown>;
   prior?: (Prior & { source: string }) | null;
@@ -127,6 +129,7 @@ function legView(l: LegRow, e: EventRow | undefined, full: boolean): LegView {
     model: l.model,
     ...(full
       ? {
+          placement: l.placementJson ? JSON.parse(l.placementJson) : null,
           modelInputs: l.modelInputsJson
             ? JSON.parse(l.modelInputsJson)
             : undefined,
