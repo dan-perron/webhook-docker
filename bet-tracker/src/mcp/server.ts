@@ -240,7 +240,7 @@ export function createMcpServer(s: Services): McpServer {
     'update_bet',
     {
       title: 'Update a bet',
-      description: `Edit bet-level fields. ${UNITS} stake/statedPayout in dollars; price/boostedPrice in American odds; boostPct in percent. Pass null to clear an optional field. Legs are not editable (remove and re-add instead).`,
+      description: `Edit bet-level fields. ${UNITS} stake/statedPayout in dollars; price/boostedPrice in American odds; boostPct in percent. settledAt corrects when a settled bet settled (it normally comes from its games' final times; a later recompute re-derives it). Pass null to clear an optional field. Legs are not editable (remove and re-add instead).`,
       inputSchema: {
         id: z.number().int(),
         fields: z
@@ -257,15 +257,23 @@ export function createMcpServer(s: Services): McpServer {
             statedPayout: z.number().positive().nullable(),
             tokenInfo: z.string().nullable(),
             notes: z.string().nullable(),
+            settledAt: z.iso.datetime({ offset: true }).nullable(),
           })
           .partial(),
       },
     },
     async ({ id, fields }) => {
-      const b = updateBet(s.db, id, fields);
-      if (!b) return fail(`Bet ${id} not found`);
-      // Placement values depend on prices, boost and placed time: rebuild.
-      s.tracker.recomputeBet(id);
+      const { settledAt, ...rest } = fields;
+      try {
+        const b = updateBet(s.db, id, rest);
+        if (!b) return fail(`Bet ${id} not found`);
+        // Placement values depend on prices, boost and placed time: rebuild.
+        if (Object.keys(rest).length) s.tracker.recomputeBet(id);
+        // After the recompute, which would re-derive it.
+        if (settledAt !== undefined) updateBet(s.db, id, { settledAt });
+      } catch (e) {
+        return fail((e as Error).message);
+      }
       return json(betViewById(s.db, getBet(s.db, id)!));
     }
   );

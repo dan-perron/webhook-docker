@@ -166,5 +166,7 @@ describe('parseSchedule (recorded status edge cases)', () => {
       fractionRemaining: 0,
     });
     expect(s!.away.score).toBe(3);
+    // gameInfo: first pitch 17:08Z + 169 min game + 0 min delay = 19:57Z.
+    expect(s!.endTime).toBe('2026-10-03T19:57:00.000Z');
   });
 });

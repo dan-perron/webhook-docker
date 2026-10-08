@@ -128,6 +128,8 @@ export interface BetUpdate {
   statedPayout?: number | null;
   tokenInfo?: string | null;
   notes?: string | null;
+  /** Correct when a settled bet settled (any ISO offset; null clears). */
+  settledAt?: string | null;
 }
 
 export function updateBet(
@@ -151,6 +153,12 @@ export function updateBet(
       u.statedPayout == null ? null : toCents(u.statedPayout);
   if (u.tokenInfo !== undefined) set.tokenInfo = u.tokenInfo;
   if (u.notes !== undefined) set.notes = u.notes;
+  if (u.settledAt !== undefined) {
+    const bet = db.select().from(bets).where(eq(bets.id, id)).get();
+    if (bet?.status === 'open' && u.settledAt)
+      throw new Error(`Bet ${id} is open; settle it before setting settledAt`);
+    set.settledAt = u.settledAt ? new Date(u.settledAt).toISOString() : null;
+  }
   if (Object.keys(set).length === 0) return getBet(db, id);
   if (u.placedLive !== undefined) {
     // Placement probabilities depend on it (prior vs entered price): redo.

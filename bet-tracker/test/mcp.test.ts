@@ -288,6 +288,25 @@ describe('MCP tools', () => {
       status: 'void',
       now: { value: 12, ev: 0 },
     });
+    // settledAt alone is a correction: no recompute (which would reopen it).
+    const fixed = await call<BetView>('update_bet', {
+      id,
+      fields: { settledAt: '2026-10-03T21:40:00-05:00' },
+    });
+    expect(fixed.data).toMatchObject({
+      status: 'void',
+      settledAt: '2026-10-04T02:40:00.000Z',
+    });
+    const other = (await call<BetView[]>('list_bets', { status: 'open' }))
+      .data[0]!.id;
+    expect(
+      (
+        await call('update_bet', {
+          id: other,
+          fields: { settledAt: '2026-10-04T02:40:00Z' },
+        })
+      ).isError
+    ).toBe(true);
     expect((await call('remove_bet', { id })).data).toEqual({ removed: id });
     expect((await call('get_bet', { id })).isError).toBe(true);
   });

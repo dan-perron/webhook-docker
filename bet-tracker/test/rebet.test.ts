@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import { eq } from 'drizzle-orm';
 import {
   createBet,
   getBet,
+  settleBet,
+  updateBet,
   updateLeg,
   type BetWithLegs,
 } from '../src/db/bets.js';
 import { openDb, type Db } from '../src/db/client.js';
-import { events, predictionSnapshots } from '../src/db/schema.js';
+import { bets, events, predictionSnapshots } from '../src/db/schema.js';
 import type { BetInput } from '../src/domain/betInput.js';
 import type { EspnScoreboard } from '../src/gamestate/espn.js';
 import { createProviders } from '../src/gamestate/registry.js';
@@ -206,16 +209,85 @@ describe('editing a leg and recomputing', () => {
     updateLeg(db, getBet(db, bet.id)!.legs[0]!.id, { price: 194 });
     expect(getBet(db, bet.id)!.bet.priceAmerican).toBe(194);
   });
+});
 
-  it('recompute keeps the settle time when the result is unchanged', async () => {
+// The three fights are listed at the main card's 00:00Z start, and ESPN has
+// no end time: settled at 00:00Z + 150 min (MMA estimate) = 02:30Z.
+const FIGHTS_FINAL = '2026-10-04T02:30:00.000Z';
+
+describe('settle time comes from the games, not from when settlement ran', () => {
+  it('a bet re-entered days after its fights settles on the fight night (#23)', async () => {
+    clock = new Date('2026-10-07T05:23:00.000Z');
     const t = trackerFor(true);
     const { bet } = createBet(db, parlay([194, -205, -215]));
     await t.tick();
-    const settledAt = getBet(db, bet.id)!.bet.settledAt;
-    expect(settledAt).toBeTruthy();
-    clock = new Date(clock.getTime() + 86_400_000);
+    expect(getBet(db, bet.id)!.bet).toMatchObject({
+      status: 'won',
+      settledAt: FIGHTS_FINAL,
+    });
+  });
+
+  it('recompute re-derives it from the games', async () => {
+    const t = trackerFor(true);
+    const { bet } = createBet(db, parlay([194, -205, -215]));
+    clock = new Date('2026-10-04T04:00:00.000Z');
+    await t.tick();
+    clock = new Date('2026-10-07T05:23:00.000Z');
     t.recomputeBet(bet.id);
-    expect(getBet(db, bet.id)!.bet).toMatchObject({ status: 'won', settledAt });
+    expect(getBet(db, bet.id)!.bet).toMatchObject({
+      status: 'won',
+      settledAt: FIGHTS_FINAL,
+    });
+  });
+
+  it('backfill fixes score-settled bets and leaves manual results alone', async () => {
+    clock = new Date('2026-10-07T05:23:00.000Z');
+    const t = trackerFor(true);
+    const auto = createBet(db, parlay([194, -205, -215])).bet.id;
+    const manual = createBet(db, parlay([216, -166, -173])).bet.id;
+    await t.tick();
+    // As the old code stamped them: the time settlement ran.
+    db.update(bets)
+      .set({ settledAt: '2026-10-07T05:23:00.000Z' })
+      .where(eq(bets.id, auto))
+      .run();
+    settleBet(db, manual, 'void'); // legs say won: a hand override
+    const manualAt = getBet(db, manual)!.bet.settledAt;
+
+    expect(await t.backfillSettledAt({ dryRun: true })).toEqual([
+      { id: auto, from: '2026-10-07T05:23:00.000Z', to: FIGHTS_FINAL },
+    ]);
+    expect(getBet(db, auto)!.bet.settledAt).toBe('2026-10-07T05:23:00.000Z');
+    await t.backfillSettledAt();
+    expect(getBet(db, auto)!.bet.settledAt).toBe(FIGHTS_FINAL);
+    expect(getBet(db, manual)!.bet).toMatchObject({
+      status: 'void',
+      settledAt: manualAt,
+    });
+    expect(await t.backfillSettledAt()).toEqual([]);
+
+    // An old stamp before the estimate is a tighter bound: kept. And ESPN
+    // re-fetches (no end time) don't replace the stored state.
+    const stateBefore = db.select().from(events).all();
+    db.update(bets)
+      .set({ settledAt: '2026-10-04T02:10:00.000Z' })
+      .where(eq(bets.id, auto))
+      .run();
+    expect(await t.backfillSettledAt()).toEqual([]);
+    expect(db.select().from(events).all()).toEqual(stateBefore);
+  });
+
+  it('update_bet can correct it by hand; open bets refuse one', async () => {
+    const t = trackerFor(true);
+    const { bet } = createBet(db, parlay([194, -205, -215]));
+    await t.tick();
+    updateBet(db, bet.id, { settledAt: '2026-10-03T22:05:00-05:00' });
+    expect(getBet(db, bet.id)!.bet.settledAt).toBe('2026-10-04T03:05:00.000Z');
+
+    const open = createBet(db, parlay([216, -166, -173])).bet.id;
+    expect(() =>
+      updateBet(db, open, { settledAt: '2026-10-04T03:05:00Z' })
+    ).toThrow(/is open/);
   });
 });
 

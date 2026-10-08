@@ -29,7 +29,7 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   loader and MCP `add_bet`.
 - Seed: `node built/seed/cli.js [--force]` (idempotent without `--force`).
 - Game state goes through `GameStateProvider` (`src/gamestate/`): MLB from the
-  Stats API (batched `schedule?hydrate=linescore`), everything else from ESPN
+  Stats API (batched `schedule?hydrate=linescore,team,gameInfo`), everything else from ESPN
   scoreboards (one call per sport/league/date). ESPN `yardLine` is measured
   from the home goal line; don't trust `possessionText` abbreviations.
 - Tests use trimmed real responses in `test/fixtures/`; never hit the network.
@@ -51,6 +51,12 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
 - `Tracker.tick()` (every 5 s from `server.ts`) polls due events with an open
   leg (even on a settled bet, so calibration gets outcomes), stores each leg's latest P(win)/P(push), settles
   finals, and logs calibration snapshots (max one per leg per 5 min).
+- `settledAt` is when the bet's games ended, never when settlement ran
+  (`src/domain/settleTime.ts`): a loss at its first losing leg's final,
+  otherwise its last leg's final. Event end = provider end time (MLB
+  `gameInfo`) or start + per-sport estimate, capped by when we saw it final.
+  Manual `settle_bet` uses now; `update_bet` can correct it. Re-derive for
+  existing bets: `node built/tracker/backfillCli.js [--dry-run]`.
 - Parlay push/void recompute scales the remaining legs by the book's pricing
   factor (stated price / product of legs).
 
