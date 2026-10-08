@@ -47,6 +47,12 @@ interface MlbGame {
   teams: { home: MlbTeamSide; away: MlbTeamSide };
   linescore?: MlbLinescore;
   scheduledInnings?: number;
+  /** With hydrate=gameInfo; durations are filled in once the game is over. */
+  gameInfo?: {
+    firstPitch?: string;
+    gameDurationMinutes?: number;
+    delayDurationMinutes?: number;
+  };
 }
 
 export interface MlbSchedule {
@@ -159,6 +165,18 @@ export function parseSchedule(
         winner =
           homeRuns > awayRuns ? 'home' : awayRuns > homeRuns ? 'away' : 'draw';
       }
+      const info = g.gameInfo;
+      const endTime =
+        status === 'final' &&
+        !cancelled &&
+        info?.firstPitch &&
+        info.gameDurationMinutes != null
+          ? new Date(
+              new Date(info.firstPitch).getTime() +
+                (info.gameDurationMinutes + (info.delayDurationMinutes ?? 0)) *
+                  60_000
+            ).toISOString()
+          : null;
       out.push({
         eventId: eventId(g.gamePk),
         sport: 'mlb',
@@ -181,6 +199,7 @@ export function parseSchedule(
         fractionRemaining,
         situation: sit,
         winner,
+        endTime,
         providerWinProb: null,
         fetchedAt,
       });
@@ -237,7 +256,7 @@ export class MlbStatsProvider implements GameStateProvider {
     if (refs.length === 0) return states;
     const pks = refs.map((r) => r.id.replace(/^mlb:/, ''));
     const sched = (await this.fetcher(
-      `${BASE}/schedule?sportId=1&gamePks=${pks.join(',')}&hydrate=linescore,team`
+      `${BASE}/schedule?sportId=1&gamePks=${pks.join(',')}&hydrate=linescore,team,gameInfo`
     )) as MlbSchedule;
     for (const s of parseSchedule(sched)) states.set(s.eventId, s);
     return states;

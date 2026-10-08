@@ -10,6 +10,7 @@ import {
   type BetRow,
   type LegRow,
 } from '../db/schema.js';
+import { betSettledAt, eventFinalAt } from '../domain/settleTime.js';
 import { betStatus } from '../domain/value.js';
 import type { Providers } from '../gamestate/registry.js';
 import type { GameState, PregameLines } from '../gamestate/types.js';
@@ -584,8 +585,8 @@ export class Tracker extends EventEmitter {
   /**
    * Rebuild one bet from scratch: priors from its own prices, placement
    * values, anchors, same-game joints, and settlement of finished games
-   * (bet status re-derived from its legs; the settle time is kept when the
-   * result doesn't change). For corrected prices or edited legs.
+   * (bet status and settle time re-derived from its legs). For corrected
+   * prices or edited legs.
    */
   recomputeBet(betId: number): TickResult {
     const result: TickResult = {
@@ -637,20 +638,16 @@ export class Tracker extends EventEmitter {
           .run();
       }
       tx.update(bets)
-        .set({ jointJson: null, jointPlacementJson: null, status: 'open' })
+        .set({
+          jointJson: null,
+          jointPlacementJson: null,
+          status: 'open',
+          settledAt: null,
+        })
         .where(eq(bets.id, betId))
         .run();
     });
     for (const id of eventIds) this.evaluate(id, result);
-    const after = this.db.select().from(bets).where(eq(bets.id, betId)).get()!;
-    if (after.status === bet.status) {
-      // Same result: keep when it originally settled.
-      this.db
-        .update(bets)
-        .set({ settledAt: bet.settledAt })
-        .where(eq(bets.id, betId))
-        .run();
-    }
     result.changedBets.push(betId);
     this.emit('change', result);
     return result;
@@ -807,7 +804,11 @@ export class Tracker extends EventEmitter {
         );
         if (status !== 'open') {
           tx.update(bets)
-            .set({ status, settledAt: now, updatedAt: now })
+            .set({
+              status,
+              settledAt: this.settledAtFor(tx, betId),
+              updatedAt: now,
+            })
             .where(eq(bets.id, betId))
             .run();
         }
@@ -815,6 +816,130 @@ export class Tracker extends EventEmitter {
     });
     result.evaluatedEvents.push(eventId);
     result.changedBets.push(...affectedBets);
+  }
+
+  /**
+   * When a bet settled from its legs: its games' final times (betSettledAt),
+   * never when settlement ran.
+   */
+  private settledAtFor(tx: Db | Tx, betId: number): string | null {
+    const ls = tx
+      .select({ status: legs.status, eventId: legs.eventId })
+      .from(legs)
+      .where(eq(legs.betId, betId))
+      .all();
+    const ids = [
+      ...new Set(ls.map((l) => l.eventId).filter((x): x is string => !!x)),
+    ];
+    const finalAt = new Map(
+      (ids.length
+        ? tx
+            .select()
+            .from(events)
+            .where(and(inArray(events.id, ids), eq(events.status, 'final')))
+            .all()
+        : []
+      ).map((e) => [
+        e.id,
+        eventFinalAt(
+          e.sport,
+          e.startTime,
+          e.stateJson ? (JSON.parse(e.stateJson) as GameState) : null,
+          this.now()
+        ),
+      ])
+    );
+    return betSettledAt(
+      ls.map((l) => ({
+        status: l.status,
+        finalAt: (l.eventId && finalAt.get(l.eventId)) || null,
+      }))
+    );
+  }
+
+  /**
+   * Re-derive settledAt for every bet settled from final scores (bets whose
+   * stored result differs from their legs' were settled by hand and are
+   * left alone). Final events without a provider end time are re-fetched
+   * first, in case the provider has one now. Never moves a settle time
+   * later. Returns the changes.
+   */
+  async backfillSettledAt(
+    opts: { dryRun?: boolean } = {}
+  ): Promise<{ id: number; from: string | null; to: string }[]> {
+    const settled = this.db
+      .select()
+      .from(bets)
+      .where(ne(bets.status, 'open'))
+      .all();
+    const betLegs = settled.length
+      ? this.db
+          .select()
+          .from(legs)
+          .where(
+            inArray(
+              legs.betId,
+              settled.map((b) => b.id)
+            )
+          )
+          .all()
+      : [];
+    const ids = [
+      ...new Set(betLegs.map((l) => l.eventId).filter((x): x is string => !!x)),
+    ];
+    const stale = (
+      ids.length
+        ? this.db
+            .select()
+            .from(events)
+            .where(and(inArray(events.id, ids), eq(events.status, 'final')))
+            .all()
+        : []
+    ).filter(
+      (e) => !e.stateJson || !(JSON.parse(e.stateJson) as GameState).endTime
+    );
+    if (!opts.dryRun) {
+      // Only take a re-fetched state that adds an end time: replacing the
+      // rest would lose when the game was first seen final.
+      for (const [, list] of groupBy(stale, (e) => e.provider)) {
+        const states = await this.providers
+          .forEventId(list[0]!.id)
+          .getStates(list);
+        for (const e of list) {
+          const s = states.get(e.id);
+          if (s?.status === 'final' && s.endTime)
+            this.db
+              .update(events)
+              .set({ stateJson: JSON.stringify(s) })
+              .where(eq(events.id, e.id))
+              .run();
+        }
+      }
+    }
+    const changes: { id: number; from: string | null; to: string }[] = [];
+    for (const bet of settled) {
+      const ls = betLegs.filter((l) => l.betId === bet.id);
+      if (betStatus(ls) !== bet.status) continue;
+      let to = this.settledAtFor(this.db, bet.id);
+      // The old stamp (when settlement ran) is also a bound: never later.
+      if (to && bet.settledAt && bet.settledAt < to) to = bet.settledAt;
+      if (!to || to === bet.settledAt) continue;
+      changes.push({ id: bet.id, from: bet.settledAt, to });
+      if (!opts.dryRun)
+        this.db
+          .update(bets)
+          .set({ settledAt: to })
+          .where(eq(bets.id, bet.id))
+          .run();
+    }
+    if (changes.length && !opts.dryRun)
+      this.emit('change', {
+        polled: [],
+        evaluatedEvents: [],
+        changedBets: changes.map((c) => c.id),
+        errors: [],
+      } satisfies TickResult);
+    return changes;
   }
 
   private maybeSnapshot(

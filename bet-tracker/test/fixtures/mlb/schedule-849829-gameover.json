@@ -52,6 +52,11 @@
        }
       },
       "offense": {}
+     },
+     "gameInfo": {
+      "firstPitch": "2026-10-03T17:08:00.000Z",
+      "gameDurationMinutes": 169,
+      "delayDurationMinutes": 0
      }
     }
    ]

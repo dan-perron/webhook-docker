@@ -89,6 +89,8 @@ export interface GameState {
   postseason?: boolean;
   /** Set once final (and not cancelled). */
   winner: Side | 'draw' | null;
+  /** When the game actually ended, if the provider publishes it (MLB). */
+  endTime?: string | null;
   /**
    * The provider's own win probability, if it publishes one. Shown for
    * reference and calibration comparison only; never fed to our models.
