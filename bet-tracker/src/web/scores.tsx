@@ -111,41 +111,41 @@ export function GameCardView({
             bet
           </span>
         ) : null}
+        <span class="g-actions">
+          {c.watched ? (
+            <>
+              <Action
+                path="/scores/alerts"
+                fields={{ eventId: c.eventId, on: c.alerts ? '0' : '1', back }}
+                label={c.alerts ? '🔔' : '🔕'}
+                title={c.alerts ? 'Alerts on (tap to mute)' : 'Alerts off'}
+              />
+              <Action
+                path="/scores/unwatch"
+                fields={{ eventId: c.eventId, back }}
+                label="★"
+                title="Stop watching"
+                cls="on"
+              />
+            </>
+          ) : (
+            <Action
+              path="/scores/watch"
+              fields={{
+                eventId: c.eventId,
+                sport: c.sport,
+                date: localDateOf(live.startTime, p.timeZone),
+                back,
+              }}
+              label="☆"
+              title="Watch (alerts)"
+            />
+          )}
+        </span>
       </div>
       {row('away')}
       {row('home')}
       {sit ? <div class="sit">{sit}</div> : null}
-      <div class="g-actions">
-        {c.watched ? (
-          <>
-            <Action
-              path="/scores/alerts"
-              fields={{ eventId: c.eventId, on: c.alerts ? '0' : '1', back }}
-              label={c.alerts ? '🔔' : '🔕'}
-              title={c.alerts ? 'Alerts on (tap to mute)' : 'Alerts off'}
-            />
-            <Action
-              path="/scores/unwatch"
-              fields={{ eventId: c.eventId, back }}
-              label="★"
-              title="Stop watching"
-              cls="on"
-            />
-          </>
-        ) : (
-          <Action
-            path="/scores/watch"
-            fields={{
-              eventId: c.eventId,
-              sport: c.sport,
-              date: localDateOf(live.startTime, p.timeZone),
-              back,
-            }}
-            label="☆"
-            title="Watch (alerts)"
-          />
-        )}
-      </div>
     </article>
   );
 }
@@ -181,9 +181,11 @@ function Section(props: { title: string; games: GameCard[]; p: ScoresPage }) {
   return (
     <section>
       <h2>{props.title}</h2>
-      {props.games.map((c) => (
-        <GameCardView c={c} p={props.p} back="/scores" />
-      ))}
+      <div class="games">
+        {props.games.map((c) => (
+          <GameCardView c={c} p={props.p} back="/scores" />
+        ))}
+      </div>
     </section>
   );
 }
