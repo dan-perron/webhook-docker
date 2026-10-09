@@ -456,7 +456,7 @@ export function createMcpServer(s: Services): McpServer {
     {
       title: 'Follow a team',
       description:
-        'Follow a team: its games in the next week are added to the Scores board automatically (rescanned hourly). The name is resolved against upcoming games; an ambiguous name ("Chicago") returns candidate team names to ask Dan about, and a team with no game in the next week can\'t be resolved yet.',
+        'Follow a team: its games in the next week are added to the Scores board automatically (rescanned hourly). The name is resolved against upcoming games; an ambiguous name ("Chicago") returns candidate team names to ask Dan about, and a team with no game in the next 3 weeks (offseason) can\'t be resolved yet.',
       inputSchema: {
         sport,
         team: z.string().describe('e.g. "Bears", "Chicago Cubs"'),
