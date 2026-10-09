@@ -157,6 +157,16 @@ export interface GameStateProvider {
   listEvents(sport: Sport, localDate: string): Promise<ProviderEvent[]>;
   /** Current state for the given events, keyed by event id. */
   getStates(refs: EventRef[]): Promise<Map<string, GameState>>;
+  /**
+   * Every team in a sport, named as its events name them. Resolves a team
+   * with no game on the schedule yet (offseason). Empty where unsupported.
+   */
+  listTeams?(sport: Sport): Promise<TeamListing[]>;
+}
+
+export interface TeamListing {
+  name: string;
+  aliases: string[];
 }
 
 /** Injected for tests; production uses fetchJson. */

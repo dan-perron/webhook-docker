@@ -13,7 +13,7 @@ import {
 } from '../db/schema.js';
 import type { Side, Sport } from '../domain/types.js';
 import type { Providers } from '../gamestate/registry.js';
-import type { ProviderEvent } from '../gamestate/types.js';
+import type { ProviderEvent, TeamListing } from '../gamestate/types.js';
 import {
   CONFIDENT,
   matchEvent,
@@ -145,26 +145,40 @@ export function parseTeams(s: string): string[] {
  * keeps the provider's aliases.
  */
 function withNicknames(e: ProviderEvent): ProviderEvent {
-  const more = (side: ProviderEvent['home']) => ({
-    ...side,
-    aliases: [...new Set([...side.aliases, ...teamAliases(side.name)])],
-  });
-  return { ...e, home: more(e.home), away: more(e.away) };
+  return { ...e, home: withAliases(e.home), away: withAliases(e.away) };
+}
+
+/**
+ * A team with its nickname and place aliases: "Chicago White Sox" also
+ * answers to "White Sox", "Sox", "Chicago" and "Chicago White", so a shared
+ * city ("Chicago", "New York") is ambiguous rather than an exact hit for
+ * whichever club has a one-word nickname.
+ */
+function withAliases<T extends TeamListing>(t: T): T {
+  const words = t.name.trim().split(/\s+/);
+  const places = [words.slice(0, 1), words.slice(0, 2)]
+    .filter((w) => w.length < words.length)
+    .map((w) => w.join(' '));
+  return {
+    ...t,
+    aliases: [...new Set([...t.aliases, ...teamAliases(t.name), ...places])],
+  };
 }
 
 const RESOLVE_DAYS = 21;
 
-/** Every listed team by how well `team` names it, best first. */
-function rankTeams(team: string, listed: ProviderEvent[]): [string, number][] {
+/** Every team by how well `team` names it, best first. */
+function rankTeams(team: string, teams: TeamListing[]): [string, number][] {
   const best = new Map<string, number>();
-  for (const e of listed) {
-    for (const side of [e.home, e.away]) {
-      const sc = nameScore(team, side.aliases);
-      best.set(side.name, Math.max(best.get(side.name) ?? 0, sc));
-    }
+  for (const t of teams) {
+    const sc = nameScore(team, t.aliases);
+    best.set(t.name, Math.max(best.get(t.name) ?? 0, sc));
   }
   return [...best].sort((a, b) => b[1] - a[1]);
 }
+
+const sidesOf = (listed: ProviderEvent[]): TeamListing[] =>
+  listed.flatMap((e) => [e.home, e.away]);
 
 const followView = (f: FollowRow): FollowView => ({
   id: f.id,
@@ -248,8 +262,19 @@ export class ScoreService {
   ): Promise<FollowResult> {
     const today = this.today();
     const week = this.dates(today, this.opts.followDays);
+    // The league's team list (where the provider has one) catches names that
+    // are ambiguous ("Chicago") even when only one of the teams is playing,
+    // and resolves teams with nothing scheduled yet (offseason).
+    let directory: TeamListing[] = [];
+    try {
+      directory = (
+        (await this.providers.forSport(sport).listTeams?.(sport)) ?? []
+      ).map(withAliases);
+    } catch {
+      // Fall back to the schedule alone.
+    }
     let listed = await this.listings(sport, week);
-    let ranked = rankTeams(team, listed);
+    let ranked = rankTeams(team, [...sidesOf(listed), ...directory]);
     // A bye week or a gap between series: look further ahead for the name.
     const resolveDays = this.opts.resolveDays ?? RESOLVE_DAYS;
     if ((ranked[0]?.[1] ?? 0) < CONFIDENT && resolveDays > week.length) {
@@ -258,8 +283,9 @@ export class ScoreService {
         resolveDays - week.length
       );
       listed = [...listed, ...(await this.listings(sport, later))];
-      ranked = rankTeams(team, listed);
+      ranked = rankTeams(team, [...sidesOf(listed), ...directory]);
     }
+    const searched = `${sport} games ${today} + ${Math.max(resolveDays, week.length)} days${directory.length ? ' and its team list' : ''}`;
     const top = ranked[0]?.[1] ?? 0;
     if (top < CONFIDENT) {
       return {
@@ -268,7 +294,7 @@ export class ScoreService {
           .filter(([, s]) => s >= 0.5)
           .slice(0, 5)
           .map(([n]) => n),
-        searched: `${sport} games ${today} + ${Math.max(resolveDays, week.length)} days`,
+        searched,
       };
     }
     const names = ranked

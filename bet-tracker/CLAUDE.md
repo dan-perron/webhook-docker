@@ -70,7 +70,11 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   per (event, key), so restarts and the stdio process never double-send; a
   first fetch never alerts. Push is ntfy (`NTFY_URL`, JSON publish), with
   `SCORES_QUIET_HOURS` logging instead. Scores name lookups add nickname
-  aliases (MLB Stats API has full names only); bet matching does not.
+  and place aliases (MLB Stats API has full names only; "Chicago" must hit
+  both clubs); bet matching does not. `followTeam` ranks the schedule (7, then
+  21 days) together with the provider's team list (`listTeams`: ESPN
+  `/teams`, MLB `/teams`), so offseason teams resolve and a shared city is
+  always ambiguous.
 - `SPORTS` = `BET_SPORTS` (modeled; `add_bet` accepts only these) +
   `SCORE_ONLY_SPORTS` (ncaab, ncaamh, ncaawh, ncaawvb: ESPN scoreboards,
   Scores view only; `evaluate` throws for them). Volleyball's score is sets

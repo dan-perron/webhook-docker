@@ -285,6 +285,20 @@ describe('ScoreService', () => {
     ]);
   });
 
+  it('offseason: resolves the name from the team list, adds games later', async () => {
+    routes['statsapi.mlb.com/api/v1/teams?sportId=1'] = 'mlb/teams.json';
+    const r = await svc.followTeam('mlb', 'Cubs');
+    expect(r).toMatchObject({
+      status: 'followed',
+      follow: { team: 'Chicago Cubs' },
+      games: [],
+    });
+    // "Chicago" names two clubs: ask.
+    expect(await svc.followTeam('mlb', 'Chicago')).toMatchObject({
+      status: 'ambiguous',
+    });
+  });
+
   it('never guesses between teams', async () => {
     expect(await svc.followTeam('nfl', 'New York')).toEqual({
       status: 'ambiguous',
