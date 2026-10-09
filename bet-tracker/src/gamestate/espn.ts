@@ -9,6 +9,7 @@ import type {
   GameStateProvider,
   PregameLines,
   ProviderEvent,
+  TeamListing,
   Situation,
 } from './types.js';
 
@@ -676,6 +677,20 @@ export class EspnProvider implements GameStateProvider {
     } catch {
       return this.leagueSlugs?.slugs ?? new Map();
     }
+  }
+
+  async listTeams(sport: Sport): Promise<TeamListing[]> {
+    // Soccer teams live in many leagues; resolve those from the schedule.
+    if (sport === 'soccer' || sport === 'mma') return [];
+    const res = (await this.fetcher(
+      `${BASE}/${PATHS[sport].path}/teams?limit=1000`
+    )) as {
+      sports?: { leagues?: { teams?: { team: EspnCompetitor['team'] }[] }[] }[];
+    };
+    const teams = res.sports?.[0]?.leagues?.[0]?.teams ?? [];
+    return teams.flatMap(({ team }) =>
+      team ? [{ name: team.displayName, aliases: aliases({ team }) }] : []
+    );
   }
 
   async getStates(refs: EventRef[]): Promise<Map<string, GameState>> {

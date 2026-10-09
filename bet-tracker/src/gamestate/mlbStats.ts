@@ -8,6 +8,7 @@ import type {
   GameState,
   GameStateProvider,
   ProviderEvent,
+  TeamListing,
 } from './types.js';
 
 // MLB Stats API. The batch schedule endpoint with hydrate=linescore returns
@@ -213,6 +214,18 @@ export class MlbStatsProvider implements GameStateProvider {
   readonly sports: readonly Sport[] = ['mlb'];
 
   constructor(private readonly fetcher: Fetcher = fetchJson) {}
+
+  async listTeams(): Promise<TeamListing[]> {
+    const res = (await this.fetcher(`${BASE}/teams?sportId=1`)) as {
+      teams?: { name: string; teamName?: string; abbreviation?: string }[];
+    };
+    return (res.teams ?? []).map((t) => ({
+      name: t.name,
+      aliases: [t.name, t.teamName, t.abbreviation].filter(
+        (v): v is string => !!v
+      ),
+    }));
+  }
 
   async listEvents(_sport: Sport, date: string): Promise<ProviderEvent[]> {
     // Schedule dates are the US "official date"; read the next day too for

@@ -261,7 +261,7 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
       return teamsPage(c, {
         notice: {
           ok: false,
-          text: `No ${sport.toUpperCase()} team matching "${team}" plays in the next 3 weeks.`,
+          text: `No ${sport.toUpperCase()} team matching "${team}" found in upcoming games or the league's teams.`,
         },
         ...(res.near.length ? { candidates: { sport, names: res.near } } : {}),
       });
