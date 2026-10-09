@@ -13,6 +13,8 @@ import {
   settleSelection,
 } from '../src/models/evaluate.js';
 import { logit } from '../src/models/stats.js';
+import type { BetRow, LegRow } from '../src/db/schema.js';
+import { valueBetRow } from '../src/tracker/valuation.js';
 import type { ModelSelection } from '../src/models/types.js';
 import { PARAMS, prior, state } from './helpers/states.js';
 
@@ -425,5 +427,82 @@ describe('multi-sport parlays', () => {
     expect(v.pWinSource).toBe('model');
     expect(v.pWin).toBeCloseTo(0.51 * 0.315 * 0.352, 12);
     expect(v.valueCents).toBeCloseTo(0.51 * 0.315 * 0.352 * 7000, 9);
+  });
+});
+
+describe('parlays with an unmatched leg', () => {
+  // Bet 29: Draw ATL/CIN +365 (modeled 0.2479) x Corinthians +637 (not
+  // matched to a game), $10 at +2565 boosted 30%, stated payout $343.46.
+  const bet = {
+    stakeCents: 1000,
+    priceAmerican: 2565,
+    boostPct: 30,
+    boostedPriceAmerican: 3334,
+    statedPayoutCents: 34346,
+    jointJson: null,
+    jointPlacementJson: null,
+  } as BetRow;
+  const legRow = (over: Partial<LegRow>) =>
+    ({
+      market: 'moneyline3way',
+      status: 'open',
+      pWin: null,
+      pPush: null,
+      pWinPlacement: null,
+      pPushPlacement: null,
+      ...over,
+    }) as LegRow;
+  const legs = [
+    legRow({
+      id: 56,
+      priceAmerican: 365,
+      eventId: 'espn:soccer:761850',
+      matchStatus: 'matched',
+      pWin: 0.2479,
+      pPush: 0,
+      pWinPlacement: 0.2479,
+      pPushPlacement: 0,
+    }),
+    legRow({
+      id: 57,
+      priceAmerican: 637,
+      eventId: null,
+      matchStatus: 'unmatched',
+    }),
+  ];
+  // +637 implies 100/737; 3-way hold 6% -> 100/737/1.06 = 0.1280049...
+  const corinthians = 100 / 737 / 1.06;
+
+  it('values the unmatched leg at its de-vigged price, not a coin flip', () => {
+    const v = valueBetRow(bet, legs);
+    expect(v.unmatchedLegIds).toEqual([57]);
+    expect(v.now.pWinSource).toBe('entered_price');
+    // 0.2479 x 0.1280049 = 0.0317324
+    expect(v.now.pWin).toBeCloseTo(0.2479 * corinthians, 12);
+    expect(v.now.valueCents).toBeCloseTo(0.2479 * corinthians * 34346, 8);
+    expect(v.now.evCents).toBeCloseTo(0.2479 * corinthians * 34346 - 1000, 8);
+  });
+
+  it('values at placement the same way instead of leaving it null', () => {
+    const v = valueBetRow(bet, legs);
+    expect(v.atPlacement).not.toBeNull();
+    expect(v.atPlacement!.pWinSource).toBe('entered_price');
+    expect(v.atPlacement!.pWin).toBeCloseTo(0.2479 * corinthians, 12);
+  });
+
+  it('is a plain model valuation once every leg is matched', () => {
+    const v = valueBetRow(bet, [
+      legs[0]!,
+      {
+        ...legs[1]!,
+        eventId: 'espn:soccer:401841261',
+        matchStatus: 'matched',
+        pWin: 0.15,
+        pPush: 0,
+      },
+    ]);
+    expect(v.unmatchedLegIds).toEqual([]);
+    expect(v.now.pWinSource).toBe('model');
+    expect(v.now.pWin).toBeCloseTo(0.2479 * 0.15, 12);
   });
 });

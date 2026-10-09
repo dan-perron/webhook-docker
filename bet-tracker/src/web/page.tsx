@@ -253,6 +253,11 @@ export function BetCard({ b, d }: { b: BetView; d: Dashboard }) {
           Same-game legs: P(win) and EV use the book's unboosted price until
           this game type is modeled jointly.
         </div>
+      ) : b.now.source === 'entered_price' ? (
+        <div class="note">
+          Unmatched legs: valued at their entered price, de-vigged, until
+          matched to a game.
+        </div>
       ) : b.sameGameEventIds.length ? (
         <div class="note">
           Same-game legs priced together from one game model.

@@ -18,7 +18,10 @@ import type {
 
 const BASE = 'https://site.api.espn.com/apis/site/v2/sports';
 
-/** Leagues searched for soccer events; matched events remember theirs. */
+/**
+ * Leagues searched for soccer events; matched events remember theirs. ESPN's
+ * all-leagues board is searched too, so any league it covers can match.
+ */
 export const DEFAULT_SOCCER_LEAGUES = [
   'uefa.nations',
   'fifa.friendly',
@@ -33,6 +36,12 @@ export const DEFAULT_SOCCER_LEAGUES = [
   'usa.1',
   'mex.1',
 ];
+
+/** ESPN's every-league soccer board (also a valid league for summaries). */
+const ALL_SOCCER = 'all';
+/** The all-leagues board pages at 100 events without a larger limit. */
+const ALL_SOCCER_LIMIT = 1000;
+const LEAGUE_LIST_TTL_MS = 24 * 3600_000;
 
 const PATHS: Record<
   Exclude<Sport, 'soccer'>,
@@ -133,6 +142,8 @@ interface EspnCompetition {
 
 interface EspnEvent {
   id: string;
+  /** "s:600~l:630~e:401841261": the league id is l:<n>. */
+  uid?: string;
   date: string;
   /** type 2 = regular season, 3 = postseason. */
   season?: { type?: number };
@@ -480,9 +491,33 @@ export function parseEvents(
   return out;
 }
 
+/** ESPN league id -> slug ("630" -> "bra.1") from the soccer league list. */
+export function parseLeagueList(list: {
+  leagues?: { id?: string; slug?: string }[];
+}): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const l of list.leagues ?? []) if (l.id && l.slug) out.set(l.id, l.slug);
+  return out;
+}
+
+/** Each event on the all-leagues board, by competition, with its league. */
+function allBoardLeagues(
+  board: EspnScoreboard,
+  slugs: Map<string, string>
+): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const ev of board.events ?? []) {
+    const id = ev.uid?.match(/~l:(\d+)/)?.[1];
+    const league = (id && slugs.get(id)) || ALL_SOCCER;
+    for (const c of ev.competitions) out.set(c.id, league);
+  }
+  return out;
+}
+
 export class EspnProvider implements GameStateProvider {
   readonly name = 'espn';
   readonly sports = ['nfl', 'ncaaf', 'mlb', 'soccer', 'mma'] as const;
+  private leagueSlugs: { at: number; slugs: Map<string, string> } | null = null;
 
   constructor(
     private readonly fetcher: Fetcher = fetchJson,
@@ -512,7 +547,8 @@ export class EspnProvider implements GameStateProvider {
 
   private url(sport: Sport, league: string, date: string): string {
     if (sport === 'soccer') {
-      return `${BASE}/soccer/${league}/scoreboard?dates=${compactDate(date)}`;
+      const limit = league === ALL_SOCCER ? `&limit=${ALL_SOCCER_LIMIT}` : '';
+      return `${BASE}/soccer/${league}/scoreboard?dates=${compactDate(date)}${limit}`;
     }
     const p = PATHS[sport];
     return `${BASE}/${p.path}/scoreboard?dates=${compactDate(date)}${p.query}`;
@@ -536,7 +572,55 @@ export class EspnProvider implements GameStateProvider {
         }
       }
     }
+    if (sport === 'soccer') await this.listAllSoccer(date, found);
     return [...found.values()];
+  }
+
+  /**
+   * Add events from ESPN's all-leagues board (any league: Brazil, Argentina,
+   * League One...) not already found on a named league's board. Each keeps
+   * its own league so polling and lines use that league's small board.
+   */
+  private async listAllSoccer(
+    date: string,
+    found: Map<string, ProviderEvent>
+  ): Promise<void> {
+    try {
+      const slugs = await this.soccerLeagueSlugs();
+      for (const d of [date, addDays(date, 1)]) {
+        const board = (await this.fetcher(
+          this.url('soccer', ALL_SOCCER, d)
+        )) as EspnScoreboard;
+        const leagueOf = allBoardLeagues(board, slugs);
+        for (const ev of parseEvents('soccer', ALL_SOCCER, board)) {
+          if (localDate(ev.startTime) !== date || found.has(ev.id)) continue;
+          found.set(ev.id, {
+            ...ev,
+            league: leagueOf.get(ev.providerEventId) ?? ALL_SOCCER,
+          });
+        }
+      }
+    } catch {
+      // The named leagues above still matched; this board only widens it.
+    }
+  }
+
+  /** League id -> slug, refreshed daily; empty (league "all") if unavailable. */
+  private async soccerLeagueSlugs(): Promise<Map<string, string>> {
+    const now = Date.now();
+    if (this.leagueSlugs && now - this.leagueSlugs.at < LEAGUE_LIST_TTL_MS) {
+      return this.leagueSlugs.slugs;
+    }
+    try {
+      const list = (await this.fetcher(
+        `https://site.api.espn.com/apis/site/v2/leagues/dropdown?sport=soccer&limit=${ALL_SOCCER_LIMIT}`
+      )) as Parameters<typeof parseLeagueList>[0];
+      const slugs = parseLeagueList(list);
+      if (slugs.size) this.leagueSlugs = { at: now, slugs };
+      return slugs;
+    } catch {
+      return this.leagueSlugs?.slugs ?? new Map();
+    }
   }
 
   async getStates(refs: EventRef[]): Promise<Map<string, GameState>> {

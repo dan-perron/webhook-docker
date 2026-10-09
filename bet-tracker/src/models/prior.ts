@@ -93,7 +93,7 @@ export const marginSigmasFor = (
 /** Neutral soccer split (no lean either way). */
 const NEUTRAL_SOCCER_DRAW = 0.27;
 /** Typical 3-way hold for stripping vig from one entered soccer price. */
-const THREE_WAY_HOLD = 0.06;
+export const THREE_WAY_HOLD = 0.06;
 
 export interface LinesInput {
   homeMoneyline: number | null;

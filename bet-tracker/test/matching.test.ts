@@ -2,7 +2,11 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { listBets } from '../src/db/bets.js';
 import { openDb, type Db } from '../src/db/client.js';
 import { events } from '../src/db/schema.js';
-import { parseEvents, type EspnScoreboard } from '../src/gamestate/espn.js';
+import {
+  EspnProvider,
+  parseEvents,
+  type EspnScoreboard,
+} from '../src/gamestate/espn.js';
 import { createProviders } from '../src/gamestate/registry.js';
 import {
   matchEvent,
@@ -215,5 +219,64 @@ describe('teamAliases', () => {
     ]);
     expect(nameScore('White Sox', teamAliases('Chicago White Sox'))).toBe(1);
     expect(teamAliases('Portugal')).toEqual(['Portugal']);
+  });
+});
+
+describe('soccer in any league (ESPN all-leagues board)', () => {
+  const ROUTES = {
+    'soccer/all/scoreboard?dates=20261011': 'espn/soccer-all-20261011-pre.json',
+    'leagues/dropdown?sport=soccer': 'espn/soccer-leagues.json',
+  };
+
+  it('matches a Brazil Serie A game and keeps its league', async () => {
+    const { fetcher, requested } = fakeFetcher(ROUTES);
+    const espn = new EspnProvider(fetcher);
+    const listed = await espn.listEvents('soccer', '2026-10-11');
+    const r = matchEvent(['Palmeiras', 'Corinthians'], listed);
+    expect(r.status).toBe('matched');
+    if (r.status !== 'matched') return;
+    expect(r.candidate.event).toMatchObject({
+      id: 'espn:soccer:401841261',
+      league: 'bra.1',
+      home: { name: 'Palmeiras' },
+      away: { name: 'Corinthians' },
+    });
+    // DraftKings 3-way line straight off the board.
+    expect(r.candidate.event.pregameLines?.drawMoneyline).toBe(270);
+    expect(
+      requested.filter((u) => u.includes('soccer/all/scoreboard'))
+    ).toEqual([
+      expect.stringContaining('dates=20261011&limit=1000'),
+      expect.stringContaining('dates=20261012&limit=1000'),
+    ]);
+
+    // Polling and lines then use the league's own board.
+    requested.length = 0;
+    await espn.getStates([
+      {
+        id: 'espn:soccer:401841261',
+        sport: 'soccer',
+        league: 'bra.1',
+        startTime: r.candidate.event.startTime,
+      },
+    ]);
+    expect(requested).toEqual([
+      expect.stringContaining('soccer/bra.1/scoreboard?dates=20261011'),
+    ]);
+  });
+
+  it('falls back to the all-leagues board when the league list is down', async () => {
+    const fetcher = async (url: string) => {
+      if (url.includes('dropdown')) throw new Error('down');
+      return url.includes('soccer/all/scoreboard?dates=20261011')
+        ? fixture('espn/soccer-all-20261011-pre.json')
+        : { events: [] };
+    };
+    const listed = await new EspnProvider(fetcher).listEvents(
+      'soccer',
+      '2026-10-11'
+    );
+    const pal = listed.find((e) => e.id === 'espn:soccer:401841261');
+    expect(pal?.league).toBe('all');
   });
 });
