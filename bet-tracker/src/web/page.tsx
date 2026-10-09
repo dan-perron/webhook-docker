@@ -356,9 +356,11 @@ function DaySection({ g, d }: { g: DayResults; d: Dashboard }) {
       <div class="day-sub">
         {record(g)} · staked {usd(g.staked)} · returned {usd(g.returned)}
       </div>
-      {g.bets.map((b) => (
-        <BetCard b={b} d={d} />
-      ))}
+      <div class="bet-grid">
+        {g.bets.map((b) => (
+          <BetCard b={b} d={d} />
+        ))}
+      </div>
     </section>
   );
 }
@@ -378,9 +380,11 @@ export function Content({ d }: { d: Dashboard }) {
       {d.tab === 'open' && d.portfolio.exposure.length ? (
         <section>
           <h2>Exposure</h2>
-          {d.portfolio.exposure.map((e) => (
-            <ExposureTable e={e} d={d} />
-          ))}
+          <div class="bet-grid">
+            {d.portfolio.exposure.map((e) => (
+              <ExposureTable e={e} d={d} />
+            ))}
+          </div>
         </section>
       ) : null}
       {d.tab === 'settled' ? (
@@ -395,7 +399,11 @@ export function Content({ d }: { d: Dashboard }) {
       {d.tab === 'open' ? (
         <section>
           {d.bets.length ? (
-            d.bets.map((b) => <BetCard b={b} d={d} />)
+            <div class="bet-grid">
+              {d.bets.map((b) => (
+                <BetCard b={b} d={d} />
+              ))}
+            </div>
           ) : (
             <p class="empty">No open bets.</p>
           )}
@@ -428,6 +436,7 @@ export function Layout({
       timeZone={d.timeZone}
       summary={<Summary d={d} />}
       content={<Content d={d} />}
+      wide
     />
   );
 }
@@ -442,6 +451,8 @@ export function Shell(props: {
   timeZone: string;
   summary: Child;
   content: Child;
+  /** Lay cards out in a grid on wide screens (Bets, Scores boards). */
+  wide?: boolean;
 }) {
   return (
     <html lang="en">
@@ -471,7 +482,7 @@ export function Shell(props: {
           data-tz={props.timeZone}
         />
       </head>
-      <body>
+      <body class={props.wide ? 'wide' : ''}>
         <header id="summary">{props.summary}</header>
         <main id="content">{props.content}</main>
       </body>

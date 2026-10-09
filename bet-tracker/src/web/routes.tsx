@@ -182,6 +182,7 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
         timeZone={p.timeZone}
         summary={<ScoresSummary p={p} />}
         content={<ScoresContent p={p} />}
+        wide
       />
     );
   });

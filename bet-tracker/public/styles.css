@@ -538,17 +538,19 @@ h2 {
 .g-head {
   display: flex;
   gap: 8px;
-  align-items: baseline;
+  align-items: center;
   font-size: 12px;
   color: var(--muted);
-  margin-bottom: 4px;
+  margin: -4px -6px 2px 0;
+}
+.g-status {
+  flex: 1;
 }
 .game.in .g-status {
   color: var(--good);
   font-weight: 600;
 }
 .tag {
-  margin-left: auto;
   padding: 0 6px;
   border-radius: 999px;
   background: var(--warn-bg);
@@ -578,9 +580,6 @@ h2 {
 }
 .g-actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 4px;
-  margin-top: -2px;
 }
 form.inline {
   display: inline;
@@ -674,4 +673,50 @@ form.inline {
 }
 .alerts li:last-child {
   border-bottom: 0;
+}
+
+/* Desktop: center the header with the content, and lay the Bets and Scores
+   boards out as card grids instead of one phone-width column. */
+.summary {
+  max-width: 608px;
+  margin: 0 auto;
+}
+@media (min-width: 900px) {
+  body.wide main {
+    max-width: 1180px;
+  }
+  body.wide .summary {
+    max-width: 1148px;
+  }
+  .views {
+    max-width: 280px;
+  }
+  body.wide .tabs:not(.sports) {
+    max-width: 400px;
+  }
+  .games,
+  .bet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 12px;
+    align-items: start;
+  }
+  .bet-grid {
+    grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+  }
+  .games > .game,
+  .bet-grid > .bet,
+  .bet-grid > .card {
+    margin-bottom: 0;
+  }
+  .tabs.sports {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+  .icon-btn:hover {
+    color: var(--fg);
+  }
+  .icon-btn.on:hover {
+    color: var(--warn);
+  }
 }
