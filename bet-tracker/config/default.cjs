@@ -58,6 +58,23 @@ const config = {
     liveSeconds: 30,
     scheduledSeconds: 600,
   },
+  scores: {
+    // How many days ahead followed teams' games are added to Scores.
+    followDays: 7,
+    // Minutes between schedule scans for followed teams' games.
+    discoverMinutes: 60,
+    // Hours a finished game stays on the Scores view.
+    finalHours: 18,
+    alerts: {
+      // Full ntfy topic URL, e.g. https://ntfy.sh/<secret-topic>. Empty = no
+      // push (alerts still show on the Scores view).
+      ntfyUrl: (process.env.NTFY_URL || '').trim(),
+      // Access token for a protected topic (optional).
+      ntfyToken: process.env.NTFY_TOKEN || '',
+      // "HH:MM-HH:MM" in TZ during which alerts are logged but not pushed.
+      quietHours: process.env.SCORES_QUIET_HOURS || '',
+    },
+  },
   models: {
     // Std dev (points) of the final scoring margin over a full game.
     football: {

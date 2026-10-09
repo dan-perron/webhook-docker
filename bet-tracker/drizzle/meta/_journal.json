@@ -57,6 +57,13 @@
       "when": 1791350788564,
       "tag": "0007_line_history",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1791565144572,
+      "tag": "0008_scores",
+      "breakpoints": true
     }
   ]
 }

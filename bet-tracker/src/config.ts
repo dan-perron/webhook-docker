@@ -27,6 +27,16 @@ export const appConfig = {
     liveSeconds: config.get<number>('polling.liveSeconds'),
     scheduledSeconds: config.get<number>('polling.scheduledSeconds'),
   },
+  scores: {
+    followDays: config.get<number>('scores.followDays'),
+    discoverMinutes: config.get<number>('scores.discoverMinutes'),
+    finalHours: config.get<number>('scores.finalHours'),
+    alerts: {
+      ntfyUrl: config.get<string>('scores.alerts.ntfyUrl'),
+      ntfyToken: config.get<string>('scores.alerts.ntfyToken'),
+      quietHours: config.get<string>('scores.alerts.quietHours'),
+    },
+  },
   models: {
     football: {
       nfl: config.get<FootballSigmas>('models.football.nfl'),

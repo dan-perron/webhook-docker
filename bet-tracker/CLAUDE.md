@@ -2,8 +2,9 @@
 
 Live Bet Tracker: tracks Dan's open sportsbook bets, estimates live win
 probability from game state (not live odds), serves a mobile web page (SSE) and
-an MCP server. Hono + better-sqlite3/Drizzle, Node 24, served at `/bets` on
-port 3003 in the webhook-docker stack.
+an MCP server. A second view, Scores (`/bets/scores`), tracks games Dan follows
+without betting, with ntfy push alerts. Hono + better-sqlite3/Drizzle, Node 24,
+served at `/bets` on port 3003 in the webhook-docker stack.
 
 ## Development
 
@@ -57,6 +58,19 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   `gameInfo`) or start + per-sport estimate, capped by when we saw it final.
   Manual `settle_bet` uses now; `update_bet` can correct it. Re-derive for
   existing bets: `node built/tracker/backfillCli.js [--dry-run]`.
+- Scores (`src/scores/`, `src/web/scores.tsx`): `follows` (teams, resolved
+  to the provider's full name from the next week's games; ambiguous names
+  return candidates) and `watches` (one per event: `manual` star or `follow`;
+  unstarring a followed game sets `hidden` so discovery doesn't re-add it).
+  `ScoreService.discover()` runs hourly from `server.ts`. The Tracker polls
+  watched events with the bets' events but fetches lines/snapshots only for
+  events with an open leg, and emits `state` (prev/next GameState) per poll;
+  `detectAlerts` (pure) turns that into start / lead change (through ties,
+  via `watches.last_leader`) / close late / final. `score_alerts` is unique
+  per (event, key), so restarts and the stdio process never double-send; a
+  first fetch never alerts. Push is ntfy (`NTFY_URL`, JSON publish), with
+  `SCORES_QUIET_HOURS` logging instead. Scores name lookups add nickname
+  aliases (MLB Stats API has full names only); bet matching does not.
 - Parlay push/void recompute scales the remaining legs by the book's pricing
   factor (stated price / product of legs).
 

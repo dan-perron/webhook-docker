@@ -5,12 +5,21 @@ winning **from game state** (score, clock, situation), not from live odds.
 It serves a mobile web page at <https://djperron.com/bets> with live updates,
 and an MCP server so Claude can add and manage bets and check odds.
 
+A second view, **Scores** (<https://djperron.com/bets/scores>), follows games
+without a bet: live scores and situation for followed teams' games, starred
+games and games with an open bet, with push alerts through ntfy.
+
 - **Web:** totals, a card per bet (price → boosted price, stake → payout,
   P(win), value, EV now vs at placement), each leg's live score and
   situation, an exposure grid for games with several bets, and a Settled tab
   with calibration (Brier scores, reliability charts).
+- **Scores:** live / upcoming / final cards, an "Add games" schedule browser
+  (star a game), and Teams (follow a team: its games in the next week are
+  added automatically). Alerts: start, lead change, close late, final.
 - **MCP tools:** `check_odds`, `add_bet`, `confirm_match`, `list_bets`,
-  `get_bet`, `update_bet`, `settle_bet`, `remove_bet`, `portfolio`.
+  `get_bet`, `update_bet`, `update_leg`, `recompute_bet`, `settle_bet`,
+  `remove_bet`, `portfolio`; Scores: `scores`, `list_games`, `watch_game`,
+  `unwatch_game`, `follow_team`, `unfollow_team`, `set_score_alerts`.
 - **Stack:** Node 24, TypeScript, Hono, SQLite (better-sqlite3 + Drizzle),
   `@modelcontextprotocol/sdk`, Vitest. Runs as a service in the
   `webhook-docker` compose stack on `signs`.

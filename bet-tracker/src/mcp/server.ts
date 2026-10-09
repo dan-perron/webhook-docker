@@ -10,11 +10,17 @@ import {
 } from '../db/bets.js';
 import type { Db } from '../db/client.js';
 import { betInputSchema } from '../domain/betInput.js';
-import { BET_STATUSES, BOOST_KINDS, SELECTION_KINDS } from '../domain/types.js';
+import {
+  BET_STATUSES,
+  BOOST_KINDS,
+  SELECTION_KINDS,
+  SPORTS,
+} from '../domain/types.js';
 import type { Providers } from '../gamestate/registry.js';
 import { confirmLegMatch, matchLegs } from '../matching/service.js';
 import { filterEvents, oddsView, summarizeEvent } from '../odds/consensus.js';
 import { ODDS_MARKETS, sportKey, type OddsApiClient } from '../odds/oddsApi.js';
+import type { ScoreService } from '../scores/service.js';
 import type { Tracker } from '../tracker/tracker.js';
 import { betViewById, betViews, portfolio } from '../tracker/views.js';
 
@@ -22,6 +28,7 @@ export interface Services {
   db: Db;
   providers: Providers;
   tracker: Tracker;
+  scores: ScoreService;
   odds: OddsApiClient;
   /** check_odds calls costing more than this need confirm: true. */
   confirmAboveCost: number;
@@ -53,7 +60,7 @@ export function createMcpServer(s: Services): McpServer {
   const server = new McpServer(
     { name: 'bet-tracker', version: '1.0.0' },
     {
-      instructions: `Tracks Dan's sportsbook bets with live, game-state-based win probabilities. ${UNITS} ${PROVENANCE} Use check_odds for current market lines (costs Odds API quota). When add_bet returns legs needing confirmation, show Dan the candidates and call confirm_match with his choice; never pick one yourself.`,
+      instructions: `Tracks Dan's sportsbook bets with live, game-state-based win probabilities, and (Scores) live scores for games he follows without betting: watch_game / follow_team add them, scores shows the board. ${UNITS} ${PROVENANCE} Use check_odds for current market lines (costs Odds API quota). When add_bet returns legs needing confirmation, show Dan the candidates and call confirm_match with his choice; never pick one yourself.`,
     }
   );
 
@@ -362,6 +369,149 @@ export function createMcpServer(s: Services): McpServer {
       annotations: { readOnlyHint: true },
     },
     async () => json({ ...portfolio(s.db), oddsApiQuota: s.odds.quota() })
+  );
+
+  // --- Scores: games followed for their score (not bets) --------------------
+
+  const sport = z.enum(SPORTS);
+  const date = z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional()
+    .describe('Local (America/Chicago) date YYYY-MM-DD; default today');
+
+  server.registerTool(
+    'scores',
+    {
+      title: 'Scores',
+      description:
+        "Dan's Scores board: live, upcoming and recently finished games he watches (starred games and followed teams' games) plus games he has an open bet on, each with score, clock/situation and whether alerts are on; also followed teams and recent alerts (ntfy push).",
+      inputSchema: {},
+      annotations: { readOnlyHint: true },
+    },
+    async () => json(s.scores.board())
+  );
+
+  server.registerTool(
+    'list_games',
+    {
+      title: 'List games',
+      description:
+        "A sport's schedule on a date (from ESPN / MLB Stats API) with event ids and whether each game is already watched. Use to find a game for watch_game.",
+      inputSchema: { sport, date },
+      annotations: { readOnlyHint: true, openWorldHint: true },
+    },
+    async (a) => {
+      try {
+        return json(await s.scores.schedule(a.sport, a.date));
+      } catch (e) {
+        return fail((e as Error).message);
+      }
+    }
+  );
+
+  server.registerTool(
+    'watch_game',
+    {
+      title: 'Watch a game',
+      description:
+        'Add one game to the Scores board (live score + alerts for start, lead changes, close late, final). Give eventId (from list_games) or teams ("Packers @ Bears" or just "Bears"). Anything but exactly one confident game returns candidates: show Dan and call again with his choice\'s eventId; never pick one yourself.',
+      inputSchema: {
+        sport,
+        date,
+        eventId: z.string().optional(),
+        teams: z.string().optional(),
+        alerts: z.boolean().optional().describe('Default true'),
+      },
+    },
+    async (a) => {
+      try {
+        return json(await s.scores.watchGame(a));
+      } catch (e) {
+        return fail((e as Error).message);
+      }
+    }
+  );
+
+  server.registerTool(
+    'unwatch_game',
+    {
+      title: 'Stop watching a game',
+      description:
+        "Remove a game from the Scores board (a followed team's game is hidden, not re-added).",
+      inputSchema: { eventId: z.string() },
+    },
+    async ({ eventId }) => {
+      try {
+        s.scores.unwatchGame(eventId);
+        return json({ unwatched: eventId });
+      } catch (e) {
+        return fail((e as Error).message);
+      }
+    }
+  );
+
+  server.registerTool(
+    'follow_team',
+    {
+      title: 'Follow a team',
+      description:
+        'Follow a team: its games in the next week are added to the Scores board automatically (rescanned hourly). The name is resolved against upcoming games; an ambiguous name ("Chicago") returns candidate team names to ask Dan about, and a team with no game in the next week can\'t be resolved yet.',
+      inputSchema: {
+        sport,
+        team: z.string().describe('e.g. "Bears", "Chicago Cubs"'),
+        alerts: z.boolean().optional().describe('Default true'),
+      },
+    },
+    async (a) => {
+      try {
+        return json(await s.scores.followTeam(a.sport, a.team, a.alerts));
+      } catch (e) {
+        return fail((e as Error).message);
+      }
+    }
+  );
+
+  server.registerTool(
+    'unfollow_team',
+    {
+      title: 'Unfollow a team',
+      description:
+        'Stop following a team (followId from scores.follows) and drop its auto-added games.',
+      inputSchema: { followId: z.number().int() },
+    },
+    async ({ followId }) => {
+      try {
+        return json({ unfollowed: s.scores.unfollowTeam(followId) });
+      } catch (e) {
+        return fail((e as Error).message);
+      }
+    }
+  );
+
+  server.registerTool(
+    'set_score_alerts',
+    {
+      title: 'Score alerts on/off',
+      description:
+        'Turn push alerts on or off for one watched game (eventId) or a followed team (followId; applies to its games).',
+      inputSchema: {
+        eventId: z.string().optional(),
+        followId: z.number().int().optional(),
+        on: z.boolean(),
+      },
+    },
+    async (a) => {
+      try {
+        if (a.eventId) s.scores.setAlerts({ eventId: a.eventId }, a.on);
+        else if (a.followId != null)
+          s.scores.setAlerts({ followId: a.followId }, a.on);
+        else return fail('Give eventId or followId');
+        return json({ ok: true });
+      } catch (e) {
+        return fail((e as Error).message);
+      }
+    }
   );
 
   return server;

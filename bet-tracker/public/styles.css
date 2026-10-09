@@ -487,3 +487,191 @@ h2 {
 .bet .pwin .big.neg {
   color: var(--bad);
 }
+
+/* View switch (Bets | Scores) at the top of every page. */
+.views {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  padding: 3px;
+  background: var(--card);
+  border-radius: 10px;
+}
+.views a {
+  flex: 1;
+  text-align: center;
+  padding: 6px;
+  border-radius: 8px;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+}
+.views a.on {
+  background: var(--bg);
+  color: var(--fg);
+}
+.subnav {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+}
+.subnav a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.subnav .here {
+  margin-left: auto;
+  color: var(--muted);
+}
+
+/* Scores: one card per game. */
+.game {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border-left: 4px solid var(--line);
+}
+.game.in {
+  border-left-color: var(--good);
+}
+.g-head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.game.in .g-status {
+  color: var(--good);
+  font-weight: 600;
+}
+.tag {
+  margin-left: auto;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+.team {
+  display: flex;
+  justify-content: space-between;
+  font-size: 17px;
+  padding: 1px 0;
+}
+.team .score {
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+.game.in .team:not(.lead),
+.game.final .team:not(.lead) {
+  color: var(--muted);
+}
+.team.lead .name {
+  font-weight: 600;
+}
+.game .sit {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.g-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: -2px;
+}
+form.inline {
+  display: inline;
+  margin: 0;
+}
+.icon-btn {
+  background: none;
+  border: 0;
+  padding: 4px 6px;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+.icon-btn.on {
+  color: var(--warn);
+}
+
+/* Browse / Teams lists. */
+.schedule {
+  list-style: none;
+  padding: 4px 12px;
+}
+.schedule li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.schedule li:last-child {
+  border-bottom: 0;
+}
+.schedule .body {
+  flex: 1;
+}
+.tabs.sports {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs.sports a {
+  flex: 0 0 auto;
+  padding: 6px 12px;
+}
+.dates {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+.dates a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.dates a.on {
+  font-weight: 600;
+}
+.follow,
+.candidates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.follow select,
+.follow input,
+.follow button,
+.candidates button {
+  font-size: 16px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+}
+.follow input {
+  flex: 1;
+  min-width: 140px;
+}
+.follow button {
+  background: var(--accent);
+  border: 0;
+  color: #fff;
+}
+.alerts {
+  list-style: none;
+  padding: 4px 12px;
+}
+.alerts li {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+.alerts li:last-child {
+  border-bottom: 0;
+}
