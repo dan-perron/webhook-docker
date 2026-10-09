@@ -1,0 +1,712 @@
+{
+ "events": [
+  {
+   "id": "401879264",
+   "uid": "s:600~l:700~e:401879264",
+   "date": "2026-10-11T15:30Z",
+   "name": "Manchester City at Liverpool",
+   "shortName": "MNC @ LIV",
+   "season": {
+    "year": 2026,
+    "type": 14308,
+    "slug": "2026-27-english-premier-league"
+   },
+   "competitions": [
+    {
+     "id": "401879264",
+     "uid": "s:600~l:700~e:401879264~c:401879264",
+     "date": "2026-10-11T15:30Z",
+     "startDate": "2026-10-11T15:30Z",
+     "attendance": 0,
+     "timeValid": true,
+     "recent": false,
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0'",
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 11th at 11:30 AM EDT",
+       "shortDetail": "Scheduled"
+      }
+     },
+     "format": {
+      "regulation": {
+       "periods": 2
+      }
+     },
+     "altGameNote": "English Premier League",
+     "competitors": [
+      {
+       "id": "364",
+       "uid": "s:600~t:364",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "364",
+        "uid": "s:600~t:364",
+        "abbreviation": "LIV",
+        "displayName": "Liverpool",
+        "shortDisplayName": "Liverpool",
+        "name": "Liverpool",
+        "location": "Liverpool",
+        "color": "d11317",
+        "alternateColor": "FFFFFF",
+        "isActive": true,
+        "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/364.png",
+        "venue": {
+         "id": "192"
+        }
+       }
+      },
+      {
+       "id": "382",
+       "uid": "s:600~t:382",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "382",
+        "uid": "s:600~t:382",
+        "abbreviation": "MNC",
+        "displayName": "Manchester City",
+        "shortDisplayName": "Man City",
+        "name": "Manchester City",
+        "location": "Manchester City",
+        "color": "99c5ea",
+        "alternateColor": "000000",
+        "isActive": true,
+        "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/382.png",
+        "venue": {
+         "id": "1279"
+        }
+       }
+      }
+     ],
+     "odds": [
+      {
+       "overUnder": 2.5,
+       "link": {
+        "language": "en-US",
+        "rel": [
+         "game",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34669432",
+        "text": "Game",
+        "shortText": "Game",
+        "isExternal": true,
+        "isPremium": false,
+        "isHidden": false
+       },
+       "provider": {
+        "id": "100",
+        "name": "DraftKings",
+        "priority": 1
+       },
+       "drawOdds": {
+        "moneyLine": 275,
+        "link": {
+         "language": "en-US",
+         "rel": [
+          "draw",
+          "desktop",
+          "bets",
+          "draftkings"
+         ],
+         "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34669432%3Foutcomes%3D0ML86304801_2",
+         "text": "Draw Bet",
+         "shortText": "Draw Bet",
+         "isExternal": true,
+         "isPremium": false,
+         "isHidden": false
+        }
+       },
+       "total": {
+        "displayName": "Total",
+        "shortDisplayName": "Total",
+        "over": {
+         "open": {
+          "line": "o2.5",
+          "odds": "-175"
+         },
+         "close": {
+          "line": "o2.5",
+          "odds": "-175",
+          "link": {
+           "rel": [
+            "over",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34669432%3Foutcomes%3D0OU86305092O250_1",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "eng.1",
+             "sport": "soccer",
+             "gameId": 401879264,
+             "betSide": "over",
+             "betType": "straight",
+             "betDetails": "Over:2.5"
+            }
+           }
+          }
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u2.5",
+          "odds": "+130"
+         },
+         "close": {
+          "line": "u2.5",
+          "odds": "+140",
+          "link": {
+           "rel": [
+            "under",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34669432%3Foutcomes%3D0OU86305092U250_3",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "eng.1",
+             "sport": "soccer",
+             "gameId": 401879264,
+             "betSide": "under",
+             "betType": "straight",
+             "betDetails": "Under:2.5"
+            }
+           }
+          }
+         }
+        }
+       },
+       "pointSpread": {
+        "displayName": "Spread",
+        "shortDisplayName": "Spread",
+        "home": {
+         "open": {
+          "line": "+0.5",
+          "odds": "-185"
+         },
+         "close": {
+          "line": "+0.5",
+          "odds": "-165",
+          "link": {
+           "rel": [
+            "homeSpread",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34669432%3Foutcomes%3D0HC86305097P50_1",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "eng.1",
+             "sport": "soccer",
+             "gameId": 401879264,
+             "betSide": "home",
+             "betType": "straight",
+             "betDetails": "Spread:LIV+0.5"
+            }
+           }
+          }
+         }
+        },
+        "away": {
+         "open": {
+          "line": "-0.5",
+          "odds": "+120"
+         },
+         "close": {
+          "line": "-0.5",
+          "odds": "+120",
+          "link": {
+           "rel": [
+            "awaySpread",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34669432%3Foutcomes%3D0HC86305097N50_3",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "eng.1",
+             "sport": "soccer",
+             "gameId": 401879264,
+             "betSide": "away",
+             "betType": "straight",
+             "betDetails": "Spread:MNC-0.5"
+            }
+           }
+          }
+         }
+        }
+       },
+       "moneyline": {
+        "displayName": "Moneyline",
+        "shortDisplayName": "ML",
+        "home": {
+         "open": {
+          "odds": "+175"
+         },
+         "close": {
+          "odds": "+190",
+          "link": {
+           "rel": [
+            "home",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34669432%3Foutcomes%3D0ML86304801_1",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "eng.1",
+             "sport": "soccer",
+             "gameId": 401879264,
+             "betSide": "home",
+             "betType": "straight"
+            }
+           }
+          }
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+135"
+         },
+         "close": {
+          "odds": "+130",
+          "link": {
+           "rel": [
+            "away",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34669432%3Foutcomes%3D0ML86304801_3",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "eng.1",
+             "sport": "soccer",
+             "gameId": 401879264,
+             "betSide": "away",
+             "betType": "straight"
+            }
+           }
+          }
+         }
+        },
+        "draw": {
+         "open": {
+          "odds": "+260"
+         },
+         "close": {
+          "odds": "+275",
+          "link": {
+           "rel": [
+            "draw",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34669432%3Foutcomes%3D0ML86304801_2",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "eng.1",
+             "sport": "soccer",
+             "gameId": 401879264,
+             "betSide": "draw",
+             "betType": "straight"
+            }
+           }
+          }
+         }
+        }
+       },
+       "details": "MNC +130"
+      }
+     ],
+     "wasSuspended": false,
+     "playByPlayAvailable": true
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0'",
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 11th at 11:30 AM EDT",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "venue": {
+    "displayName": "Anfield"
+   }
+  },
+  {
+   "id": "401841261",
+   "uid": "s:600~l:630~e:401841261",
+   "date": "2026-10-11T20:30Z",
+   "name": "Corinthians at Palmeiras",
+   "shortName": "COR @ PAL",
+   "season": {
+    "year": 2026,
+    "type": 13907,
+    "slug": "2026-brasileiro-serie-a"
+   },
+   "competitions": [
+    {
+     "id": "401841261",
+     "uid": "s:600~l:630~e:401841261~c:401841261",
+     "date": "2026-10-11T20:30Z",
+     "startDate": "2026-10-11T20:30Z",
+     "attendance": 0,
+     "timeValid": true,
+     "recent": false,
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0'",
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Sun, October 11th at 4:30 PM EDT",
+       "shortDetail": "Scheduled"
+      }
+     },
+     "format": {
+      "regulation": {
+       "periods": 2
+      }
+     },
+     "altGameNote": "Brazil Serie A",
+     "competitors": [
+      {
+       "id": "2029",
+       "uid": "s:600~t:2029",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "2029",
+        "uid": "s:600~t:2029",
+        "abbreviation": "PAL",
+        "displayName": "Palmeiras",
+        "shortDisplayName": "Palmeiras",
+        "name": "Palmeiras",
+        "location": "Palmeiras",
+        "color": "417505",
+        "alternateColor": "fafafc",
+        "isActive": true,
+        "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2029.png",
+        "venue": {
+         "id": "6053"
+        }
+       }
+      },
+      {
+       "id": "874",
+       "uid": "s:600~t:874",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "winner": false,
+       "score": "0",
+       "team": {
+        "id": "874",
+        "uid": "s:600~t:874",
+        "abbreviation": "COR",
+        "displayName": "Corinthians",
+        "shortDisplayName": "Corinthians",
+        "name": "Corinthians",
+        "location": "Corinthians",
+        "color": "000000",
+        "alternateColor": "fafafc",
+        "isActive": true,
+        "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/874.png",
+        "venue": {
+         "id": "5375"
+        }
+       }
+      }
+     ],
+     "odds": [
+      {
+       "overUnder": 2.5,
+       "link": {
+        "language": "en-US",
+        "rel": [
+         "game",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34800914",
+        "text": "Game",
+        "shortText": "Game",
+        "isExternal": true,
+        "isPremium": false,
+        "isHidden": false
+       },
+       "provider": {
+        "id": "100",
+        "name": "DraftKings",
+        "priority": 1
+       },
+       "drawOdds": {
+        "moneyLine": 270,
+        "link": {
+         "language": "en-US",
+         "rel": [
+          "draw",
+          "desktop",
+          "bets",
+          "draftkings"
+         ],
+         "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34800914%3Foutcomes%3D0ML86663191_2",
+         "text": "Draw Bet",
+         "shortText": "Draw Bet",
+         "isExternal": true,
+         "isPremium": false,
+         "isHidden": false
+        }
+       },
+       "total": {
+        "displayName": "Total",
+        "shortDisplayName": "Total",
+        "over": {
+         "open": {
+          "line": "o2.5",
+          "odds": "+105"
+         },
+         "close": {
+          "line": "o2.5",
+          "odds": "+105",
+          "link": {
+           "rel": [
+            "over",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34800914%3Foutcomes%3D0OU86663207O250_1",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "bra.1",
+             "sport": "soccer",
+             "gameId": 401841261,
+             "betSide": "over",
+             "betType": "straight",
+             "betDetails": "Over:2.5"
+            }
+           }
+          }
+         }
+        },
+        "under": {
+         "open": {
+          "line": "u2.5",
+          "odds": "-145"
+         },
+         "close": {
+          "line": "u2.5",
+          "odds": "-145",
+          "link": {
+           "rel": [
+            "under",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34800914%3Foutcomes%3D0OU86663207U250_3",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "bra.1",
+             "sport": "soccer",
+             "gameId": 401841261,
+             "betSide": "under",
+             "betType": "straight",
+             "betDetails": "Under:2.5"
+            }
+           }
+          }
+         }
+        }
+       },
+       "pointSpread": {
+        "displayName": "Spread",
+        "shortDisplayName": "Spread",
+        "home": {
+         "open": {
+          "line": "-0.5",
+          "odds": "-180"
+         },
+         "close": {
+          "line": "-0.5",
+          "odds": "-180",
+          "link": {
+           "rel": [
+            "homeSpread",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34800914%3Foutcomes%3D0HC86663212N50_1",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "bra.1",
+             "sport": "soccer",
+             "gameId": 401841261,
+             "betSide": "home",
+             "betType": "straight",
+             "betDetails": "Spread:PAL-0.5"
+            }
+           }
+          }
+         }
+        },
+        "away": {
+         "open": {
+          "line": "+0.5",
+          "odds": "+125"
+         },
+         "close": {
+          "line": "+0.5",
+          "odds": "+125",
+          "link": {
+           "rel": [
+            "awaySpread",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34800914%3Foutcomes%3D0HC86663212P50_3",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "bra.1",
+             "sport": "soccer",
+             "gameId": 401841261,
+             "betSide": "away",
+             "betType": "straight",
+             "betDetails": "Spread:COR+0.5"
+            }
+           }
+          }
+         }
+        }
+       },
+       "moneyline": {
+        "displayName": "Moneyline",
+        "shortDisplayName": "ML",
+        "home": {
+         "open": {
+          "odds": "-165"
+         },
+         "close": {
+          "odds": "-165",
+          "link": {
+           "rel": [
+            "home",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34800914%3Foutcomes%3D0ML86663191_1",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "bra.1",
+             "sport": "soccer",
+             "gameId": 401841261,
+             "betSide": "home",
+             "betType": "straight"
+            }
+           }
+          }
+         }
+        },
+        "away": {
+         "open": {
+          "odds": "+475"
+         },
+         "close": {
+          "odds": "+475",
+          "link": {
+           "rel": [
+            "away",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34800914%3Foutcomes%3D0ML86663191_3",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "bra.1",
+             "sport": "soccer",
+             "gameId": 401841261,
+             "betSide": "away",
+             "betType": "straight"
+            }
+           }
+          }
+         }
+        },
+        "draw": {
+         "open": {
+          "odds": "+270"
+         },
+         "close": {
+          "odds": "+270",
+          "link": {
+           "rel": [
+            "draw",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34800914%3Foutcomes%3D0ML86663191_2",
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "bra.1",
+             "sport": "soccer",
+             "gameId": 401841261,
+             "betSide": "draw",
+             "betType": "straight"
+            }
+           }
+          }
+         }
+        }
+       },
+       "details": "PAL -165"
+      }
+     ],
+     "wasSuspended": false,
+     "playByPlayAvailable": true
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0'",
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Sun, October 11th at 4:30 PM EDT",
+     "shortDetail": "Scheduled"
+    }
+   },
+   "venue": {
+    "displayName": "Allianz Parque"
+   }
+  }
+ ]
+}

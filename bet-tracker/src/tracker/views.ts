@@ -141,8 +141,11 @@ function legView(l: LegRow, e: EventRow | undefined, full: boolean): LegView {
 }
 
 export interface ValueView {
-  /** 'model', or 'book_implied' (same-game legs without a joint model). */
-  source: 'model' | 'book_implied';
+  /**
+   * 'model'; 'book_implied' (same-game legs without a joint model); or
+   * 'entered_price' (unmatched legs valued at their de-vigged entered price).
+   */
+  source: 'model' | 'book_implied' | 'entered_price';
   pWin: number;
   pPush: number;
   /** Expected return (dollars): P(win) x payout + push refunds. */
@@ -175,6 +178,8 @@ export interface BetView {
   notes: string | null;
   now: ValueView;
   atPlacement: ValueView | null;
+  /** Open legs not matched to an event yet (present only when any). */
+  unmatchedLegIds?: number[];
   /** Events with more than one leg in this bet (correlated legs). */
   sameGameEventIds: string[];
   legs: LegView[];
@@ -273,6 +278,7 @@ export function betView(
         : v.now
     ),
     atPlacement: v.atPlacement ? valueView(v.atPlacement) : null,
+    ...(v.unmatchedLegIds.length ? { unmatchedLegIds: v.unmatchedLegIds } : {}),
     sameGameEventIds: v.now.sameGameEventIds,
     legs: legs.map((l) =>
       legView(l, l.eventId ? evs.get(l.eventId) : undefined, full)

@@ -1,0 +1,39 @@
+{
+ "leagues": [
+  {
+   "id": "700",
+   "slug": "eng.1",
+   "name": "English Premier League"
+  },
+  {
+   "id": "770",
+   "slug": "usa.1",
+   "name": "MLS"
+  },
+  {
+   "id": "760",
+   "slug": "mex.1",
+   "name": "Mexican Liga BBVA MX"
+  },
+  {
+   "id": "3915",
+   "slug": "eng.3",
+   "name": "English League One"
+  },
+  {
+   "id": "3916",
+   "slug": "eng.4",
+   "name": "English League Two"
+  },
+  {
+   "id": "745",
+   "slug": "arg.1",
+   "name": "Argentine Liga Profesional de F\u00fatbol"
+  },
+  {
+   "id": "630",
+   "slug": "bra.1",
+   "name": "Brazilian Serie A"
+  }
+ ]
+}

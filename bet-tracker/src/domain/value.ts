@@ -26,7 +26,7 @@ export interface JointOutcome {
   pushed: number[];
 }
 
-export type PWinSource = 'model' | 'book_implied';
+export type PWinSource = 'model' | 'book_implied' | 'entered_price';
 
 export interface BetValuation {
   /** P(the bet pays more than the stake). */
@@ -44,7 +44,8 @@ export interface BetValuation {
   /**
    * 'model' when every leg (and same-game group) is modeled; 'book_implied'
    * when a same-game group has no joint model and the bet's own price
-   * (unboosted, vig included) stands in for P(win).
+   * (unboosted, vig included) stands in for P(win); 'entered_price' when
+   * an unmatched leg's own price (de-vigged) stands in for its model.
    */
   pWinSource: PWinSource;
   status: BetStatus;

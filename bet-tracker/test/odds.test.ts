@@ -53,6 +53,12 @@ describe('request cost and sport keys', () => {
       'soccer_uefa_nations_league'
     );
     expect(sportKey('eng.1')).toBe('soccer_epl');
+    expect(sportKey('soccer', 'bra.1')).toBe('soccer_brazil_campeonato');
+    expect(sportKey('soccer', 'arg.1')).toBe(
+      'soccer_argentina_primera_division'
+    );
+    expect(sportKey('soccer', 'eng.3')).toBe('soccer_england_league1');
+    expect(sportKey('soccer', 'eng.4')).toBe('soccer_england_league2');
     expect(sportKey('soccer_epl')).toBe('soccer_epl');
     expect(() => sportKey('soccer')).toThrow(/league/);
     expect(() => sportKey('curling')).toThrow(/Unknown/);
