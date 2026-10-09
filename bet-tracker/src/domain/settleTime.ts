@@ -19,6 +19,10 @@ export const GAME_MINUTES: Record<Sport, number> = {
   wnba: 135,
   soccer: 115,
   mma: 150,
+  ncaab: 130,
+  ncaamh: 150,
+  ncaawh: 150,
+  ncaawvb: 120,
 };
 
 const ms = (s: string) => new Date(s).getTime();

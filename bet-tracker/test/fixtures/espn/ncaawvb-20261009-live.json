@@ -1,0 +1,153 @@
+{
+ "events": [
+  {
+   "id": "401887185",
+   "uid": "s:400~l:402~e:401887185",
+   "date": "2026-10-09T18:00Z",
+   "name": "Memphis Tigers at UAB Blazers",
+   "shortName": "MEM @ UAB",
+   "season": {
+    "year": 2026,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401887185",
+     "uid": "s:400~l:402~e:401887185~c:401887185",
+     "date": "2026-10-09T18:00Z",
+     "attendance": 0,
+     "type": {
+      "id": "1",
+      "abbreviation": "STD"
+     },
+     "timeValid": true,
+     "neutralSite": false,
+     "conferenceCompetition": true,
+     "playByPlayAvailable": false,
+     "recent": true,
+     "competitors": [
+      {
+       "id": "5",
+       "uid": "s:400~l:402~t:5",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "team": {
+        "id": "5",
+        "uid": "s:400~l:402~t:5",
+        "location": "UAB",
+        "name": "Blazers",
+        "abbreviation": "UAB",
+        "displayName": "UAB Blazers",
+        "shortDisplayName": "UAB",
+        "color": "000000",
+        "alternateColor": "ffc845",
+        "isActive": true,
+        "venue": {
+         "id": "2155"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/5.png"
+       },
+       "score": "1",
+       "linescores": [
+        {
+         "value": 22.0,
+         "displayValue": "22",
+         "winner": false,
+         "period": 1
+        },
+        {
+         "value": 27.0,
+         "displayValue": "27",
+         "winner": false,
+         "period": 2
+        }
+       ],
+       "curatedRank": {
+        "current": 99
+       }
+      },
+      {
+       "id": "235",
+       "uid": "s:400~l:402~t:235",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "team": {
+        "id": "235",
+        "uid": "s:400~l:402~t:235",
+        "location": "Memphis",
+        "name": "Tigers",
+        "abbreviation": "MEM",
+        "displayName": "Memphis Tigers",
+        "shortDisplayName": "Memphis",
+        "color": "29299c",
+        "alternateColor": "8e908f",
+        "isActive": true,
+        "venue": {
+         "id": "2202"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/235.png"
+       },
+       "score": "1",
+       "linescores": [
+        {
+         "value": 25.0,
+         "displayValue": "25",
+         "winner": false,
+         "period": 1
+        },
+        {
+         "value": 25.0,
+         "displayValue": "25",
+         "winner": false,
+         "period": 2
+        }
+       ],
+       "curatedRank": {
+        "current": 99
+       }
+      }
+     ],
+     "situation": {},
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 2,
+      "type": {
+       "id": "22",
+       "name": "STATUS_END_PERIOD",
+       "state": "in",
+       "completed": false,
+       "description": "End of Period",
+       "detail": "End of 2nd Set",
+       "shortDetail": "End of 2nd"
+      }
+     },
+     "format": {
+      "regulation": {
+       "periods": 5
+      }
+     },
+     "startDate": "2026-10-09T18:00Z",
+     "broadcast": ""
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 2,
+    "type": {
+     "id": "22",
+     "name": "STATUS_END_PERIOD",
+     "state": "in",
+     "completed": false,
+     "description": "End of Period",
+     "detail": "End of 2nd Set",
+     "shortDetail": "End of 2nd"
+    }
+   }
+  }
+ ]
+}

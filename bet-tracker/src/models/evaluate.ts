@@ -169,6 +169,9 @@ function model(
     }
     case 'mma':
       return { kind: 'prior', name: 'mma_prior', inputs: {} };
+    default:
+      // Scores-only sports can't be bet on (betInput allows BET_SPORTS).
+      throw new Error(`No model for ${sport}`);
   }
 }
 

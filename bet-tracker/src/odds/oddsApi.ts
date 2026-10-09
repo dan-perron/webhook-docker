@@ -12,7 +12,8 @@ export const ODDS_MARKETS = ['h2h', 'spreads', 'totals'] as const;
 export type OddsMarket = (typeof ODDS_MARKETS)[number];
 
 /** Our sport (and ESPN soccer league) -> Odds API sport key. */
-const SPORT_KEYS: Record<Exclude<Sport, 'soccer'>, string> = {
+/** Odds API keys for the sports we price (Scores-only sports have none). */
+const SPORT_KEYS: Partial<Record<Exclude<Sport, 'soccer'>, string>> = {
   nfl: 'americanfootball_nfl',
   ncaaf: 'americanfootball_ncaaf',
   mlb: 'baseball_mlb',
@@ -81,8 +82,8 @@ export function sportKey(sportOrKey: string, league?: string | null): string {
     }
     return key;
   }
-  if (sportOrKey in SPORT_KEYS)
-    return SPORT_KEYS[sportOrKey as keyof typeof SPORT_KEYS];
+  const known = SPORT_KEYS[sportOrKey as keyof typeof SPORT_KEYS];
+  if (known) return known;
   if (SOCCER_LEAGUE_KEYS[sportOrKey]) return SOCCER_LEAGUE_KEYS[sportOrKey];
   if (/^[a-z0-9]+_[a-z0-9_]+$/.test(sportOrKey)) return sportOrKey;
   throw new Error(`Unknown sport "${sportOrKey}"`);

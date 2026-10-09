@@ -54,11 +54,24 @@ export interface HockeySituation {
   postseason: boolean;
 }
 
-/** WNBA: clock within the quarter. Period 5+ = overtime. */
+/**
+ * Clock within the period: WNBA quarters (5+ = overtime), men's college
+ * halves (3+ = overtime).
+ */
 export interface BasketballSituation {
   kind: 'basketball';
   period: number;
   clock: number;
+}
+
+/**
+ * Volleyball (best of five): points in each set so far, the last being the
+ * set in play. The game's score is sets won.
+ */
+export interface VolleyballSituation {
+  kind: 'volleyball';
+  set: number;
+  sets: { home: number; away: number }[];
 }
 
 export type Situation =
@@ -66,7 +79,8 @@ export type Situation =
   | BaseballSituation
   | SoccerSituation
   | HockeySituation
-  | BasketballSituation;
+  | BasketballSituation
+  | VolleyballSituation;
 
 export interface GameState {
   eventId: string;

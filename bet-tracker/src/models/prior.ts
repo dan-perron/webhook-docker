@@ -80,6 +80,10 @@ export const LEAGUE_AVG_TOTAL: Record<Sport, number | null> = {
   wnba: 162,
   soccer: 2.6,
   mma: null,
+  ncaab: null,
+  ncaamh: null,
+  ncaawh: null,
+  ncaawvb: null,
 };
 
 export const isMarginSport = (s: Sport): s is 'nfl' | 'ncaaf' | 'wnba' =>

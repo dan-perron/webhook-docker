@@ -373,7 +373,11 @@ export function createMcpServer(s: Services): McpServer {
 
   // --- Scores: games followed for their score (not bets) --------------------
 
-  const sport = z.enum(SPORTS);
+  const sport = z
+    .enum(SPORTS)
+    .describe(
+      "Also Scores-only (no bets): ncaab = men's college basketball, ncaamh / ncaawh = men's / women's college hockey, ncaawvb = women's college volleyball"
+    );
   const date = z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/)

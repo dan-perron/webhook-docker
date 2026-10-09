@@ -1,0 +1,373 @@
+{
+ "events": [
+  {
+   "id": "401904655",
+   "uid": "s:70~l:91~e:401904655",
+   "date": "2026-10-10T00:07Z",
+   "name": "Wisconsin Badgers at Minnesota State Mavericks",
+   "shortName": "WISC @ MNST",
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401904655",
+     "uid": "s:70~l:91~e:401904655~c:401904655",
+     "date": "2026-10-10T00:07Z",
+     "attendance": 0,
+     "type": {
+      "id": "1",
+      "abbreviation": "STD"
+     },
+     "timeValid": true,
+     "neutralSite": false,
+     "playByPlayAvailable": false,
+     "recent": false,
+     "competitors": [
+      {
+       "id": "2364",
+       "uid": "s:70~l:91~t:2364",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "team": {
+        "id": "2364",
+        "uid": "s:70~l:91~t:2364",
+        "location": "Minnesota State",
+        "name": "Mavericks",
+        "abbreviation": "MNST",
+        "displayName": "Minnesota State Mavericks",
+        "shortDisplayName": "Minnesota State",
+        "isActive": true,
+        "venue": {
+         "id": "1231"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2364.png"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 19
+       }
+      },
+      {
+       "id": "275",
+       "uid": "s:70~l:91~t:275",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "team": {
+        "id": "275",
+        "uid": "s:70~l:91~t:275",
+        "location": "Wisconsin",
+        "name": "Badgers",
+        "abbreviation": "WISC",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin",
+        "isActive": true,
+        "venue": {
+         "id": "348"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/275.png"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 7
+       }
+      }
+     ],
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Fri, October 9th at 8:07 PM EDT",
+       "shortDetail": "10/9 - 8:07 PM EDT"
+      }
+     },
+     "format": {
+      "regulation": {
+       "periods": 3
+      },
+      "overtime": {
+       "periods": 1
+      },
+      "shootout": {
+       "periods": 1
+      }
+     },
+     "startDate": "2026-10-10T00:07Z",
+     "broadcast": ""
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Fri, October 9th at 8:07 PM EDT",
+     "shortDetail": "10/9 - 8:07 PM EDT"
+    }
+   }
+  },
+  {
+   "id": "401904371",
+   "uid": "s:70~l:91~e:401904371",
+   "date": "2026-10-09T23:00Z",
+   "name": "Vermont Catamounts  at Bentley Falcons",
+   "shortName": "UVM @ BENT",
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401904371",
+     "uid": "s:70~l:91~e:401904371~c:401904371",
+     "date": "2026-10-09T23:00Z",
+     "attendance": 0,
+     "type": {
+      "id": "1",
+      "abbreviation": "STD"
+     },
+     "timeValid": true,
+     "neutralSite": false,
+     "playByPlayAvailable": false,
+     "recent": true,
+     "competitors": [
+      {
+       "id": "2060",
+       "uid": "s:70~l:91~t:2060",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "team": {
+        "id": "2060",
+        "uid": "s:70~l:91~t:2060",
+        "location": "Bentley",
+        "name": "Falcons",
+        "abbreviation": "BENT",
+        "displayName": "Bentley Falcons",
+        "shortDisplayName": "Bentley",
+        "isActive": true,
+        "venue": {
+         "id": "6611"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2060.png"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       }
+      },
+      {
+       "id": "261",
+       "uid": "s:70~l:91~t:261",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "team": {
+        "id": "261",
+        "uid": "s:70~l:91~t:261",
+        "location": "Vermont",
+        "name": "Catamounts ",
+        "abbreviation": "UVM",
+        "displayName": "Vermont Catamounts",
+        "shortDisplayName": "Vermont",
+        "isActive": true,
+        "venue": {
+         "id": "1215"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/261.png"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       }
+      }
+     ],
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Fri, October 9th at 7:00 PM EDT",
+       "shortDetail": "10/9 - 7:00 PM EDT"
+      }
+     },
+     "format": {
+      "regulation": {
+       "periods": 3
+      },
+      "overtime": {
+       "periods": 1
+      },
+      "shootout": {
+       "periods": 1
+      }
+     },
+     "startDate": "2026-10-09T23:00Z",
+     "broadcast": ""
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Fri, October 9th at 7:00 PM EDT",
+     "shortDetail": "10/9 - 7:00 PM EDT"
+    }
+   }
+  },
+  {
+   "id": "401904459",
+   "uid": "s:70~l:91~e:401904459",
+   "date": "2026-10-09T23:00Z",
+   "name": "Niagara Purple Eagles at Notre Dame Fighting Irish",
+   "shortName": "NIA @ ND",
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401904459",
+     "uid": "s:70~l:91~e:401904459~c:401904459",
+     "date": "2026-10-09T23:00Z",
+     "attendance": 0,
+     "type": {
+      "id": "1",
+      "abbreviation": "STD"
+     },
+     "timeValid": true,
+     "neutralSite": false,
+     "playByPlayAvailable": false,
+     "recent": true,
+     "competitors": [
+      {
+       "id": "87",
+       "uid": "s:70~l:91~t:87",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "team": {
+        "id": "87",
+        "uid": "s:70~l:91~t:87",
+        "location": "Notre Dame",
+        "name": "Fighting Irish",
+        "abbreviation": "ND",
+        "displayName": "Notre Dame Fighting Irish",
+        "shortDisplayName": "Notre Dame",
+        "isActive": true,
+        "venue": {
+         "id": "4820"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/87.png"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       }
+      },
+      {
+       "id": "315",
+       "uid": "s:70~l:91~t:315",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "team": {
+        "id": "315",
+        "uid": "s:70~l:91~t:315",
+        "location": "Niagara",
+        "name": "Purple Eagles",
+        "abbreviation": "NIA",
+        "displayName": "Niagara Purple Eagles",
+        "shortDisplayName": "Niagara",
+        "isActive": true,
+        "venue": {
+         "id": "1202"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/315.png"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       }
+      }
+     ],
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Fri, October 9th at 7:00 PM EDT",
+       "shortDetail": "10/9 - 7:00 PM EDT"
+      }
+     },
+     "format": {
+      "regulation": {
+       "periods": 3
+      },
+      "overtime": {
+       "periods": 1
+      },
+      "shootout": {
+       "periods": 1
+      }
+     },
+     "startDate": "2026-10-09T23:00Z",
+     "broadcast": ""
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Fri, October 9th at 7:00 PM EDT",
+     "shortDetail": "10/9 - 7:00 PM EDT"
+    }
+   }
+  }
+ ],
+ "provider": {
+  "id": "100",
+  "name": "Draft Kings",
+  "displayName": "Draft Kings",
+  "priority": 1
+ }
+}
