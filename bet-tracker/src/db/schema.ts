@@ -5,6 +5,7 @@ import {
   real,
   sqliteTable,
   text,
+  uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 import {
   BET_STATUSES,
@@ -258,3 +259,71 @@ export const oauthTokens = sqliteTable(
   },
   (t) => [index('oauth_tokens_client_idx').on(t.clientId)]
 );
+
+// --- Scores (games followed for score updates, not bets) ---------------------
+
+/** A team whose games are added to the Scores view automatically. */
+export const follows = sqliteTable(
+  'follows',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    sport: text('sport', { enum: SPORTS }).notNull(),
+    // The provider's full team name, resolved when followed (e.g. "Chicago Bears").
+    teamName: text('team_name').notNull(),
+    alerts: integer('alerts', { mode: 'boolean' }).notNull().default(true),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+  },
+  (t) => [uniqueIndex('follows_team_idx').on(t.sport, t.teamName)]
+);
+
+/**
+ * A game on the Scores view: starred by hand or added for a followed team.
+ * `hidden` keeps an unstarred followed-team game from being re-added.
+ */
+export const watches = sqliteTable('watches', {
+  eventId: text('event_id')
+    .primaryKey()
+    .references(() => events.id, { onDelete: 'cascade' }),
+  source: text('source', { enum: ['manual', 'follow'] }).notNull(),
+  followId: integer('follow_id').references(() => follows.id, {
+    onDelete: 'set null',
+  }),
+  alerts: integer('alerts', { mode: 'boolean' }).notNull().default(true),
+  hidden: integer('hidden', { mode: 'boolean' }).notNull().default(false),
+  // Last side seen leading (ties don't reset it), for lead-change alerts.
+  lastLeader: text('last_leader', { enum: SIDES }),
+  createdAt: text('created_at')
+    .notNull()
+    .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+});
+
+/** Score alerts sent (or suppressed), one per (event, key). */
+export const scoreAlerts = sqliteTable(
+  'score_alerts',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    eventId: text('event_id')
+      .notNull()
+      .references(() => events.id, { onDelete: 'cascade' }),
+    kind: text('kind', {
+      enum: ['start', 'lead', 'close', 'final'],
+    }).notNull(),
+    // Dedupe key, e.g. "final" or "lead:21-17".
+    key: text('key').notNull(),
+    title: text('title').notNull(),
+    body: text('body').notNull(),
+    createdAt: text('created_at').notNull(),
+    // 'sent' | 'quiet' (quiet hours) | 'off' (no push configured) | 'error: …'
+    delivery: text('delivery').notNull(),
+  },
+  (t) => [
+    uniqueIndex('score_alerts_key_idx').on(t.eventId, t.key),
+    index('score_alerts_created_idx').on(t.createdAt),
+  ]
+);
+
+export type FollowRow = typeof follows.$inferSelect;
+export type WatchRow = typeof watches.$inferSelect;
+export type ScoreAlertRow = typeof scoreAlerts.$inferSelect;

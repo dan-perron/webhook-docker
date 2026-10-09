@@ -11,7 +11,7 @@ if (!appConfig.auth.appToken) {
 
 const db = openDb(appConfig.databasePath);
 const services = createServices(db);
-const { tracker } = services;
+const { tracker, scores } = services;
 const app = createApp(services, {
   appToken: appConfig.auth.appToken,
   publicOrigin: appConfig.publicOrigin,
@@ -34,6 +34,19 @@ const boot = tracker.reevaluateAll();
 console.log(`re-evaluated ${boot.evaluatedEvents.length} events at startup`);
 setInterval(tick, TICK_MS);
 void tick();
+
+// Add followed teams' upcoming games to Scores.
+async function discover() {
+  try {
+    const r = await scores.discover();
+    for (const e of r.errors) console.warn(`scores: ${e}`);
+  } catch (e) {
+    console.error('scores discovery failed', e);
+  }
+}
+setInterval(discover, appConfig.scores.discoverMinutes * 60_000);
+void discover();
+if (!scores.pushConfigured) console.log('scores: NTFY_URL not set; push off');
 
 serve({ fetch: app.fetch, port: appConfig.port }, (info) => {
   console.log(`bet-tracker listening on http://localhost:${info.port}`);

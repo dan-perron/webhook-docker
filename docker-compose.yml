@@ -57,6 +57,9 @@ services:
       - BASE_PATH=${BET_BASE_PATH:-/bets}
       - PUBLIC_ORIGIN=${BET_PUBLIC_ORIGIN:-https://djperron.com}
       - PREGAME_SNAPSHOT=${BET_PREGAME_SNAPSHOT:-true}
+      - NTFY_URL=${SCORES_NTFY_URL:-}
+      - NTFY_TOKEN=${SCORES_NTFY_TOKEN:-}
+      - SCORES_QUIET_HOURS=${SCORES_QUIET_HOURS:-}
       - TZ=America/Chicago
     ports:
       - 3003:3003

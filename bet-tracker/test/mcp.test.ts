@@ -10,6 +10,7 @@ import { loadSeed } from '../src/seed/load.js';
 import { Tracker } from '../src/tracker/tracker.js';
 import type { BetView, Portfolio } from '../src/tracker/views.js';
 import { fakeFetcher, fixture, SEED_ROUTES } from './helpers/fixtures.js';
+import { scoreService } from './helpers/scores.js';
 import { PARAMS } from './helpers/states.js';
 
 const ROUTES = {
@@ -55,14 +56,16 @@ beforeEach(async () => {
     };
   };
   const now = () => new Date('2026-10-03T19:40:00.000Z');
+  const tracker = new Tracker(db, providers, {
+    params: PARAMS,
+    polling: { liveSeconds: 30, scheduledSeconds: 600 },
+    now,
+  });
   const services: Services = {
     db,
     providers,
-    tracker: new Tracker(db, providers, {
-      params: PARAMS,
-      polling: { liveSeconds: 30, scheduledSeconds: 600 },
-      now,
-    }),
+    tracker,
+    scores: scoreService(db, providers, tracker),
     odds: new OddsApiClient(db, {
       apiKey: 'k',
       baseUrl: 'https://api.the-odds-api.com/v4',
@@ -99,14 +102,21 @@ describe('MCP tools', () => {
       'add_bet',
       'check_odds',
       'confirm_match',
+      'follow_team',
       'get_bet',
       'list_bets',
+      'list_games',
       'portfolio',
       'recompute_bet',
       'remove_bet',
+      'scores',
+      'set_score_alerts',
       'settle_bet',
+      'unfollow_team',
+      'unwatch_game',
       'update_bet',
       'update_leg',
+      'watch_game',
     ]);
     for (const name of [
       'check_odds',

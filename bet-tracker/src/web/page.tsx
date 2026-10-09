@@ -1,3 +1,4 @@
+import type { Child } from 'hono/jsx';
 import { max } from 'drizzle-orm';
 import { legs } from '../db/schema.js';
 import type { Services } from '../mcp/server.js';
@@ -94,10 +95,25 @@ function LocalTime(props: { iso: string; kind: TimeKind; d: Dashboard }) {
   );
 }
 
+/** Switch between the app's two views. */
+export function ViewNav({ active }: { active: 'bets' | 'scores' }) {
+  return (
+    <nav class="views">
+      <a href={home} class={active === 'bets' ? 'on' : ''}>
+        Bets
+      </a>
+      <a href={url('/scores')} class={active === 'scores' ? 'on' : ''}>
+        Scores
+      </a>
+    </nav>
+  );
+}
+
 export function Summary({ d }: { d: Dashboard }) {
   const o = d.portfolio.open;
   return (
     <div class="summary">
+      <ViewNav active="bets" />
       <div class="stats">
         <div>
           <span class="k">Staked</span>
@@ -406,6 +422,28 @@ export function Layout({
   title?: string;
 }) {
   return (
+    <Shell
+      title={title}
+      events={url(`/events?tab=${d.tab}`)}
+      timeZone={d.timeZone}
+      summary={<Summary d={d} />}
+      content={<Content d={d} />}
+    />
+  );
+}
+
+/**
+ * The page frame shared by both views: a sticky #summary header and #content,
+ * both replaced from the SSE stream at `events` (none = a static page).
+ */
+export function Shell(props: {
+  title: string;
+  events?: string;
+  timeZone: string;
+  summary: Child;
+  content: Child;
+}) {
+  return (
     <html lang="en">
       <head>
         <meta charset="utf-8" />
@@ -423,23 +461,19 @@ export function Layout({
           content="#f6f7f9"
           media="(prefers-color-scheme: light)"
         />
-        <title>{title}</title>
+        <title>{props.title}</title>
         <link rel="stylesheet" href={url('/static/styles.css')} />
         <script
           src={url('/static/app.js')}
           defer
-          data-events={url(`/events?tab=${d.tab}`)}
+          data-events={props.events}
           data-base={home}
-          data-tz={d.timeZone}
+          data-tz={props.timeZone}
         />
       </head>
       <body>
-        <header id="summary">
-          <Summary d={d} />
-        </header>
-        <main id="content">
-          <Content d={d} />
-        </main>
+        <header id="summary">{props.summary}</header>
+        <main id="content">{props.content}</main>
       </body>
     </html>
   );

@@ -8,6 +8,7 @@ import type { Services } from '../src/mcp/server.js';
 import { OddsApiClient } from '../src/odds/oddsApi.js';
 import { Tracker } from '../src/tracker/tracker.js';
 import { fakeFetcher } from './helpers/fixtures.js';
+import { scoreService } from './helpers/scores.js';
 import { PARAMS } from './helpers/states.js';
 
 const ORIGIN = 'https://djperron.com';
@@ -23,13 +24,15 @@ beforeEach(() => {
   const db = openDb(':memory:');
   const providers = createProviders(fakeFetcher({}).fetcher);
   clock = new Date('2026-10-03T21:00:00.000Z');
+  const tracker = new Tracker(db, providers, {
+    params: PARAMS,
+    polling: { liveSeconds: 30, scheduledSeconds: 600 },
+  });
   const services: Services = {
     db,
     providers,
-    tracker: new Tracker(db, providers, {
-      params: PARAMS,
-      polling: { liveSeconds: 30, scheduledSeconds: 600 },
-    }),
+    tracker,
+    scores: scoreService(db, providers, tracker),
     odds: new OddsApiClient(db, {
       apiKey: '',
       baseUrl: 'x',

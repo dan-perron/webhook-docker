@@ -18,6 +18,7 @@ import {
 } from '../src/web/format.js';
 import type { LegView } from '../src/tracker/views.js';
 import { fakeFetcher, SEED_ROUTES } from './helpers/fixtures.js';
+import { scoreService } from './helpers/scores.js';
 import { PARAMS } from './helpers/states.js';
 
 const TOKEN = 'web-token';
@@ -169,12 +170,16 @@ describe('web page', () => {
     loadSeed(db);
     const providers = createProviders(fakeFetcher(ROUTES).fetcher);
     await matchLegs(db, providers);
+    const tracker = new Tracker(db, providers, {
+      params: PARAMS,
+      polling: { liveSeconds: 30, scheduledSeconds: 600 },
+      now: () => new Date('2026-10-03T19:40:00.000Z'),
+    });
     services = {
       db,
       providers,
-      tracker: new Tracker(db, providers, {
-        params: PARAMS,
-        polling: { liveSeconds: 30, scheduledSeconds: 600 },
+      tracker,
+      scores: scoreService(db, providers, tracker, {
         now: () => new Date('2026-10-03T19:40:00.000Z'),
       }),
       odds: new OddsApiClient(db, {
@@ -377,5 +382,91 @@ describe('web page', () => {
     controller.abort();
     await reader.cancel().catch(() => undefined);
     expect(services.tracker.listenerCount('change')).toBe(0);
+  });
+  describe('scores', () => {
+    const form = (cookie: string, path: string, f: Record<string, string>) =>
+      app.request(path, {
+        method: 'POST',
+        headers: {
+          cookie,
+          'content-type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(f).toString(),
+      });
+
+    it('needs a session', async () => {
+      expect((await app.request('/scores')).status).toBe(302);
+      expect(
+        (await app.request('/scores/watch', { method: 'POST' })).status
+      ).toBe(302);
+    });
+
+    it('shows bet games with a view switch, live stream and star buttons', async () => {
+      const cookie = cookieOf(await login());
+      const html = await (
+        await app.request('/scores', { headers: { cookie } })
+      ).text();
+      expect(html).toContain('class="views"');
+      expect(html).toContain('data-events="/scores/events"');
+      // CWS @ CLE (open bet) is live: score, bet tag, ☆ to watch.
+      expect(html).toContain('Chicago White Sox');
+      expect(html).toContain('>bet<');
+      expect(html).toContain('☆');
+      expect(html).toContain('Push off (NTFY_URL not set)');
+      // The bets page links back.
+      const bets = await (
+        await app.request('/', { headers: { cookie } })
+      ).text();
+      expect(bets).toContain('href="/scores"');
+    });
+
+    it('browse -> star -> unstar', async () => {
+      const cookie = cookieOf(await login());
+      const browse = await (
+        await app.request('/scores/browse?sport=nfl&date=2026-10-04', {
+          headers: { cookie },
+        })
+      ).text();
+      expect(browse).toContain('Indianapolis Colts @ Washington Commanders');
+      expect(browse).not.toContain('data-events=');
+      const id = 'espn:nfl:401872965'; // no bet on it
+      const back = '/scores/browse?sport=nfl&date=2026-10-04';
+      const res = await form(cookie, '/scores/watch', {
+        eventId: id,
+        sport: 'nfl',
+        date: '2026-10-04',
+        back,
+      });
+      expect(res.status).toBe(302);
+      expect(res.headers.get('location')).toBe(back);
+      expect(services.scores.board().upcoming.map((g) => g.eventId)).toContain(
+        id
+      );
+      // An off-site "back" is ignored.
+      const off = await form(cookie, '/scores/unwatch', {
+        eventId: id,
+        back: '//evil.example',
+      });
+      expect(off.headers.get('location')).toBe('/scores');
+      expect(
+        services.scores.board().upcoming.map((g) => g.eventId)
+      ).not.toContain(id);
+    });
+
+    it('follows a team, or asks which one', async () => {
+      const cookie = cookieOf(await login());
+      const amb = await (
+        await form(cookie, '/scores/follow', { sport: 'nfl', team: 'New York' })
+      ).text();
+      expect(amb).toContain('Which team?');
+      expect(amb).toContain('value="New York Jets"');
+      const ok = await (
+        await form(cookie, '/scores/follow', { sport: 'nfl', team: 'Bears' })
+      ).text();
+      expect(ok).toContain('Following Chicago Bears: 1 game this week.');
+      expect(services.scores.listFollows().map((f) => f.team)).toEqual([
+        'Chicago Bears',
+      ]);
+    });
   });
 });

@@ -6,6 +6,7 @@ import {
   events,
   legs,
   predictionSnapshots,
+  watches,
   type EventRow,
   type BetRow,
   type LegRow,
@@ -62,6 +63,13 @@ export interface TrackerOptions {
     enabled: boolean;
     leadMinutes: number;
   };
+}
+
+/** A polled game's state change (prev null on its first fetch). */
+export interface StateChange {
+  event: EventRow;
+  prev: GameState | null;
+  next: GameState;
 }
 
 export interface TickResult {
@@ -124,9 +132,10 @@ const selectionOf = (l: LegRow): ModelSelection => ({
 });
 
 /**
- * Polls game state for events with open legs, keeps priors and leg
- * probabilities current, settles finished legs and bets, and logs
- * calibration snapshots. Emits 'change' with a TickResult when anything moved.
+ * Polls game state for events with open legs and watched games (Scores),
+ * keeps priors and leg probabilities current, settles finished legs and bets,
+ * and logs calibration snapshots. Emits 'change' with a TickResult when
+ * anything moved and 'state' with a StateChange per polled event.
  */
 export class Tracker extends EventEmitter {
   private readonly now: () => Date;
@@ -156,8 +165,10 @@ export class Tracker extends EventEmitter {
     try {
       await this.rematch(result);
       const due = this.dueEvents();
-      await this.refreshLines(due, result);
-      await this.pregameSnapshots(due, result);
+      // Lines and snapshots only matter (and cost quota) for bets.
+      const betDue = due.filter((e) => this.hasOpenLeg(e.id));
+      await this.refreshLines(betDue, result);
+      await this.pregameSnapshots(betDue, result);
       await this.pollStates(due, result);
       for (const id of new Set([
         ...result.polled,
@@ -168,7 +179,11 @@ export class Tracker extends EventEmitter {
     } finally {
       this.running = false;
     }
-    if (result.changedBets.length || result.evaluatedEvents.length)
+    if (
+      result.changedBets.length ||
+      result.evaluatedEvents.length ||
+      result.polled.length
+    )
       this.emit('change', result);
     return result;
   }
@@ -200,31 +215,43 @@ export class Tracker extends EventEmitter {
   }
 
   /**
-   * Events with an open leg whose next poll is due, plus any never fetched
-   * (a leg matched to an already-final game still needs its final state).
-   * Legs of settled bets (e.g. a dead parlay) keep polling until their game
-   * ends so their calibration snapshots get an outcome.
+   * Events with an open leg or a (visible) watch whose next poll is due, plus
+   * any never fetched (a leg matched to an already-final game still needs its
+   * final state). Legs of settled bets (e.g. a dead parlay) keep polling until
+   * their game ends so their calibration snapshots get an outcome.
    */
   private dueEvents(): EventRow[] {
     const now = iso(this.now());
-    return this.db
+    const due = or(
+      isNull(events.stateJson),
+      and(
+        ne(events.status, 'final'),
+        or(isNull(events.nextPollAt), lte(events.nextPollAt, now))
+      )
+    );
+    const withLegs = this.db
       .selectDistinct({ e: events })
       .from(events)
       .innerJoin(legs, eq(legs.eventId, events.id))
-      .where(
-        and(
-          eq(legs.status, 'open'),
-          or(
-            isNull(events.stateJson),
-            and(
-              ne(events.status, 'final'),
-              or(isNull(events.nextPollAt), lte(events.nextPollAt, now))
-            )
-          )
-        )
-      )
-      .all()
-      .map((r) => r.e);
+      .where(and(eq(legs.status, 'open'), due))
+      .all();
+    const watched = this.db
+      .select({ e: events })
+      .from(events)
+      .innerJoin(watches, eq(watches.eventId, events.id))
+      .where(and(eq(watches.hidden, false), due))
+      .all();
+    const byId = new Map<string, EventRow>();
+    for (const { e } of [...withLegs, ...watched]) byId.set(e.id, e);
+    return [...byId.values()];
+  }
+
+  private hasOpenLeg(eventId: string): boolean {
+    return !!this.db
+      .select({ id: legs.id })
+      .from(legs)
+      .where(and(eq(legs.eventId, eventId), eq(legs.status, 'open')))
+      .get();
   }
 
   /** Events with open legs that have never been evaluated (new bets, priors). */
@@ -412,6 +439,12 @@ export class Tracker extends EventEmitter {
           .where(eq(events.id, e.id))
           .run();
         result.polled.push(e.id);
+        const change: StateChange = {
+          event: e,
+          prev: e.stateJson ? (JSON.parse(e.stateJson) as GameState) : null,
+          next: s,
+        };
+        this.emit('state', change);
       }
     }
   }
