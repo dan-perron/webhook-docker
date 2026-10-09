@@ -47,6 +47,8 @@ import type { Notifier } from './ntfy.js';
 export interface ScoreOptions {
   /** Days ahead (from today) that followed teams' games are added. */
   followDays: number;
+  /** Days ahead searched to resolve a team name (bye weeks). Default 21. */
+  resolveDays?: number;
   /** Hours a finished game stays on the board. */
   finalHours: number;
   notifier: Notifier;
@@ -150,6 +152,20 @@ function withNicknames(e: ProviderEvent): ProviderEvent {
   return { ...e, home: more(e.home), away: more(e.away) };
 }
 
+const RESOLVE_DAYS = 21;
+
+/** Every listed team by how well `team` names it, best first. */
+function rankTeams(team: string, listed: ProviderEvent[]): [string, number][] {
+  const best = new Map<string, number>();
+  for (const e of listed) {
+    for (const side of [e.home, e.away]) {
+      const sc = nameScore(team, side.aliases);
+      best.set(side.name, Math.max(best.get(side.name) ?? 0, sc));
+    }
+  }
+  return [...best].sort((a, b) => b[1] - a[1]);
+}
+
 const followView = (f: FollowRow): FollowView => ({
   id: f.id,
   sport: f.sport,
@@ -230,18 +246,20 @@ export class ScoreService {
     team: string,
     alerts = true
   ): Promise<FollowResult> {
-    const listed = await this.listings(
-      sport,
-      this.dates(this.today(), this.opts.followDays)
-    );
-    const best = new Map<string, number>();
-    for (const e of listed) {
-      for (const side of [e.home, e.away]) {
-        const sc = nameScore(team, side.aliases);
-        best.set(side.name, Math.max(best.get(side.name) ?? 0, sc));
-      }
+    const today = this.today();
+    const week = this.dates(today, this.opts.followDays);
+    let listed = await this.listings(sport, week);
+    let ranked = rankTeams(team, listed);
+    // A bye week or a gap between series: look further ahead for the name.
+    const resolveDays = this.opts.resolveDays ?? RESOLVE_DAYS;
+    if ((ranked[0]?.[1] ?? 0) < CONFIDENT && resolveDays > week.length) {
+      const later = this.dates(
+        addDays(today, week.length),
+        resolveDays - week.length
+      );
+      listed = [...listed, ...(await this.listings(sport, later))];
+      ranked = rankTeams(team, listed);
     }
-    const ranked = [...best].sort((a, b) => b[1] - a[1]);
     const top = ranked[0]?.[1] ?? 0;
     if (top < CONFIDENT) {
       return {
@@ -250,7 +268,7 @@ export class ScoreService {
           .filter(([, s]) => s >= 0.5)
           .slice(0, 5)
           .map(([n]) => n),
-        searched: `${sport} games ${this.today()} + ${this.opts.followDays} days`,
+        searched: `${sport} games ${today} + ${Math.max(resolveDays, week.length)} days`,
       };
     }
     const names = ranked
@@ -271,7 +289,12 @@ export class ScoreService {
       .from(follows)
       .where(and(eq(follows.sport, sport), eq(follows.teamName, names[0]!)))
       .get()!;
-    const added = this.addFollowedGames([f], listed);
+    // Only this week's games go on the board; discovery adds later ones.
+    const horizon = addDays(today, week.length);
+    const added = this.addFollowedGames(
+      [f],
+      listed.filter((e) => localDate(e.startTime, this.opts.timeZone) < horizon)
+    );
     await this.refresh();
     return {
       status: 'followed',

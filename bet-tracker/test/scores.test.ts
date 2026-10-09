@@ -268,6 +268,23 @@ describe('ScoreService', () => {
     ]);
   });
 
+  it('resolves a team on a bye week from later games, adding none yet', async () => {
+    clock = new Date('2026-09-25T17:00:00.000Z'); // Bears play 10/4: 9 days out
+    const r = await svc.followTeam('nfl', 'Bears');
+    expect(r).toMatchObject({
+      status: 'followed',
+      follow: { team: 'Chicago Bears' },
+      games: [],
+    });
+    expect(svc.board().upcoming).toEqual([]);
+    // Within the week, discovery adds it.
+    clock = NOW;
+    await svc.discover();
+    expect(svc.board().upcoming.map((g) => g.label)).toEqual([
+      'New York Jets @ Chicago Bears',
+    ]);
+  });
+
   it('never guesses between teams', async () => {
     expect(await svc.followTeam('nfl', 'New York')).toEqual({
       status: 'ambiguous',
