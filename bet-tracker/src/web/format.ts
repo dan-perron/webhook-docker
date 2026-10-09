@@ -111,6 +111,9 @@ export function situationText(live: LiveView): string | null {
     }
     case 'soccer':
       return `${s.minute}'`;
+    case 'volleyball':
+      // Away-first like the score line: "25–19, 22–25, 18–21".
+      return s.sets.map((x) => `${x.away}–${x.home}`).join(', ');
     default:
       // Hockey/basketball: the period and clock are already in the detail.
       return null;

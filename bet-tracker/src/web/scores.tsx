@@ -25,6 +25,10 @@ const SPORT_NAME: Record<Sport, string> = {
   wnba: 'WNBA',
   soccer: 'Soccer',
   mma: 'UFC',
+  ncaab: 'NCAA MBB',
+  ncaamh: 'NCAA Hockey',
+  ncaawh: 'NCAA W Hockey',
+  ncaawvb: 'NCAA Volleyball',
 };
 
 function Time(props: {

@@ -71,6 +71,10 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   first fetch never alerts. Push is ntfy (`NTFY_URL`, JSON publish), with
   `SCORES_QUIET_HOURS` logging instead. Scores name lookups add nickname
   aliases (MLB Stats API has full names only); bet matching does not.
+- `SPORTS` = `BET_SPORTS` (modeled; `add_bet` accepts only these) +
+  `SCORE_ONLY_SPORTS` (ncaab, ncaamh, ncaawh, ncaawvb: ESPN scoreboards,
+  Scores view only; `evaluate` throws for them). Volleyball's score is sets
+  won, its situation the points per set; a fifth set is its "close late".
 - Parlay push/void recompute scales the remaining legs by the book's pricing
   factor (stated price / product of legs).
 

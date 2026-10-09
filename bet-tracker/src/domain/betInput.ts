@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BOOST_KINDS, MARKETS, SELECTION_KINDS, SPORTS } from './types.js';
+import { BET_SPORTS, BOOST_KINDS, MARKETS, SELECTION_KINDS } from './types.js';
 
 // Structured bet input shared by the seed loader and the MCP add_bet tool.
 // Units at this edge: dollars and American odds.
@@ -16,7 +16,7 @@ const dollars = z.number().positive().multipleOf(0.01);
 
 export const legInputSchema = z
   .object({
-    sport: z.enum(SPORTS),
+    sport: z.enum(BET_SPORTS),
     /** Local (America/Chicago) date of the event. */
     eventDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'YYYY-MM-DD'),
     /** The two teams/fighters, any order. */

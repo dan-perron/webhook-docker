@@ -17,8 +17,9 @@ export interface Alert {
 
 /**
  * "Close late": at most `margin` points apart with at most `fraction` of
- * regulation left (or in overtime). Football and WNBA: last 7.5 / 5 minutes;
- * NHL: last 10 minutes; MLB: 8th inning on; soccer: 75th minute on.
+ * regulation left (or in overtime). Football and basketball: last 7.5 / 5
+ * minutes; hockey: last 10 minutes; MLB: 8th inning on; soccer: 75th minute
+ * on. Volleyball instead alerts when a match goes to a fifth set.
  */
 export const CLOSE_LATE: Partial<
   Record<Sport, { fraction: number; margin: number }>
@@ -29,6 +30,9 @@ export const CLOSE_LATE: Partial<
   nhl: { fraction: 1 / 6, margin: 1 },
   mlb: { fraction: 2 / 9, margin: 2 },
   soccer: { fraction: 1 / 6, margin: 1 },
+  ncaab: { fraction: 0.125, margin: 6 },
+  ncaamh: { fraction: 1 / 6, margin: 1 },
+  ncaawh: { fraction: 1 / 6, margin: 1 },
 };
 
 export const SPORT_ICON: Record<Sport, string> = {
@@ -39,6 +43,10 @@ export const SPORT_ICON: Record<Sport, string> = {
   wnba: '🏀',
   soccer: '⚽',
   mma: '🥊',
+  ncaab: '🏀',
+  ncaamh: '🏒',
+  ncaawh: '🏒',
+  ncaawvb: '🏐',
 };
 
 export function leader(s: GameState): Side | null {
@@ -124,6 +132,14 @@ export function detectAlerts(
       key: `lead:${next.away.score}-${next.home.score}`,
       title: `${icon} Lead change: ${scoreline(next)}`,
       body: where,
+    });
+  }
+  if (next.situation?.kind === 'volleyball' && next.situation.set >= 5) {
+    alerts.push({
+      kind: 'close',
+      key: 'close',
+      title: `${icon} Fifth set: ${matchup(next)}`,
+      body: next.detail,
     });
   }
   const close = CLOSE_LATE[next.sport];

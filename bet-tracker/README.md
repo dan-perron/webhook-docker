@@ -16,6 +16,8 @@ games and games with an open bet, with push alerts through ntfy.
 - **Scores:** live / upcoming / final cards, an "Add games" schedule browser
   (star a game), and Teams (follow a team: its games in the next week are
   added automatically). Alerts: start, lead change, close late, final.
+  Also covers men's college basketball, men's and women's college hockey and
+  women's college volleyball (scores only; those can't be bet on).
 - **MCP tools:** `check_odds`, `add_bet`, `confirm_match`, `list_bets`,
   `get_bet`, `update_bet`, `update_leg`, `recompute_bet`, `settle_bet`,
   `remove_bet`, `portfolio`; Scores: `scores`, `list_games`, `watch_game`,

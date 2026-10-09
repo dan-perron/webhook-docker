@@ -57,6 +57,27 @@ const PATHS: Record<
   nhl: { path: 'hockey/nhl', query: '', league: 'nhl' },
   wnba: { path: 'basketball/wnba', query: '', league: 'wnba' },
   mma: { path: 'mma/ufc', query: '', league: 'ufc' },
+  // Score-only sports. groups=50 = all of Division I (default: ranked only).
+  ncaab: {
+    path: 'basketball/mens-college-basketball',
+    query: '&groups=50&limit=500',
+    league: 'mens-college-basketball',
+  },
+  ncaamh: {
+    path: 'hockey/mens-college-hockey',
+    query: '&limit=500',
+    league: 'mens-college-hockey',
+  },
+  ncaawh: {
+    path: 'hockey/womens-college-hockey',
+    query: '&limit=500',
+    league: 'womens-college-hockey',
+  },
+  ncaawvb: {
+    path: 'volleyball/womens-college-volleyball',
+    query: '&limit=500',
+    league: 'womens-college-volleyball',
+  },
 };
 
 // --- Minimal shapes of the ESPN JSON we read -------------------------------
@@ -88,6 +109,8 @@ interface EspnCompetitor {
     shortDisplayName?: string;
   };
   athlete?: { displayName: string; shortName?: string };
+  /** Points per period (volleyball: per set). */
+  linescores?: { value: number }[];
 }
 
 interface EspnOddsSide {
@@ -357,6 +380,25 @@ function baseballSituation(
   };
 }
 
+function volleyballSituation(
+  home: EspnCompetitor,
+  away: EspnCompetitor,
+  period: number | null
+): Situation {
+  const pts = (x: EspnCompetitor) => (x.linescores ?? []).map((l) => l.value);
+  const h = pts(home);
+  const a = pts(away);
+  const n = Math.max(h.length, a.length, period ?? 1);
+  return {
+    kind: 'volleyball',
+    set: period ?? n,
+    sets: Array.from({ length: n }, (_, i) => ({
+      home: h[i] ?? 0,
+      away: a[i] ?? 0,
+    })),
+  };
+}
+
 function baseballFraction(sit: Situation | null): number {
   if (sit?.kind !== 'baseball') return 1;
   const done =
@@ -402,7 +444,11 @@ export function parseScoreboard(
           const minute = Math.floor((clock ?? 0) / 60);
           situation = { kind: 'soccer', minute, period: period ?? 1 };
           fractionRemaining = Math.max(0, (90 - minute) / 90);
-        } else if (sport === 'nhl') {
+        } else if (
+          sport === 'nhl' ||
+          sport === 'ncaamh' ||
+          sport === 'ncaawh'
+        ) {
           const p = period ?? 1;
           situation = {
             kind: 'hockey',
@@ -417,6 +463,15 @@ export function parseScoreboard(
           situation = { kind: 'basketball', period: p, clock: clock ?? 0 };
           fractionRemaining =
             p > 4 ? 0 : Math.max(0, ((4 - p) * 600 + (clock ?? 0)) / 2400);
+        } else if (sport === 'ncaab') {
+          const p = period ?? 1;
+          situation = { kind: 'basketball', period: p, clock: clock ?? 0 };
+          fractionRemaining =
+            p > 2 ? 0 : Math.max(0, ((2 - p) * 1200 + (clock ?? 0)) / 2400);
+        } else if (sport === 'ncaawvb') {
+          situation = volleyballSituation(home, away, period);
+          // Sets still needed by the team closest to three, of three.
+          fractionRemaining = (3 - Math.max(h.score, a.score)) / 3;
         }
       }
 
