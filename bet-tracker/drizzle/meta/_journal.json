@@ -64,6 +64,13 @@
       "when": 1791565144572,
       "tag": "0008_scores",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1791742287163,
+      "tag": "0009_player_props",
+      "breakpoints": true
     }
   ]
 }

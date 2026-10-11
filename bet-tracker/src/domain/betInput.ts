@@ -1,5 +1,13 @@
 import { z } from 'zod';
-import { BET_SPORTS, BOOST_KINDS, MARKETS, SELECTION_KINDS } from './types.js';
+import { PROP_SPECS } from '../models/props.js';
+import {
+  BET_SPORTS,
+  BOOST_KINDS,
+  MARKETS,
+  PROP_SPORTS,
+  PROP_TYPES,
+  SELECTION_KINDS,
+} from './types.js';
 
 // Structured bet input shared by the seed loader and the MCP add_bet tool.
 // Units at this edge: dollars and American odds.
@@ -28,12 +36,42 @@ export const legInputSchema = z
       /** Required when kind = team: which participant is backed. */
       team: z.string().min(1).optional(),
     }),
-    /** Spread from the selection's perspective, or the total. */
-    line: z.number().optional(),
+    /** market player_prop: the prop, player and the player's team. */
+    prop: z
+      .object({
+        type: z.enum(PROP_TYPES),
+        player: z.string().min(1),
+        /** One of participants. */
+        team: z.string().min(1),
+      })
+      .optional(),
+    /** Spread from the selection's perspective, the total, or a prop line. */
+    line: z.number().nullish(),
     price: american,
   })
   .superRefine((leg, ctx) => {
     const { kind, team } = leg.selection;
+    const issue = (message: string) =>
+      ctx.addIssue({ code: 'custom', message });
+    if (leg.market === 'player_prop') {
+      if (!leg.prop)
+        return issue('player_prop needs prop {type, player, team}');
+      const spec = PROP_SPECS[leg.prop.type];
+      if (!(PROP_SPORTS as readonly string[]).includes(leg.sport))
+        issue(`player props are supported for ${PROP_SPORTS.join(', ')} only`);
+      if (!leg.participants.includes(leg.prop.team))
+        issue(`prop.team "${leg.prop.team}" is not one of participants`);
+      if (!spec.selections.includes(kind))
+        issue(
+          `${leg.prop.type} selections: ${spec.selections.join(', ')} (got ${kind})`
+        );
+      if (spec.line && leg.line == null) issue(`${leg.prop.type} needs a line`);
+      if (!spec.line && leg.line != null)
+        issue(`${leg.prop.type} takes no line`);
+      return;
+    }
+    if (leg.prop) issue('prop is only for market player_prop');
+    if (kind === 'yes') issue('yes selections are for player props only');
     if (kind === 'team') {
       if (!team) {
         ctx.addIssue({

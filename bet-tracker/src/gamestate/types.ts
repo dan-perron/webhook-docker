@@ -171,3 +171,49 @@ export interface TeamListing {
 
 /** Injected for tests; production uses fetchJson. */
 export type Fetcher = (url: string) => Promise<unknown>;
+
+/** One player's box score line (only the stats props use). */
+export interface PlayerStatLine {
+  name: string;
+  /** The team's full name, as events name it. */
+  team: string;
+  /** ESPN stat keys, e.g. rushingTouchdowns, receivingYards. */
+  stats: Partial<Record<PlayerStatKey, number>>;
+}
+
+export const PLAYER_STAT_KEYS = [
+  'passingYards',
+  'passingTouchdowns',
+  'rushingAttempts',
+  'rushingYards',
+  'rushingTouchdowns',
+  'receptions',
+  'receivingYards',
+  'receivingTouchdowns',
+  'interceptionTouchdowns',
+  'kickReturnTouchdowns',
+  'puntReturnTouchdowns',
+  'defensiveTouchdowns',
+] as const;
+export type PlayerStatKey = (typeof PLAYER_STAT_KEYS)[number];
+
+/** A touchdown from the game's scoring plays, credited to its scorer. */
+export interface TouchdownPlay {
+  /** Provider type, e.g. "Rushing Touchdown", "Passing Touchdown". */
+  type: string;
+  text: string;
+  /** Who scored (the receiver on a passing TD), parsed from the text. */
+  scorer: string | null;
+  team: string | null;
+  period: number | null;
+  clock: string | null;
+}
+
+/** A game's player box score and touchdowns (for player props). */
+export interface PlayerStats {
+  /** The provider marked the game complete when this was fetched. */
+  final: boolean;
+  players: PlayerStatLine[];
+  touchdowns: TouchdownPlay[];
+  fetchedAt: string;
+}

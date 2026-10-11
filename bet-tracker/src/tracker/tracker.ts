@@ -12,9 +12,14 @@ import {
   type LegRow,
 } from '../db/schema.js';
 import { betSettledAt, eventFinalAt } from '../domain/settleTime.js';
+import { isGameMarket } from '../domain/types.js';
 import { betStatus } from '../domain/value.js';
 import type { Providers } from '../gamestate/registry.js';
-import type { GameState, PregameLines } from '../gamestate/types.js';
+import type {
+  GameState,
+  PlayerStats,
+  PregameLines,
+} from '../gamestate/types.js';
 import { nameScore } from '../matching/match.js';
 import { matchLegs } from '../matching/service.js';
 import { linesAsOf, recordLines } from './lines.js';
@@ -43,11 +48,20 @@ import {
   type ModelParams,
   type Prior,
 } from '../models/prior.js';
+import {
+  DEFAULT_PROP_PARAMS,
+  evaluateProp,
+  PROP_SPECS,
+  propPregame,
+  type PropParams,
+} from '../models/props.js';
 import type { ModelSelection } from '../models/types.js';
 import { devigSingle } from '../odds/math.js';
 
 export interface TrackerOptions {
   params: ModelParams;
+  /** Assumed holds for de-vigging player prop prices. */
+  props?: PropParams;
   polling: { liveSeconds: number; scheduledSeconds: number };
   /** Minimum minutes between calibration snapshots of a live leg. */
   snapshotEveryMinutes?: number;
@@ -124,6 +138,23 @@ export function preState(e: EventRow): GameState {
   };
 }
 
+const isProp = (l: LegRow) => !isGameMarket(l.market);
+
+/** A player prop's pregame P(win): its entered price de-vigged. */
+function propPlacement(l: LegRow, params: PropParams) {
+  const { p, hold } = propPregame(l.propType!, l.priceAmerican, params);
+  return {
+    p,
+    prior: {
+      source: 'entered_price' as const,
+      price: l.priceAmerican,
+      hold,
+      p,
+      detail: `${fmtPrice(l.priceAmerican)} de-vigged at ${Math.round(hold * 1000) / 10}% assumed ${PROP_SPECS[l.propType!].label} hold`,
+    },
+  };
+}
+
 const selectionOf = (l: LegRow): ModelSelection => ({
   market: l.market,
   kind: l.selectionKind,
@@ -139,6 +170,7 @@ const selectionOf = (l: LegRow): ModelSelection => ({
  */
 export class Tracker extends EventEmitter {
   private readonly now: () => Date;
+  private readonly props: PropParams;
   private lastRematch = 0;
   private readonly matchAttempted = new Set<number>();
   private running = false;
@@ -150,6 +182,7 @@ export class Tracker extends EventEmitter {
   ) {
     super();
     this.now = opts.now ?? (() => new Date());
+    this.props = opts.props ?? DEFAULT_PROP_PARAMS;
   }
 
   /** One polling pass. Safe to call often; does nothing until work is due. */
@@ -170,8 +203,10 @@ export class Tracker extends EventEmitter {
       await this.refreshLines(betDue, result);
       await this.pregameSnapshots(betDue, result);
       await this.pollStates(due, result);
+      const withStats = await this.refreshPlayerStats(result);
       for (const id of new Set([
         ...result.polled,
+        ...withStats,
         ...this.unevaluatedEventIds(),
       ])) {
         this.evaluate(id, result);
@@ -246,12 +281,79 @@ export class Tracker extends EventEmitter {
     return [...byId.values()];
   }
 
+  /** An open game-market leg (props don't use game lines). */
   private hasOpenLeg(eventId: string): boolean {
     return !!this.db
       .select({ id: legs.id })
       .from(legs)
-      .where(and(eq(legs.eventId, eventId), eq(legs.status, 'open')))
+      .where(
+        and(
+          eq(legs.eventId, eventId),
+          eq(legs.status, 'open'),
+          ne(legs.market, 'player_prop')
+        )
+      )
       .get();
+  }
+
+  /**
+   * Box scores for started events with an open player prop leg: with each
+   * live poll, then after the final until the provider marks the box score
+   * complete (gives up a day after the start). Returns the events fetched.
+   */
+  private async refreshPlayerStats(result: TickResult): Promise<string[]> {
+    const rows = this.db
+      .selectDistinct({ e: events })
+      .from(events)
+      .innerJoin(legs, eq(legs.eventId, events.id))
+      .where(
+        and(
+          eq(legs.status, 'open'),
+          eq(legs.market, 'player_prop'),
+          ne(events.status, 'pre')
+        )
+      )
+      .all();
+    const now = this.now();
+    const fetched: string[] = [];
+    for (const { e } of rows) {
+      const prev = e.playerStatsJson
+        ? (JSON.parse(e.playerStatsJson) as PlayerStats)
+        : null;
+      if (prev?.final) continue;
+      const due =
+        result.polled.includes(e.id) ||
+        !e.playerStatsAt ||
+        addSeconds(new Date(e.playerStatsAt), this.opts.polling.liveSeconds) <=
+          now;
+      const tooOld =
+        e.status === 'final' &&
+        now.getTime() - new Date(e.startTime).getTime() > 24 * 3600_000;
+      if (!due || tooOld) continue;
+      let stats: PlayerStats | null = null;
+      try {
+        stats = await this.providers.playerStats(e);
+      } catch (err) {
+        result.errors.push(`box score ${e.id}: ${(err as Error).message}`);
+      }
+      this.db
+        .update(events)
+        .set({
+          ...(stats
+            ? {
+                playerStatsJson: JSON.stringify({
+                  ...stats,
+                  fetchedAt: iso(now),
+                }),
+              }
+            : {}),
+          playerStatsAt: iso(now),
+        })
+        .where(eq(events.id, e.id))
+        .run();
+      if (stats) fetched.push(e.id);
+    }
+    return fetched;
   }
 
   /** Events with open legs that have never been evaluated (new bets, priors). */
@@ -480,13 +582,15 @@ export class Tracker extends EventEmitter {
       parse<LinesInput>(e.pregameOddsJson);
     const entered: EnteredLeg[] = bet.placedLive
       ? []
-      : betLegs.map((l) => ({
-          market: l.market,
-          selectionKind: l.selectionKind,
-          side: l.side,
-          line: l.line,
-          price: l.priceAmerican,
-        }));
+      : betLegs
+          .filter((l) => !isProp(l))
+          .map((l) => ({
+            market: l.market,
+            selectionKind: l.selectionKind,
+            side: l.side,
+            line: l.line,
+            price: l.priceAmerican,
+          }));
     const prior = resolvePrior(
       e.sport,
       { espnLines, snapshot, entered },
@@ -533,7 +637,19 @@ export class Tracker extends EventEmitter {
   ) {
     const out = new Map<number, { win: number; push: number; json: string }>();
     const joints: { betId: number; outcomes: StoredJoint[] }[] = [];
-    const byBet = groupBy(targets, (l) => l.betId);
+    // Player props, pregame or live: their own price, de-vigged.
+    for (const l of targets.filter(isProp)) {
+      const { p, prior } = propPlacement(l, this.props);
+      out.set(l.id, {
+        win: p,
+        push: 0,
+        json: JSON.stringify({ source: prior.source, detail: prior.detail }),
+      });
+    }
+    const byBet = groupBy(
+      targets.filter((l) => !isProp(l)),
+      (l) => l.betId
+    );
     for (const [betId, ls] of byBet) {
       const bet = this.db.select().from(bets).where(eq(bets.id, betId)).get();
       if (!bet) continue;
@@ -577,7 +693,8 @@ export class Tracker extends EventEmitter {
           }),
         })
       );
-      if (betLegs.length > 1) {
+      // No joint model covers a player prop on the same game.
+      if (betLegs.length > 1 && !betLegs.some(isProp)) {
         const j = jointOutcomes(
           e.sport,
           preState(e),
@@ -651,7 +768,8 @@ export class Tracker extends EventEmitter {
         : []
     );
     this.db.transaction((tx) => {
-      for (const l of betLegs) {
+      // Legs settled by hand (props without a box score) keep their result.
+      for (const l of betLegs.filter((x) => x.model !== 'manual')) {
         tx.update(legs)
           .set({
             pWinPlacement: null,
@@ -681,6 +799,23 @@ export class Tracker extends EventEmitter {
         .run();
     });
     for (const id of eventIds) this.evaluate(id, result);
+    // Legs kept from a hand settle aren't re-evaluated: derive the bet here.
+    const after = this.db
+      .select()
+      .from(legs)
+      .where(eq(legs.betId, betId))
+      .all();
+    const status = betStatus(after);
+    const now = this.db.select().from(bets).where(eq(bets.id, betId)).get()!;
+    if (now.status === 'open' && status !== 'open')
+      this.db
+        .update(bets)
+        .set({
+          status,
+          settledAt: this.settledAtFor(this.db, betId) ?? iso(this.now()),
+        })
+        .where(eq(bets.id, betId))
+        .run();
     result.changedBets.push(betId);
     this.emit('change', result);
     return result;
@@ -697,6 +832,7 @@ export class Tracker extends EventEmitter {
       .all();
     const open = allLegs.filter((l) => l.status === 'open');
     if (open.length === 0) return;
+    const gameOpen = open.filter((l) => !isProp(l));
     const state = e.stateJson
       ? (JSON.parse(e.stateJson) as GameState)
       : preState(e);
@@ -707,12 +843,12 @@ export class Tracker extends EventEmitter {
       leg: LegRow;
       ev: ReturnType<typeof evaluateEvent>[number];
       anchor: { shift: number | null; source: string | null };
-      prior: Prior;
+      prior: { source: Prior['source'] };
     };
     const updates: LegUpdate[] = [];
     const jointsNow: { betId: number; outcomes: StoredJoint[] }[] = [];
     try {
-      for (const [betId, ls] of groupBy(open, (l) => l.betId)) {
+      for (const [betId, ls] of groupBy(gameOpen, (l) => l.betId)) {
         const bet = this.db.select().from(bets).where(eq(bets.id, betId)).get();
         if (!bet) continue;
         const betLegs = allLegs.filter((l) => l.betId === betId);
@@ -731,7 +867,12 @@ export class Tracker extends EventEmitter {
         ls.forEach((leg, i) =>
           updates.push({ leg, ev: evals[i]!, anchor: anchors[i]!, prior })
         );
-        if (ls.length > 1 && state.status !== 'final') {
+        // Same-game groups with an open player prop have no joint model.
+        if (
+          ls.length > 1 &&
+          state.status !== 'final' &&
+          !betLegs.some((l) => isProp(l) && l.status === 'open')
+        ) {
           const j = jointOutcomes(
             e.sport,
             state,
@@ -741,6 +882,31 @@ export class Tracker extends EventEmitter {
           );
           if (j) jointsNow.push({ betId, outcomes: toStored(ls, j) });
         }
+      }
+      const stats = e.playerStatsJson
+        ? (JSON.parse(e.playerStatsJson) as PlayerStats)
+        : null;
+      for (const leg of open.filter(isProp)) {
+        const { p, prior } = propPlacement(leg, this.props);
+        const team =
+          leg.side === 'home'
+            ? e.homeName
+            : leg.side === 'away'
+              ? e.awayName
+              : null;
+        const ev = evaluateProp(
+          {
+            propType: leg.propType!,
+            player: leg.playerName!,
+            team,
+            kind: leg.selectionKind,
+            line: leg.line,
+          },
+          state,
+          stats,
+          p
+        );
+        updates.push({ leg, ev, anchor: { shift: null, source: null }, prior });
       }
     } catch (err) {
       result.errors.push(`evaluate ${eventId}: ${(err as Error).message}`);

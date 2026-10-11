@@ -3,7 +3,12 @@ import { matchEvent } from '../matching/match.js';
 import { localDate } from '../util/date.js';
 import { EspnProvider } from './espn.js';
 import { MlbStatsProvider } from './mlbStats.js';
-import type { Fetcher, GameStateProvider, PregameLines } from './types.js';
+import type {
+  Fetcher,
+  GameStateProvider,
+  PlayerStats,
+  PregameLines,
+} from './types.js';
 
 /** The event fields needed to look up its lines. */
 export interface LinesTarget {
@@ -27,6 +32,11 @@ export interface Providers {
    * come from the Stats API, so they are found on ESPN by teams and date.
    */
   pregameLines(event: LinesTarget): Promise<PregameLines | null>;
+  /**
+   * Player box score and touchdowns (player props). Null where no provider
+   * publishes them (only ESPN events have them).
+   */
+  playerStats(event: LinesTarget): Promise<PlayerStats | null>;
 }
 
 /** MLB from the Stats API (richer base/out state); everything else ESPN. */
@@ -40,6 +50,14 @@ export function createProviders(fetcher?: Fetcher): Providers {
       const p = byName[id.split(':')[0]!];
       if (!p) throw new Error(`No provider for event ${id}`);
       return p;
+    },
+    async playerStats(event) {
+      if (event.provider !== 'espn') return null;
+      return espn.fetchPlayerStats(
+        event.sport,
+        event.league,
+        event.providerEventId
+      );
     },
     async pregameLines(event) {
       if (event.sport === 'mma') return null; // ESPN publishes no fight odds

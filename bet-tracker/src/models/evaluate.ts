@@ -25,6 +25,10 @@ export type ModelName =
   | 'nhl_poisson'
   | 'soccer_poisson'
   | 'mma_prior'
+  | 'prop_pregame'
+  | 'prop_live'
+  | 'prop_unverified'
+  | 'manual'
   | 'settled';
 
 export interface LegEvaluation {

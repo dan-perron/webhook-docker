@@ -1,5 +1,6 @@
 import type { BetRow, LegRow } from '../db/schema.js';
 import { THREE_WAY_HOLD } from '../models/prior.js';
+import { propPregame } from '../models/props.js';
 import type { Outcome } from '../models/types.js';
 import { devigSingle } from '../odds/math.js';
 import {
@@ -35,14 +36,19 @@ export interface BetValuations {
   atPlacement: BetValuation | null;
   /** Open legs not matched to an event, valued at their entered price. */
   unmatchedLegIds: number[];
+  /** Open player prop legs (valued from their entered price, de-vigged). */
+  propLegIds: number[];
 }
 
 /** An unmatched leg has no model: its own price, de-vigged. */
 const enteredOutcome = (l: LegRow): Outcome => ({
-  win: devigSingle(
-    l.priceAmerican,
-    l.market === 'moneyline3way' ? THREE_WAY_HOLD : undefined
-  ),
+  win:
+    l.market === 'player_prop'
+      ? propPregame(l.propType!, l.priceAmerican).p
+      : devigSingle(
+          l.priceAmerican,
+          l.market === 'moneyline3way' ? THREE_WAY_HOLD : undefined
+        ),
   push: 0,
 });
 
@@ -58,6 +64,9 @@ const withSource = (v: BetValuation, unmatched: boolean): BetValuation =>
 export function valueBetRow(bet: BetRow, legRows: LegRow[]): BetValuations {
   const unmatchedLegIds = legRows.filter(isUnmatched).map((l) => l.id);
   const unmatched = new Set(unmatchedLegIds);
+  const propLegIds = legRows
+    .filter((l) => l.market === 'player_prop' && l.status === 'open')
+    .map((l) => l.id);
   const now = valueBet(
     bet,
     legRows.map((l) => ({
@@ -88,10 +97,11 @@ export function valueBetRow(bet: BetRow, legRows: LegRow[]): BetValuations {
         joints(bet.jointPlacementJson, legRows)
       )
     : null;
-  const flagged = unmatched.size > 0;
+  const flagged = unmatched.size > 0 || propLegIds.length > 0;
   return {
     now: withSource(now, flagged),
     atPlacement: atPlacement && withSource(atPlacement, flagged),
     unmatchedLegIds,
+    propLegIds,
   };
 }

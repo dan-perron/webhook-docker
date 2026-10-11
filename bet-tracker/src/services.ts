@@ -13,6 +13,7 @@ export function createServices(db: Db): Services {
   const odds = new OddsApiClient(db, appConfig.oddsApi);
   const tracker = new Tracker(db, providers, {
     params: appConfig.models,
+    props: appConfig.props,
     polling: appConfig.polling,
     pregameSnapshot: {
       client: odds,

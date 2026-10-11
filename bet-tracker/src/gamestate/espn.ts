@@ -1,16 +1,21 @@
 import type { GameStatus, Side, Sport } from '../domain/types.js';
 import { addDays, compactDate, localDate } from '../util/date.js';
 import { fetchJson } from './http.js';
-import type {
-  Competitor,
-  EventRef,
-  Fetcher,
-  GameState,
-  GameStateProvider,
-  PregameLines,
-  ProviderEvent,
-  TeamListing,
-  Situation,
+import {
+  PLAYER_STAT_KEYS,
+  type Competitor,
+  type EventRef,
+  type Fetcher,
+  type GameState,
+  type GameStateProvider,
+  type PlayerStatKey,
+  type PlayerStatLine,
+  type PlayerStats,
+  type PregameLines,
+  type ProviderEvent,
+  type TeamListing,
+  type Situation,
+  type TouchdownPlay,
 } from './types.js';
 
 // ESPN's public (unofficial) site API. One scoreboard call returns every game
@@ -570,6 +575,94 @@ function allBoardLeagues(
   return out;
 }
 
+/** The parts of a game summary player props read. */
+export interface EspnSummaryStats {
+  header?: {
+    competitions?: { status?: { type?: { completed?: boolean } } }[];
+  };
+  boxscore?: {
+    players?: {
+      team?: { displayName?: string };
+      statistics?: {
+        name?: string;
+        keys?: string[];
+        athletes?: { athlete?: { displayName?: string }; stats?: string[] }[];
+      }[];
+    }[];
+  };
+  scoringPlays?: {
+    type?: { text?: string };
+    text?: string;
+    scoringType?: { name?: string };
+    team?: { displayName?: string };
+    period?: { number?: number };
+    clock?: { displayValue?: string };
+  }[];
+}
+
+const STAT_KEYS = new Set<string>(PLAYER_STAT_KEYS);
+
+/**
+ * Who scored a touchdown, from scoring-play text: the receiver on "X 8 Yd
+ * pass from Y", else the name before the yardage ("X 15 Yd Rush", "X 98 Yd
+ * Kickoff Return"), else the text before any "(".
+ */
+export function touchdownScorer(text: string): string | null {
+  const t = text.trim();
+  const pass = /^(.+?)\s+(?:\d+\s+Yd\s+)?pass\s+from\b/i.exec(t);
+  if (pass) return pass[1]!.trim();
+  const yards = /^(.+?)\s+-?\d+\s+(?:Yd|Yds|Yard|Yards)\b/i.exec(t);
+  if (yards) return yards[1]!.trim();
+  const name = t.split('(')[0]!.trim();
+  return name || null;
+}
+
+/**
+ * Player box score and touchdown plays from a game summary; null when it has
+ * no box score yet (pregame, or the response came back empty).
+ */
+export function parsePlayerStats(
+  summary: EspnSummaryStats,
+  fetchedAt: string
+): PlayerStats | null {
+  if (!summary.boxscore?.players?.length) return null;
+  const byName = new Map<string, PlayerStatLine>();
+  for (const t of summary.boxscore?.players ?? []) {
+    const team = t.team?.displayName ?? '';
+    for (const cat of t.statistics ?? []) {
+      const keys = cat.keys ?? [];
+      for (const a of cat.athletes ?? []) {
+        const name = a.athlete?.displayName;
+        if (!name) continue;
+        const k = `${team}|${name}`;
+        const line = byName.get(k) ?? { name, team, stats: {} };
+        byName.set(k, line);
+        keys.forEach((key, i) => {
+          const v = Number(a.stats?.[i]);
+          if (STAT_KEYS.has(key) && Number.isFinite(v))
+            line.stats[key as PlayerStatKey] = v;
+        });
+      }
+    }
+  }
+  const touchdowns: TouchdownPlay[] = (summary.scoringPlays ?? [])
+    .filter((p) => p.scoringType?.name === 'touchdown')
+    .map((p) => ({
+      type: p.type?.text ?? 'Touchdown',
+      text: p.text ?? '',
+      scorer: touchdownScorer(p.text ?? ''),
+      team: p.team?.displayName ?? null,
+      period: p.period?.number ?? null,
+      clock: p.clock?.displayValue ?? null,
+    }));
+  return {
+    final: !!summary.header?.competitions?.[0]?.status?.type?.completed,
+    players: [...byName.values()],
+    touchdowns,
+    fetchedAt,
+  };
+}
+
 export class EspnProvider implements GameStateProvider {
   readonly name = 'espn';
   readonly sports = ['nfl', 'ncaaf', 'mlb', 'soccer', 'mma'] as const;
@@ -599,6 +692,22 @@ export class EspnProvider implements GameStateProvider {
       pickcenter?: EspnOdds[];
     };
     return pregameLines(summary.pickcenter);
+  }
+
+  /** Player box score and touchdown plays from a game's summary. */
+  async fetchPlayerStats(
+    sport: Sport,
+    league: string | null,
+    competitionId: string
+  ): Promise<PlayerStats | null> {
+    const path =
+      sport === 'soccer'
+        ? `soccer/${league ?? this.soccerLeagues[0]}`
+        : PATHS[sport].path;
+    const summary = (await this.fetcher(
+      `${BASE}/${path}/summary?event=${competitionId}`
+    )) as EspnSummaryStats;
+    return parsePlayerStats(summary, new Date().toISOString());
   }
 
   private url(sport: Sport, league: string, date: string): string {

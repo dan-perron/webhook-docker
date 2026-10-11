@@ -5,6 +5,7 @@ import {
   getBet,
   removeBet,
   settleBet,
+  settleLeg,
   updateBet,
   updateLeg,
 } from '../db/bets.js';
@@ -37,7 +38,7 @@ export interface Services {
 const UNITS =
   'Units: money in US dollars; prices in American odds (e.g. +150, -110); probabilities 0..1.';
 const PROVENANCE =
-  "pWin/pPush/value/ev come from our state-based models (live score, clock, situation + a pregame prior), never from live odds; when now.source is 'book_implied' the bet has same-game legs without a joint model and pWin is the book's unboosted price instead; when it is 'entered_price', unmatchedLegIds lists legs not yet matched to a game, valued at their entered price de-vigged. price/payout are what the book offered, as entered.";
+  "pWin/pPush/value/ev come from our state-based models (live score, clock, situation + a pregame prior), never from live odds; when now.source is 'book_implied' the bet has same-game legs without a joint model and pWin is the book's unboosted price instead; when it is 'entered_price', unmatchedLegIds lists legs not yet matched to a game and propLegIds lists open player props, each valued at its entered price de-vigged (props: with an assumed prop hold, then live from the box score: a TD wins, otherwise P falls as the game clock runs). price/payout are what the book offered, as entered.";
 
 const json = (data: unknown) => ({
   content: [{ type: 'text' as const, text: JSON.stringify(data, null, 2) }],
@@ -151,7 +152,7 @@ export function createMcpServer(s: Services): McpServer {
     'add_bet',
     {
       title: 'Add a bet',
-      description: `Create a tracked bet (single or parlay) from structured input and match each leg to a live event by sport, date (America/Chicago) and fuzzy team/fighter names. Legs with exactly one confident match are linked; others come back with candidates to confirm via confirm_match (never guess). Returns the bet with current model P(win)/value/EV. ${UNITS} stake/statedPayout in dollars; price/boostedPrice/leg price in American odds; boostPct in percent. Sports: nfl, ncaaf, mlb, nhl, wnba, soccer, mma. Markets: moneyline (NHL includes OT/shootout), moneyline3way (soccer), spread (incl. MLB run line and NHL puck line), total. Set placedLive for bets placed during the game. Pregame, each leg's P(win) is matched to the market's fair price for that exact line when one is known (ESPN/Odds API, else the entered price de-vigged); that adjustment fades as the game plays. ${PROVENANCE}`,
+      description: `Create a tracked bet (single or parlay) from structured input and match each leg to a live event by sport, date (America/Chicago) and fuzzy team/fighter names. Legs with exactly one confident match are linked; others come back with candidates to confirm via confirm_match (never guess). Returns the bet with current model P(win)/value/EV. ${UNITS} stake/statedPayout in dollars; price/boostedPrice/leg price in American odds; boostPct in percent. Sports: nfl, ncaaf, mlb, nhl, wnba, soccer, mma. Markets: moneyline (NHL includes OT/shootout), moneyline3way (soccer), spread (incl. MLB run line and NHL puck line), total, player_prop (NFL; prop {type: anytime_td, player, team: one of participants}, selection {kind: yes}, no line; participants are the two teams). Player props are valued from their entered price de-vigged with an assumed hold (anytime TD: 8% up to +200, 15% above), move live with the box score, and settle from ESPN's final box score (rushing/receiving/return TDs count, passing TDs don't); if the player has no box score line, settle by hand. Set placedLive for bets placed during the game. Pregame, each leg's P(win) is matched to the market's fair price for that exact line when one is known (ESPN/Odds API, else the entered price de-vigged); that adjustment fades as the game plays. ${PROVENANCE}`,
       inputSchema: betInputSchema,
     },
     async (input) => {
@@ -233,7 +234,7 @@ export function createMcpServer(s: Services): McpServer {
     'get_bet',
     {
       title: 'Get a bet',
-      description: `Full detail for one bet: each leg's live state (score, clock/inning, situation), model name and inputs (means/sds, run rates, minutes left...), the prior used (source: espn_lines | pregame_snapshot | entered_odds | neutral, with its numbers), P(win) now and at placement, value and EV. ${UNITS} ${PROVENANCE}`,
+      description: `Full detail for one bet: each leg's live state (score, clock/inning, situation), model name and inputs (means/sds, run rates, minutes left...; props: touchdowns so far), the prior used (source: espn_lines | pregame_snapshot | entered_odds | neutral, or entered_price for player props, with its numbers), P(win) now and at placement, value and EV. ${UNITS} ${PROVENANCE}`,
       inputSchema: { id: z.number().int() },
       annotations: { readOnlyHint: true },
     },
@@ -289,7 +290,7 @@ export function createMcpServer(s: Services): McpServer {
     'update_leg',
     {
       title: 'Update a leg',
-      description: `Fix one leg of a bet: its price (American odds, as placed), line (from the selection's side, e.g. -1.5) and/or selection (kind team/over/under/draw, and team for team picks; must be one of the leg's two participants). Re-validated like add_bet. Then the whole bet is recomputed: prior from its own prices, P(win) at placement and now, same-game joints, and settlement if the game is final. ${UNITS}`,
+      description: `Fix one leg of a bet: its price (American odds, as placed), line (from the selection's side, e.g. -1.5) and/or selection (kind team/over/under/draw/yes, and team for team picks; must be one of the leg's two participants; a player prop keeps its player and team). Re-validated like add_bet. Then the whole bet is recomputed: prior from its own prices, P(win) at placement and now, same-game joints, and settlement if the game is final. ${UNITS}`,
       inputSchema: {
         legId: z.number().int(),
         fields: z
@@ -335,15 +336,29 @@ export function createMcpServer(s: Services): McpServer {
     {
       title: 'Settle a bet by hand',
       description:
-        'Record a bet result manually (won/lost/push/void), overriding what the legs say; "open" reopens it. Bets normally settle automatically when their games go final.',
+        'Record a bet result manually (won/lost/push/void), overriding what the legs say; "open" reopens it. A single player prop bet\'s leg takes the same result. With legId, settle just that leg (e.g. a player prop in a parlay) and re-derive the bet from its legs. Bets normally settle automatically when their games go final; player props settle from the final box score when ESPN has the player.',
       inputSchema: {
         id: z.number().int(),
         result: z.enum(BET_STATUSES),
+        legId: z
+          .number()
+          .int()
+          .optional()
+          .describe('Settle only this leg of the bet'),
       },
     },
-    async ({ id, result }) => {
-      const b = settleBet(s.db, id, result);
-      return b ? json(betViewById(s.db, b)) : fail(`Bet ${id} not found`);
+    async ({ id, result, legId }) => {
+      if (legId == null) {
+        const b = settleBet(s.db, id, result);
+        return b ? json(betViewById(s.db, b)) : fail(`Bet ${id} not found`);
+      }
+      if (!getBet(s.db, id)?.legs.some((l) => l.id === legId))
+        return fail(`Bet ${id} has no leg ${legId}`);
+      try {
+        return json(betViewById(s.db, settleLeg(s.db, legId, result)));
+      } catch (e) {
+        return fail((e as Error).message);
+      }
     }
   );
 

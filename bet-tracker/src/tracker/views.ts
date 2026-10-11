@@ -11,6 +11,7 @@ import { winPayout } from '../domain/payout.js';
 import type { BetStatus, Side } from '../domain/types.js';
 import type { GameState } from '../gamestate/types.js';
 import type { Prior } from '../models/prior.js';
+import { PROP_SPECS } from '../models/props.js';
 import { valueBetRow } from './valuation.js';
 
 // Read models for the MCP tools and the web page. Money in dollars, prices in
@@ -23,6 +24,12 @@ const prob = (p: number | null | undefined) =>
 const signed = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 
 export function selectionLabel(l: LegRow): string {
+  if (l.market === 'player_prop') {
+    const prop = PROP_SPECS[l.propType!].label;
+    if (l.selectionKind === 'yes') return `${l.playerName} ${prop}`;
+    const ou = l.selectionKind === 'over' ? 'Over' : 'Under';
+    return `${l.playerName} ${ou} ${l.line} ${prop}`;
+  }
   switch (l.selectionKind) {
     case 'draw':
       return 'Draw';
@@ -79,6 +86,14 @@ export interface LegView {
   eventDate: string;
   market: LegRow['market'];
   selection: string;
+  /** Player props: the prop, player, his team, and TDs so far once live. */
+  prop?: {
+    type: NonNullable<LegRow['propType']>;
+    player: string;
+    team: string | null;
+    touchdowns?: number;
+    note?: string;
+  };
   side: Side | null;
   line: number | null;
   priceAmerican: number;
@@ -96,7 +111,8 @@ export interface LegView {
   placement?: Record<string, unknown> | null;
   model: string | null;
   modelInputs?: Record<string, unknown>;
-  prior?: (Prior & { source: string }) | null;
+  /** Game legs: the model prior. Props: their de-vigged entered price. */
+  prior?: Prior | { source: 'entered_price'; detail: string } | null;
   live: LiveView | null;
 }
 
@@ -107,6 +123,21 @@ function legView(l: LegRow, e: EventRow | undefined, full: boolean): LegView {
           ({ event: _e, ...c }) => c
         )
       : undefined;
+  const inputs = l.modelInputsJson
+    ? (JSON.parse(l.modelInputsJson) as Record<string, unknown>)
+    : undefined;
+  const prop =
+    l.market === 'player_prop'
+      ? {
+          type: l.propType!,
+          player: l.playerName!,
+          team: l.selectionTeam,
+          ...(typeof inputs?.touchdowns === 'number'
+            ? { touchdowns: inputs.touchdowns }
+            : {}),
+          ...(typeof inputs?.note === 'string' ? { note: inputs.note } : {}),
+        }
+      : undefined;
   return {
     id: l.id,
     sport: l.sport,
@@ -114,6 +145,7 @@ function legView(l: LegRow, e: EventRow | undefined, full: boolean): LegView {
     eventDate: l.eventDate,
     market: l.market,
     selection: selectionLabel(l),
+    ...(prop ? { prop } : {}),
     side: l.side,
     line: l.line,
     priceAmerican: l.priceAmerican,
@@ -130,10 +162,10 @@ function legView(l: LegRow, e: EventRow | undefined, full: boolean): LegView {
     ...(full
       ? {
           placement: l.placementJson ? JSON.parse(l.placementJson) : null,
-          modelInputs: l.modelInputsJson
-            ? JSON.parse(l.modelInputsJson)
-            : undefined,
-          prior: l.priorJson ? (JSON.parse(l.priorJson) as Prior) : null,
+          modelInputs: inputs,
+          prior: l.priorJson
+            ? (JSON.parse(l.priorJson) as LegView['prior'])
+            : null,
         }
       : {}),
     live: liveView(e),
@@ -143,7 +175,8 @@ function legView(l: LegRow, e: EventRow | undefined, full: boolean): LegView {
 export interface ValueView {
   /**
    * 'model'; 'book_implied' (same-game legs without a joint model); or
-   * 'entered_price' (unmatched legs valued at their de-vigged entered price).
+   * 'entered_price' (unmatched legs or player props valued at their
+   * de-vigged entered price).
    */
   source: 'model' | 'book_implied' | 'entered_price';
   pWin: number;
@@ -180,6 +213,8 @@ export interface BetView {
   atPlacement: ValueView | null;
   /** Open legs not matched to an event yet (present only when any). */
   unmatchedLegIds?: number[];
+  /** Open player prop legs (present only when any). */
+  propLegIds?: number[];
   /** Events with more than one leg in this bet (correlated legs). */
   sameGameEventIds: string[];
   legs: LegView[];
@@ -279,6 +314,7 @@ export function betView(
     ),
     atPlacement: v.atPlacement ? valueView(v.atPlacement) : null,
     ...(v.unmatchedLegIds.length ? { unmatchedLegIds: v.unmatchedLegIds } : {}),
+    ...(v.propLegIds.length ? { propLegIds: v.propLegIds } : {}),
     sameGameEventIds: v.now.sameGameEventIds,
     legs: legs.map((l) =>
       legView(l, l.eventId ? evs.get(l.eventId) : undefined, full)

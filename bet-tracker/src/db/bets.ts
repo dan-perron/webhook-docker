@@ -1,10 +1,11 @@
-import { asc, count, eq, inArray } from 'drizzle-orm';
+import { and, asc, count, eq, inArray } from 'drizzle-orm';
 import {
   betInputSchema,
   legInputSchema,
   type BetInput,
 } from '../domain/betInput.js';
 import type { BetStatus } from '../domain/types.js';
+import { betStatus } from '../domain/value.js';
 import type { DbOrTx } from './client.js';
 import {
   bets,
@@ -61,8 +62,11 @@ export function createBet(db: DbOrTx, input: BetInput): BetWithLegs {
           participantA: leg.participants[0],
           participantB: leg.participants[1],
           market: leg.market,
+          propType: leg.prop?.type ?? null,
+          playerName: leg.prop?.player ?? null,
           selectionKind: leg.selection.kind,
-          selectionTeam: leg.selection.team ?? null,
+          // A prop's team is the player's (resolves home/away when matched).
+          selectionTeam: leg.prop?.team ?? leg.selection.team ?? null,
           line: leg.line ?? null,
           priceAmerican: leg.price,
         })
@@ -176,24 +180,106 @@ export function updateBet(
   return updated ? getBet(db, id) : undefined;
 }
 
-/** Record a result by hand (overrides what the legs say). */
+/**
+ * Record a result by hand (overrides what the legs say). A single bet's open
+ * player prop leg takes the same result (props may have no box score to
+ * settle from), so recomputes keep it.
+ */
 export function settleBet(
   db: DbOrTx,
   id: number,
   result: Exclude<BetStatus, 'open'> | 'open'
 ): BetWithLegs | undefined {
   const now = new Date().toISOString();
-  const updated = db
-    .update(bets)
+  return db.transaction((tx) => {
+    const updated = tx
+      .update(bets)
+      .set({
+        status: result,
+        settledAt: result === 'open' ? null : now,
+        updatedAt: now,
+      })
+      .where(eq(bets.id, id))
+      .returning()
+      .get();
+    if (!updated) return undefined;
+    if (updated.betType === 'single' && result !== 'open') {
+      const prop = tx
+        .select()
+        .from(legs)
+        .where(and(eq(legs.betId, id), eq(legs.market, 'player_prop')))
+        .get();
+      if (prop?.status === 'open') settleLegRow(tx, prop, result, now);
+    }
+    return getBet(tx, id);
+  });
+}
+
+/** A leg settled by hand: certain outcome, calibration outcome stamped. */
+function settleLegRow(
+  tx: DbOrTx,
+  leg: LegRow,
+  result: Exclude<BetStatus, 'open'>,
+  now: string
+) {
+  tx.update(legs)
     .set({
       status: result,
-      settledAt: result === 'open' ? null : now,
+      pWin: result === 'won' ? 1 : 0,
+      pPush: result === 'push' || result === 'void' ? 1 : 0,
+      model: 'manual',
+      evaluatedAt: now,
       updatedAt: now,
     })
-    .where(eq(bets.id, id))
-    .returning()
-    .get();
-  return updated ? getBet(db, id) : undefined;
+    .where(eq(legs.id, leg.id))
+    .run();
+  tx.update(predictionSnapshots)
+    .set({ outcome: result === 'won' ? 1 : result === 'lost' ? 0 : null })
+    .where(eq(predictionSnapshots.legId, leg.id))
+    .run();
+}
+
+/**
+ * Settle one leg by hand (e.g. a player prop with no box score), then
+ * re-derive the bet's status from its legs; "open" reopens the leg for the
+ * tracker. Returns the bet.
+ */
+export function settleLeg(
+  db: DbOrTx,
+  legId: number,
+  result: Exclude<BetStatus, 'open'> | 'open'
+): BetWithLegs {
+  const now = new Date().toISOString();
+  return db.transaction((tx) => {
+    const leg = tx.select().from(legs).where(eq(legs.id, legId)).get();
+    if (!leg) throw new Error(`Leg ${legId} not found`);
+    if (result === 'open') {
+      tx.update(legs)
+        .set({ status: 'open', model: null, evaluatedAt: null, updatedAt: now })
+        .where(eq(legs.id, legId))
+        .run();
+    } else {
+      settleLegRow(tx, leg, result, now);
+    }
+    const status = betStatus(
+      tx
+        .select({ status: legs.status })
+        .from(legs)
+        .where(eq(legs.betId, leg.betId))
+        .all()
+    );
+    const bet = tx.select().from(bets).where(eq(bets.id, leg.betId)).get()!;
+    if (status !== bet.status)
+      tx.update(bets)
+        .set({
+          status,
+          settledAt: status === 'open' ? null : now,
+          updatedAt: now,
+        })
+        .where(eq(bets.id, bet.id))
+        .run();
+    return getBet(tx, leg.betId)!;
+  });
 }
 
 /** Delete a bet with its legs and snapshots. Returns whether it existed. */
@@ -220,22 +306,37 @@ export interface LegUpdate {
 export function updateLeg(db: DbOrTx, legId: number, u: LegUpdate): LegRow {
   const leg = db.select().from(legs).where(eq(legs.id, legId)).get();
   if (!leg) throw new Error(`Leg ${legId} not found`);
-  const selection = u.selection ?? {
-    kind: leg.selectionKind,
-    ...(leg.selectionTeam ? { team: leg.selectionTeam } : {}),
-  };
+  const isProp = leg.market === 'player_prop';
+  const selection = u.selection
+    ? // A prop's selectionTeam is the player's team, not a pick.
+      isProp
+      ? { kind: u.selection.kind }
+      : u.selection
+    : {
+        kind: leg.selectionKind,
+        ...(leg.selectionTeam && !isProp ? { team: leg.selectionTeam } : {}),
+      };
   const parsed = legInputSchema.parse({
     sport: leg.sport,
     eventDate: leg.eventDate,
     participants: [leg.participantA, leg.participantB],
     market: leg.market,
+    ...(isProp
+      ? {
+          prop: {
+            type: leg.propType,
+            player: leg.playerName,
+            team: leg.selectionTeam,
+          },
+        }
+      : {}),
     selection,
     ...((u.line !== undefined ? u.line : leg.line) != null
       ? { line: u.line !== undefined ? u.line : leg.line }
       : {}),
     price: u.price ?? leg.priceAmerican,
   });
-  const newTeam = parsed.selection.team ?? null;
+  const newTeam = isProp ? leg.selectionTeam : (parsed.selection.team ?? null);
   const selectionChanged =
     parsed.selection.kind !== leg.selectionKind ||
     newTeam !== leg.selectionTeam;
@@ -243,7 +344,8 @@ export function updateLeg(db: DbOrTx, legId: number, u: LegUpdate): LegRow {
   // re-match when the side was never known.
   let side = leg.side;
   let matchStatus = leg.matchStatus;
-  if (parsed.selection.kind !== 'team') side = null;
+  if (isProp) side = leg.side;
+  else if (parsed.selection.kind !== 'team') side = null;
   else if (newTeam !== leg.selectionTeam) {
     if (leg.side) side = leg.side === 'home' ? 'away' : 'home';
     else if (leg.eventId) matchStatus = 'unmatched';
