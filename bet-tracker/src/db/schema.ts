@@ -15,6 +15,7 @@ import {
   MARKETS,
   MATCH_STATUSES,
   PRIOR_SOURCES,
+  PROP_TYPES,
   SELECTION_KINDS,
   SIDES,
   SPORTS,
@@ -52,6 +53,10 @@ export const events = sqliteTable(
     stateJson: text('state_json'),
     stateUpdatedAt: text('state_updated_at'),
     nextPollAt: text('next_poll_at'),
+    // Player box score + touchdown plays (JSON PlayerStats), fetched while
+    // the event has an open player prop leg.
+    playerStatsJson: text('player_stats_json'),
+    playerStatsAt: text('player_stats_at'),
     // Free pregame lines the game-state provider publishes (e.g. ESPN's
     // DraftKings feed), refreshed while the event is still pre-game.
     providerLinesJson: text('provider_lines_json'),
@@ -117,6 +122,10 @@ export const legs = sqliteTable(
     // JSON array of candidate events when matchStatus = needs_confirmation.
     matchCandidatesJson: text('match_candidates_json'),
     market: text('market', { enum: MARKETS }).notNull(),
+    // Player props (market player_prop): prop type and player as entered;
+    // selectionTeam holds the player's team.
+    propType: text('prop_type', { enum: PROP_TYPES }),
+    playerName: text('player_name'),
     selectionKind: text('selection_kind', { enum: SELECTION_KINDS }).notNull(),
     selectionTeam: text('selection_team'),
     // Resolved home/away for team picks once matched.

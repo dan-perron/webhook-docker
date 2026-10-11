@@ -76,9 +76,13 @@ export function upsertEvent(db: DbOrTx, e: ProviderEvent): void {
   }
 }
 
-/** Home/away of the backed team, given which side each participant matched. */
+/**
+ * Home/away of the backed team (a player prop's: the player's team), given
+ * which side each participant matched.
+ */
 function selectionSide(leg: LegRow, sides: [Side, Side]): Side | null {
-  if (leg.selectionKind !== 'team' || !leg.selectionTeam) return null;
+  if (leg.selectionKind !== 'team' && leg.market !== 'player_prop') return null;
+  if (!leg.selectionTeam) return null;
   if (leg.selectionTeam === leg.participantA) return sides[0];
   if (leg.selectionTeam === leg.participantB) return sides[1];
   return null;

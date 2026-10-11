@@ -172,6 +172,17 @@ function priceLine(b: BetView) {
   return `${b.book} · ${american(b.priceAmerican)}${boost}`;
 }
 
+/** A player prop's box score so far, once its game has started. */
+function propText(l: LegView): string | null {
+  if (!l.prop || !legStarted(l)) return null;
+  if (l.prop.note) return l.prop.note;
+  if (l.prop.touchdowns == null) return null;
+  const n = l.prop.touchdowns;
+  return n > 0
+    ? `${l.prop.player}: ${n} TD${n > 1 ? 's' : ''}`
+    : `${l.prop.player}: no TD${l.live!.status === 'final' ? '' : ' yet'}`;
+}
+
 /** A game has begun (or ended); before that, probabilities are just the prior. */
 const legStarted = (l: LegView) => !!l.live && l.live.status !== 'pre';
 
@@ -200,6 +211,7 @@ function LegRow({ l, showP, d }: { l: LegView; showP: boolean; d: Dashboard }) {
             ) : null)}
         </div>
         {sit ? <div class="sit">{sit}</div> : null}
+        {propText(l) ? <div class="sit">{propText(l)}</div> : null}
       </div>
       {showP ? (
         <span class="p">{l.status === 'open' ? pct(l.pWin) : t.label}</span>

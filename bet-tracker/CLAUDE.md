@@ -81,6 +81,20 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   won, its situation the points per set; a fifth set is its "close late".
 - Parlay push/void recompute scales the remaining legs by the book's pricing
   factor (stated price / product of legs).
+- Player props (`market: 'player_prop'`, NFL; `src/models/props.ts`):
+  `PROP_SPECS` per prop type (only `anytime_td` so far; add first_td,
+  2plus_td, yardage there), leg columns `prop_type`/`player_name`, with
+  `selectionTeam` = the player's team (matching resolves its `side`). No
+  player model: P(win) is the entered price de-vigged with an assumed hold
+  (`props.anytimeTdHold` in config: 8% up to +200, 15% above; source
+  `entered_price`). Once the game starts the Tracker fetches the ESPN
+  summary box score (`events.player_stats_json`) with each live poll, then
+  until ESPN marks it complete. Live: a TD = 1, else 1 - (1 - p)^f; no box
+  score = pregame value carried. Final: rushing/receiving/return TDs count,
+  passing TDs don't; a player with no box score line stays open
+  (`prop_unverified`) for `settle_bet` (legId settles one leg; manual legs
+  survive recompute). No joint model covers a prop, so a same-game parlay
+  with an open prop is `book_implied`.
 
 ## MCP
 

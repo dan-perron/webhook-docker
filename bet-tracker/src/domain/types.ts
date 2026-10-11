@@ -32,14 +32,37 @@ export const MARKETS = [
   'moneyline3way',
   'spread',
   'total',
+  'player_prop',
 ] as const;
 export type Market = (typeof MARKETS)[number];
+
+/** Game markets: priced by the game-state models (not player props). */
+export const isGameMarket = (m: Market) => m !== 'player_prop';
+
+/**
+ * Player prop types (market player_prop). Each has a spec in
+ * `src/models/props.ts` (selections, line, stat counted); add first_td,
+ * 2plus_td or yardage over/unders there.
+ */
+export const PROP_TYPES = ['anytime_td'] as const;
+export type PropType = (typeof PROP_TYPES)[number];
+
+/** Sports with player props (the box score provider must cover them). */
+export const PROP_SPORTS = ['nfl'] as const;
 
 /**
  * What a leg is backing. Team/fighter picks carry the name in `selectionTeam`
  * and get resolved to a home/away `side` once the leg is matched to an event.
+ * Player props: yes (e.g. anytime TD) or over/under a line; `selectionTeam`
+ * is the player's team and `side` its home/away.
  */
-export const SELECTION_KINDS = ['team', 'draw', 'over', 'under'] as const;
+export const SELECTION_KINDS = [
+  'team',
+  'draw',
+  'over',
+  'under',
+  'yes',
+] as const;
 export type SelectionKind = (typeof SELECTION_KINDS)[number];
 
 export const SIDES = ['home', 'away'] as const;
@@ -65,6 +88,8 @@ export const PRIOR_SOURCES = [
   'pregame_snapshot',
   'entered_odds',
   'neutral',
+  // Player props: the leg's own price, de-vigged with an assumed prop hold.
+  'entered_price',
 ] as const;
 export type PriorSource = (typeof PRIOR_SOURCES)[number];
 

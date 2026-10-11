@@ -1,0 +1,23 @@
+{
+ "header": {
+  "id": "401872991",
+  "competitions": [
+   {
+    "status": {
+     "type": {
+      "id": "1",
+      "name": "STATUS_SCHEDULED",
+      "state": "pre",
+      "completed": false,
+      "description": "Scheduled",
+      "detail": "Sun, October 11th at 4:25 PM EDT",
+      "shortDetail": "10/11 - 4:25 PM EDT"
+     },
+     "isTBDFlex": false
+    }
+   }
+  ]
+ },
+ "boxscore": {},
+ "scoringPlays": []
+}

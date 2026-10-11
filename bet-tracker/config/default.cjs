@@ -93,5 +93,13 @@ const config = {
     // WNBA final margin and total (points); σ fitted per game within the range.
     wnba: { marginSigma: 11.5, totalSigma: 15, sigmaRange: [8, 16] },
   },
+  props: {
+    // Hold assumed when de-vigging an anytime TD price (no "no" side posted):
+    // prices up to +200, and longer prices.
+    anytimeTdHold: {
+      upTo200: envNumber('ATD_HOLD', 0.08),
+      above200: envNumber('ATD_HOLD_LONG', 0.15),
+    },
+  },
 };
 module.exports = config;

@@ -1,5 +1,6 @@
 import config from 'config';
 import type { FootballSigmas } from './models/prior.js';
+import type { PropParams } from './models/props.js';
 
 /** Centralized, typed access to the `config` package values. */
 export const appConfig = {
@@ -44,4 +45,5 @@ export const appConfig = {
     },
     wnba: config.get<FootballSigmas>('models.wnba'),
   },
+  props: config.get<PropParams>('props'),
 };
