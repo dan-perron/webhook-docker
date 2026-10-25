@@ -71,6 +71,13 @@
       "when": 1791742287163,
       "tag": "0009_player_props",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1792882333939,
+      "tag": "0010_series_props_origin",
+      "breakpoints": true
     }
   ]
 }

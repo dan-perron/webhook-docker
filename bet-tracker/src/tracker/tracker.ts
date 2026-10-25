@@ -6,19 +6,22 @@ import {
   events,
   legs,
   predictionSnapshots,
+  series,
   watches,
   type EventRow,
   type BetRow,
   type LegRow,
+  type SeriesRow,
 } from '../db/schema.js';
 import { betSettledAt, eventFinalAt } from '../domain/settleTime.js';
-import { isGameMarket } from '../domain/types.js';
+
 import { betStatus } from '../domain/value.js';
 import type { Providers } from '../gamestate/registry.js';
 import type {
   GameState,
   PlayerStats,
   PregameLines,
+  SeriesState,
 } from '../gamestate/types.js';
 import { nameScore } from '../matching/match.js';
 import { matchLegs } from '../matching/service.js';
@@ -55,13 +58,22 @@ import {
   propPregame,
   type PropParams,
 } from '../models/props.js';
+import {
+  evaluateSeries,
+  seriesJoint,
+  seriesPmf,
+  stateAsOf,
+  strengthForPrice,
+  strengthFromGame,
+  type SeriesStrength,
+} from '../models/series.js';
 import type { ModelSelection } from '../models/types.js';
 import { devigSingle } from '../odds/math.js';
 
 export interface TrackerOptions {
   params: ModelParams;
-  /** Assumed holds for de-vigging player prop prices. */
-  props?: PropParams;
+  /** Assumed holds and live-model settings for player props. */
+  props?: Partial<PropParams>;
   polling: { liveSeconds: number; scheduledSeconds: number };
   /** Minimum minutes between calibration snapshots of a live leg. */
   snapshotEveryMinutes?: number;
@@ -138,7 +150,7 @@ export function preState(e: EventRow): GameState {
   };
 }
 
-const isProp = (l: LegRow) => !isGameMarket(l.market);
+const isProp = (l: LegRow) => l.market === 'player_prop';
 
 /** A player prop's pregame P(win): its entered price de-vigged. */
 function propPlacement(l: LegRow, params: PropParams) {
@@ -154,6 +166,25 @@ function propPlacement(l: LegRow, params: PropParams) {
     },
   };
 }
+
+/** One leg's new evaluation, to be written with its bet's settlement. */
+type LegUpdate = {
+  leg: LegRow;
+  ev: {
+    outcome: { win: number; push: number };
+    status: LegRow['status'];
+    model: string;
+    inputs: Record<string, number | string | null>;
+  };
+  anchor: { shift: number | null; source: string | null };
+  prior: { source: Prior['source'] };
+};
+
+/** Placement values and joints computed for legs missing them. */
+type Placement = {
+  legs: Map<number, { win: number; push: number; json: string }>;
+  joints: { betId: number; outcomes: StoredJoint[] }[];
+};
 
 const selectionOf = (l: LegRow): ModelSelection => ({
   market: l.market,
@@ -182,7 +213,7 @@ export class Tracker extends EventEmitter {
   ) {
     super();
     this.now = opts.now ?? (() => new Date());
-    this.props = opts.props ?? DEFAULT_PROP_PARAMS;
+    this.props = { ...DEFAULT_PROP_PARAMS, ...opts.props };
   }
 
   /** One polling pass. Safe to call often; does nothing until work is due. */
@@ -204,12 +235,19 @@ export class Tracker extends EventEmitter {
       await this.pregameSnapshots(betDue, result);
       await this.pollStates(due, result);
       const withStats = await this.refreshPlayerStats(result);
+      const polledSeries = await this.pollSeries(result);
       for (const id of new Set([
-        ...result.polled,
+        ...result.polled.filter((id) => !polledSeries.includes(id)),
         ...withStats,
         ...this.unevaluatedEventIds(),
       ])) {
         this.evaluate(id, result);
+      }
+      for (const id of new Set([
+        ...polledSeries,
+        ...this.unevaluatedSeriesIds(),
+      ])) {
+        this.evaluateSeriesLegs(id, result);
       }
     } finally {
       this.running = false;
@@ -728,6 +766,14 @@ export class Tracker extends EventEmitter {
       .map((r) => r.id)
       .filter((id): id is string => !!id);
     for (const id of ids) this.evaluate(id, result);
+    const seriesIds = this.db
+      .selectDistinct({ id: legs.seriesId })
+      .from(legs)
+      .where(and(eq(legs.status, 'open'), eq(legs.matchStatus, 'matched')))
+      .all()
+      .map((r) => r.id)
+      .filter((id): id is string => !!id);
+    for (const id of seriesIds) this.evaluateSeriesLegs(id, result);
     if (result.evaluatedEvents.length) this.emit('change', result);
     return result;
   }
@@ -755,8 +801,13 @@ export class Tracker extends EventEmitter {
     const eventIds = [
       ...new Set(betLegs.map((l) => l.eventId).filter((x): x is string => !!x)),
     ];
-    const finals = new Set(
-      eventIds.length
+    const seriesIds = [
+      ...new Set(
+        betLegs.map((l) => l.seriesId).filter((x): x is string => !!x)
+      ),
+    ];
+    const finals = new Set([
+      ...(eventIds.length
         ? this.db
             .select({ id: events.id })
             .from(events)
@@ -765,8 +816,18 @@ export class Tracker extends EventEmitter {
             )
             .all()
             .map((r) => r.id)
-        : []
-    );
+        : []),
+      ...(seriesIds.length
+        ? this.db
+            .select({ id: series.id })
+            .from(series)
+            .where(
+              and(inArray(series.id, seriesIds), eq(series.status, 'final'))
+            )
+            .all()
+            .map((r) => r.id)
+        : []),
+    ]);
     this.db.transaction((tx) => {
       // Legs settled by hand (props without a box score) keep their result.
       for (const l of betLegs.filter((x) => x.model !== 'manual')) {
@@ -781,7 +842,8 @@ export class Tracker extends EventEmitter {
             priorSource: null,
             evaluatedAt: null,
             // Finished games re-settle from their final state.
-            ...(l.eventId && finals.has(l.eventId)
+            ...((l.eventId && finals.has(l.eventId)) ||
+            (l.seriesId && finals.has(l.seriesId))
               ? { status: 'open' as const }
               : {}),
           })
@@ -799,6 +861,7 @@ export class Tracker extends EventEmitter {
         .run();
     });
     for (const id of eventIds) this.evaluate(id, result);
+    for (const id of seriesIds) this.evaluateSeriesLegs(id, result);
     // Legs kept from a hand settle aren't re-evaluated: derive the bet here.
     const after = this.db
       .select()
@@ -839,12 +902,6 @@ export class Tracker extends EventEmitter {
     const now = iso(this.now());
 
     // Each bet's legs are evaluated with that bet's own prior.
-    type LegUpdate = {
-      leg: LegRow;
-      ev: ReturnType<typeof evaluateEvent>[number];
-      anchor: { shift: number | null; source: string | null };
-      prior: { source: Prior['source'] };
-    };
     const updates: LegUpdate[] = [];
     const jointsNow: { betId: number; outcomes: StoredJoint[] }[] = [];
     try {
@@ -899,12 +956,14 @@ export class Tracker extends EventEmitter {
             propType: leg.propType!,
             player: leg.playerName!,
             team,
+            side: leg.side,
             kind: leg.selectionKind,
             line: leg.line,
           },
           state,
           stats,
-          p
+          p,
+          this.props
         );
         updates.push({ leg, ev, anchor: { shift: null, source: null }, prior });
       }
@@ -914,7 +973,7 @@ export class Tracker extends EventEmitter {
     }
 
     const needPlacement = open.filter((l) => l.pWinPlacement == null);
-    let placement: ReturnType<Tracker['placementFor']> | null = null;
+    let placement: Placement | null = null;
     try {
       placement = needPlacement.length
         ? this.placementFor(e, needPlacement, allLegs, state)
@@ -923,9 +982,34 @@ export class Tracker extends EventEmitter {
       result.errors.push(`placement ${eventId}: ${(err as Error).message}`);
     }
 
+    const affectedBets = this.applyUpdates(
+      e.id,
+      updates,
+      jointsNow,
+      placement,
+      { status: state.status, fractionRemaining: state.fractionRemaining },
+      now
+    );
+    result.evaluatedEvents.push(eventId);
+    result.changedBets.push(...affectedBets);
+  }
+
+  /**
+   * Write leg evaluations (joints keyed by event or series id), stamp
+   * placement values, snapshot or settle each leg, and settle bets whose
+   * legs are all decided. Returns the bets touched.
+   */
+  private applyUpdates(
+    key: string,
+    updates: LegUpdate[],
+    jointsNow: { betId: number; outcomes: StoredJoint[] }[],
+    placement: Placement | null,
+    snap: { status: GameState['status']; fractionRemaining: number },
+    now: string
+  ): Set<number> {
     const affectedBets = new Set<number>();
     const merge = (json: string | null, outcomes: StoredJoint[]) =>
-      JSON.stringify({ ...(json ? JSON.parse(json) : {}), [e.id]: outcomes });
+      JSON.stringify({ ...(json ? JSON.parse(json) : {}), [key]: outcomes });
     this.db.transaction((tx) => {
       for (const j of jointsNow) {
         const bet = tx.select().from(bets).where(eq(bets.id, j.betId)).get();
@@ -939,9 +1023,7 @@ export class Tracker extends EventEmitter {
         const bet = tx.select().from(bets).where(eq(bets.id, j.betId)).get();
         if (
           bet &&
-          !(
-            bet.jointPlacementJson && e.id in JSON.parse(bet.jointPlacementJson)
-          )
+          !(bet.jointPlacementJson && key in JSON.parse(bet.jointPlacementJson))
         ) {
           tx.update(bets)
             .set({
@@ -978,7 +1060,7 @@ export class Tracker extends EventEmitter {
           .run();
 
         if (ev.status === 'open') {
-          this.maybeSnapshot(tx, leg, state, ev.outcome.win, now);
+          this.maybeSnapshot(tx, leg, snap, ev.outcome.win, now);
         } else {
           // Settled: stamp the outcome on this leg's calibration snapshots.
           const outcome =
@@ -1013,8 +1095,281 @@ export class Tracker extends EventEmitter {
         }
       }
     });
-    result.evaluatedEvents.push(eventId);
-    result.changedBets.push(...affectedBets);
+    return affectedBets;
+  }
+
+  // --- Series (series markets) -------------------------------------------------
+
+  /** Series with an open leg whose next poll is due (or never fetched). */
+  private dueSeries(): SeriesRow[] {
+    const now = iso(this.now());
+    return this.db
+      .selectDistinct({ s: series })
+      .from(series)
+      .innerJoin(legs, eq(legs.seriesId, series.id))
+      .where(
+        and(
+          eq(legs.status, 'open'),
+          or(
+            isNull(series.stateJson),
+            and(
+              ne(series.status, 'final'),
+              or(isNull(series.nextPollAt), lte(series.nextPollAt, now))
+            )
+          )
+        )
+      )
+      .all()
+      .map((r) => r.s);
+  }
+
+  /** Live game: poll live; else up to the next game's start. */
+  private nextSeriesPoll(s: SeriesState): string | null {
+    if (s.status === 'final') return null;
+    const { liveSeconds, scheduledSeconds } = this.opts.polling;
+    const now = this.now();
+    if (s.games.some((g) => g.status === 'in'))
+      return iso(addSeconds(now, liveSeconds));
+    const next = s.games.find((g) => g.status === 'pre');
+    const until = next
+      ? (new Date(next.startTime).getTime() - now.getTime()) / 1000
+      : scheduledSeconds;
+    return iso(
+      addSeconds(now, Math.max(liveSeconds, Math.min(scheduledSeconds, until)))
+    );
+  }
+
+  /**
+   * Fetch due series: state, ESPN's live win probability for a game in
+   * progress, and the next (or current) game's line, which updates the
+   * per-game strength (kept once no game has a line).
+   */
+  private async pollSeries(result: TickResult): Promise<string[]> {
+    const polled: string[] = [];
+    for (const row of this.dueSeries()) {
+      let got: Awaited<ReturnType<Providers['series']['getState']>>;
+      try {
+        got = await this.providers.series.getState(row);
+      } catch (err) {
+        result.errors.push(`series ${row.id}: ${(err as Error).message}`);
+        this.db
+          .update(series)
+          .set({
+            nextPollAt: iso(
+              addSeconds(this.now(), this.opts.polling.liveSeconds)
+            ),
+          })
+          .where(eq(series.id, row.id))
+          .run();
+        continue;
+      }
+      if (!got) {
+        result.errors.push(`series ${row.id}: no games found`);
+        this.db
+          .update(series)
+          .set({
+            nextPollAt: iso(
+              addSeconds(this.now(), this.opts.polling.scheduledSeconds)
+            ),
+          })
+          .where(eq(series.id, row.id))
+          .run();
+        continue;
+      }
+      const { state, line } = got;
+      const prev = row.strengthJson
+        ? (JSON.parse(row.strengthJson) as SeriesStrength)
+        : null;
+      let strength = prev;
+      if (line) {
+        const g = state.games.find((x) => x.id === line.gameId)!;
+        const pHome =
+          g.homeTeamId === state.home.id ? line.pHost : 1 - line.pHost;
+        const host = g.homeTeamId === state.home.id ? state.home : state.away;
+        strength = {
+          source: 'espn_lines',
+          logit: strengthFromGame(state, line.number, pHome),
+          games: {
+            ...(prev?.source === 'espn_lines' ? prev.games : {}),
+            [line.gameId]: pHome,
+          },
+          detail: `Game ${line.number} line (ESPN): ${host.abbr ?? host.name} host ${(line.pHost * 100).toFixed(1)}% de-vigged`,
+        };
+      }
+      const now = iso(this.now());
+      this.db
+        .update(series)
+        .set({
+          status: state.status,
+          title: state.title ?? row.title,
+          bestOf: state.bestOf,
+          stateJson: JSON.stringify(state),
+          stateUpdatedAt: now,
+          nextPollAt: this.nextSeriesPoll(state),
+          ...(line
+            ? { strengthJson: JSON.stringify(strength), strengthAt: now }
+            : {}),
+          updatedAt: now,
+        })
+        .where(eq(series.id, row.id))
+        .run();
+      polled.push(row.id);
+      result.polled.push(row.id);
+    }
+    return polled;
+  }
+
+  /**
+   * A bet's per-game strength for a series: ESPN lines when any game had
+   * one; else its own entered series price (pregame bets), fitted at the
+   * series state when it was placed; else neutral.
+   */
+  private seriesStrengthFor(
+    row: SeriesRow,
+    state: SeriesState,
+    bet: BetRow,
+    betLegs: LegRow[]
+  ): SeriesStrength {
+    if (row.strengthJson) return JSON.parse(row.strengthJson) as SeriesStrength;
+    const own = bet.placedLive
+      ? undefined
+      : betLegs.find((l) => l.seriesId === row.id && l.side);
+    if (own) {
+      const asOf = bet.placedAt ?? bet.createdAt;
+      const p = devigSingle(own.priceAmerican);
+      return {
+        source: 'entered_odds',
+        logit: strengthForPrice(stateAsOf(state, asOf), selectionOf(own), p),
+        detail: `entered ${fmtPrice(own.priceAmerican)} (${(p * 100).toFixed(1)}% de-vigged) at the series state when placed`,
+      };
+    }
+    return { source: 'neutral', logit: 0, detail: 'neutral: no price' };
+  }
+
+  /** Re-evaluate every open leg on a series, settle, snapshot. */
+  evaluateSeriesLegs(seriesId: string, result: TickResult) {
+    const row = this.db
+      .select()
+      .from(series)
+      .where(eq(series.id, seriesId))
+      .get();
+    if (!row?.stateJson) return;
+    const state = JSON.parse(row.stateJson) as SeriesState;
+    const allLegs = this.db
+      .select()
+      .from(legs)
+      .where(eq(legs.seriesId, seriesId))
+      .all();
+    const open = allLegs.filter((l) => l.status === 'open');
+    if (!open.length) return;
+    const now = iso(this.now());
+    const updates: LegUpdate[] = [];
+    const jointsNow: { betId: number; outcomes: StoredJoint[] }[] = [];
+    const placement: Placement = { legs: new Map(), joints: [] };
+    try {
+      for (const [betId, ls] of groupBy(open, (l) => l.betId)) {
+        const bet = this.db.select().from(bets).where(eq(bets.id, betId)).get();
+        if (!bet) continue;
+        const betLegs = this.db
+          .select()
+          .from(legs)
+          .where(eq(legs.betId, betId))
+          .all();
+        const strength = this.seriesStrengthFor(row, state, bet, betLegs);
+        const sels = ls.map(selectionOf);
+        const evals = evaluateSeries(state, strength, sels);
+        ls.forEach((leg, i) =>
+          updates.push({
+            leg,
+            ev: evals[i]!,
+            anchor: { shift: null, source: null },
+            prior: strength,
+          })
+        );
+        if (ls.length > 1 && state.status !== 'final')
+          jointsNow.push({
+            betId,
+            outcomes: toStored(
+              ls,
+              seriesJoint(seriesPmf(state, strength), sels)
+            ),
+          });
+        // Placement: live bets their own price; others the model at the
+        // series state when placed.
+        const need = ls.filter((l) => l.pWinPlacement == null);
+        if (!need.length) continue;
+        const asOf = bet.placedAt ?? bet.createdAt;
+        if (bet.placedLive) {
+          for (const l of need)
+            placement.legs.set(l.id, {
+              win: devigSingle(l.priceAmerican),
+              push: 0,
+              json: JSON.stringify({
+                source: 'entered (live bet)',
+                detail: `${fmtPrice(l.priceAmerican)} de-vigged`,
+              }),
+            });
+          continue;
+        }
+        const then = stateAsOf(state, asOf);
+        const pre = evaluateSeries(then, strength, need.map(selectionOf));
+        need.forEach((l, i) =>
+          placement.legs.set(l.id, {
+            win: pre[i]!.outcome.win,
+            push: pre[i]!.outcome.push,
+            json: JSON.stringify({
+              source: strength.source,
+              detail: strength.detail,
+              seriesAsOf: `${then.away.abbr ?? then.away.name} ${then.away.wins}-${then.home.wins} ${then.home.abbr ?? then.home.name}`,
+              placedAt: asOf,
+            }),
+          })
+        );
+        if (ls.length > 1)
+          placement.joints.push({
+            betId,
+            outcomes: toStored(
+              ls,
+              seriesJoint(seriesPmf(then, strength), sels)
+            ),
+          });
+      }
+    } catch (err) {
+      result.errors.push(`evaluate ${seriesId}: ${(err as Error).message}`);
+      return;
+    }
+    const played = state.home.wins + state.away.wins;
+    const affected = this.applyUpdates(
+      seriesId,
+      updates,
+      jointsNow,
+      placement,
+      {
+        status: state.status,
+        fractionRemaining:
+          state.status === 'final' ? 0 : Math.max(0, 1 - played / state.bestOf),
+      },
+      now
+    );
+    result.evaluatedEvents.push(seriesId);
+    result.changedBets.push(...affected);
+  }
+
+  /** Series with open legs never evaluated (new bets). */
+  private unevaluatedSeriesIds(): string[] {
+    return this.db
+      .selectDistinct({ id: legs.seriesId })
+      .from(legs)
+      .where(
+        and(
+          eq(legs.status, 'open'),
+          eq(legs.matchStatus, 'matched'),
+          isNull(legs.evaluatedAt)
+        )
+      )
+      .all()
+      .map((r) => r.id)
+      .filter((id): id is string => !!id);
   }
 
   /**
@@ -1023,10 +1378,44 @@ export class Tracker extends EventEmitter {
    */
   private settledAtFor(tx: Db | Tx, betId: number): string | null {
     const ls = tx
-      .select({ status: legs.status, eventId: legs.eventId })
+      .select({
+        status: legs.status,
+        eventId: legs.eventId,
+        seriesId: legs.seriesId,
+      })
       .from(legs)
       .where(eq(legs.betId, betId))
       .all();
+    const sids = [
+      ...new Set(ls.map((l) => l.seriesId).filter((x): x is string => !!x)),
+    ];
+    // A series ends with its deciding game.
+    const seriesFinal = new Map(
+      (sids.length
+        ? tx
+            .select()
+            .from(series)
+            .where(and(inArray(series.id, sids), eq(series.status, 'final')))
+            .all()
+        : []
+      ).flatMap((s) => {
+        const st = s.stateJson
+          ? (JSON.parse(s.stateJson) as SeriesState)
+          : null;
+        if (!st?.decidedAt) return [];
+        return [
+          [
+            s.id,
+            eventFinalAt(
+              s.sport,
+              st.decidedAt,
+              { status: 'final', cancelled: false, fetchedAt: st.fetchedAt },
+              this.now()
+            ),
+          ] as const,
+        ];
+      })
+    );
     const ids = [
       ...new Set(ls.map((l) => l.eventId).filter((x): x is string => !!x)),
     ];
@@ -1051,7 +1440,10 @@ export class Tracker extends EventEmitter {
     return betSettledAt(
       ls.map((l) => ({
         status: l.status,
-        finalAt: (l.eventId && finalAt.get(l.eventId)) || null,
+        finalAt:
+          (l.eventId && finalAt.get(l.eventId)) ||
+          (l.seriesId && seriesFinal.get(l.seriesId)) ||
+          null,
       }))
     );
   }
@@ -1144,7 +1536,7 @@ export class Tracker extends EventEmitter {
   private maybeSnapshot(
     tx: Tx,
     leg: LegRow,
-    state: GameState,
+    state: { status: GameState['status']; fractionRemaining: number },
     p: number,
     now: string
   ) {

@@ -720,3 +720,448 @@ form.inline {
     color: var(--warn);
   }
 }
+
+/* Game-day monitoring: scores first, ticket analysis on demand. */
+[hidden] {
+  display: none !important;
+}
+a,
+button,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.views {
+  max-width: 360px;
+}
+.views a {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stats .k,
+.ticket-money .k {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+.bet,
+.game {
+  border: 1px solid var(--line);
+  border-left-width: 4px;
+  padding: 16px;
+}
+.bet.in {
+  border-left-color: var(--accent);
+}
+.ticket-status {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.bet.in .ticket-status {
+  color: var(--accent);
+}
+.ticket-money {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 10px 0;
+  margin: 12px 0;
+  font-variant-numeric: tabular-nums;
+}
+.ticket-money strong {
+  display: block;
+  font-size: 19px;
+  font-weight: 650;
+}
+.ticket-game + .ticket-game {
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+  padding-top: 12px;
+}
+.game-clock {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 0;
+  min-width: 0;
+  flex: 1;
+}
+.game-clock.in {
+  color: var(--accent);
+}
+.scoreboard .team {
+  align-items: center;
+  gap: 12px;
+  padding: 3px 0;
+  font-size: 17px;
+  color: var(--fg);
+}
+.scoreboard .team .score {
+  font-size: 27px;
+  line-height: 1.1;
+  font-weight: 750;
+}
+.scoreboard .team .name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.scoreboard .sit {
+  font-size: 13px;
+  margin-top: 6px;
+  color: var(--muted);
+}
+.freshness {
+  color: var(--muted);
+  font-size: 12px;
+}
+.scoreboard .freshness {
+  display: block;
+  margin-top: 5px;
+}
+.freshness.stale {
+  color: var(--warn);
+}
+.meta {
+  align-items: center;
+  justify-content: space-between;
+}
+.conn::before {
+  content: '●';
+  margin-right: 5px;
+}
+.legs {
+  margin-top: 10px;
+}
+.leg {
+  align-items: center;
+}
+.leg .p {
+  font-size: 13px;
+}
+.ticket-details {
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+}
+.ticket-details > summary,
+.analysis > summary {
+  padding: 12px 0;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+.ticket-details[open] > summary,
+.analysis[open] > summary {
+  color: var(--fg);
+}
+.leg-prices {
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.analysis {
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+}
+.exposure {
+  overflow-x: auto;
+}
+.g-head {
+  margin: 0 0 8px;
+  min-height: 28px;
+}
+.g-actions {
+  margin-left: auto;
+}
+.icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.game-bets {
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+  padding-top: 4px;
+}
+.game-bet {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  padding: 10px 0;
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 14px;
+}
+.game-bet + .game-bet {
+  border-top: 1px solid var(--line);
+}
+.game-bet-selection {
+  font-weight: 650;
+}
+.game-bet-estimate {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.game-bet .sub {
+  grid-column: 1 / -1;
+  font-size: 12px;
+}
+.game-bet:hover .game-bet-selection {
+  color: var(--accent);
+}
+.sport-filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+}
+.sport-filters button {
+  flex: 0 0 auto;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: var(--card);
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+.sport-filters button[aria-pressed='true'] {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.bet:target {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.bet {
+  scroll-margin-top: 220px;
+}
+@media (max-width: 380px) {
+  .stats .v {
+    font-size: 16px;
+  }
+  .game-bet {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Settings stays secondary to the three monitoring destinations. */
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 450px;
+  margin-bottom: 8px;
+}
+.app-nav .views {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+.settings-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.settings-link:hover,
+.settings-link.on {
+  color: var(--fg);
+  background: var(--card);
+}
+.page-title {
+  margin: 12px 0 4px;
+  font-size: 22px;
+}
+
+.legs:empty {
+  display: none;
+}
+.calibration-overview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+.calibration-overview .k {
+  color: var(--muted);
+  font-size: 13px;
+}
+.calibration-overview strong {
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+.calibration-overview .sub {
+  flex-basis: 100%;
+  font-size: 12px;
+}
+
+.bet-group {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.bet-group-score {
+  padding: 16px;
+}
+.bet-group > .bet {
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  margin: 0;
+}
+.bet-group .ticket-money {
+  border: 0;
+  padding: 0;
+  margin-bottom: 0;
+}
+@media (min-width: 900px) {
+  .bet-grid > .bet-group {
+    margin-bottom: 0;
+  }
+}
+
+.daily-bet-result {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Broadcasts share the date/clock row; full watch options expand below. */
+.game-meta {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-bottom: 6px;
+}
+.game-meta:has(.watch-details[open]) {
+  flex-wrap: wrap;
+}
+.game-clock.pre {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.watch-details {
+  margin: 0;
+  min-width: 0;
+  flex: 0 1 auto;
+  max-width: 55%;
+  font-size: 12px;
+}
+.watch-details[open] {
+  flex-basis: 100%;
+  max-width: 100%;
+}
+.watch-channel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.watch-details > summary {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  cursor: pointer;
+}
+.watch-details > summary::before {
+  content: '▸';
+}
+.watch-details[open] > summary::before {
+  content: '▾';
+}
+.watch-availability {
+  color: var(--muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.watch-availability.yes {
+  color: var(--good);
+}
+.watch-options {
+  padding-top: 0.35rem;
+}
+.watch-options p {
+  margin: 0.3rem 0;
+  overflow-wrap: anywhere;
+}
+.viewing-location {
+  margin-bottom: 1.5rem;
+}
+
+/* Bet origin: Claude's +EV pick vs Dan's own; filter chips under the nav. */
+.origin-badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  vertical-align: 1px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.origin-badge.recommended {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.origin-filters {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+.origin-filters a {
+  flex: 0 0 auto;
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+}
+.origin-filters a.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.origin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.origin-table th,
+.origin-table td {
+  text-align: right;
+  padding: 3px 4px;
+}
+.origin-table th:first-child,
+.origin-table td:first-child {
+  text-align: left;
+}

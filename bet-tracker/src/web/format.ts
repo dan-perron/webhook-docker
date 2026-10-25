@@ -142,3 +142,15 @@ export function legStatusLine(l: LegView): string | null {
     return live.score;
   return `${live.score} · ${live.detail}`;
 }
+
+/** Age of the data, distinct from the live stream's connection state. */
+export function freshnessLabel(at: string | null, now: Date): string {
+  const timestamp = at ? Date.parse(at) : NaN;
+  if (!Number.isFinite(timestamp)) return 'Waiting for update';
+  const seconds = Math.max(0, Math.floor((now.getTime() - timestamp) / 1000));
+  if (seconds < 10) return 'Updated just now';
+  if (seconds < 60) return `Updated ${seconds}s ago`;
+  if (seconds < 3600) return `Updated ${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `Updated ${Math.floor(seconds / 3600)}h ago`;
+  return `Updated ${Math.floor(seconds / 86400)}d ago`;
+}

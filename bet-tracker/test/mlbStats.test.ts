@@ -103,7 +103,9 @@ describe('MlbStatsProvider', () => {
     }));
     const states = await new MlbStatsProvider(fetcher).getStates(refs);
     expect(requested).toHaveLength(1);
-    expect(requested[0]).toContain('hydrate=linescore');
+    expect(requested[0]).toContain(
+      'hydrate=linescore,team,gameInfo,broadcasts'
+    );
     expect(states.get('mlb:849829')?.status).toBe('in');
   });
 
@@ -168,5 +170,24 @@ describe('parseSchedule (recorded status edge cases)', () => {
     expect(s!.away.score).toBe(3);
     // gameInfo: first pitch 17:08Z + 169 min game + 0 min delay = 19:57Z.
     expect(s!.endTime).toBe('2026-10-03T19:57:00.000Z');
+  });
+});
+
+describe('MLB broadcast listings', () => {
+  it('keeps distinct English TV/app options, deduplicating home/away copies and excluding radio', () => {
+    const sched = structuredClone(
+      fixture<MlbSchedule>('mlb/schedule-20261003.json')
+    );
+    sched.dates![0]!.games[0]!.broadcasts = [
+      { name: 'TBS/HBO MAX', type: 'TV', language: 'en', isNational: true },
+      { name: 'TBS/HBO MAX', type: 'TV', language: 'en', isNational: true },
+      { name: 'CHSN', type: 'TV', language: 'en', isNational: false },
+      { name: 'Radio', type: 'AM', language: 'en' },
+      { name: 'Spanish TV', type: 'TV', language: 'es' },
+    ];
+    expect(parseSchedule(sched)[0]!.broadcasts).toEqual([
+      { name: 'TBS/HBO MAX', scope: 'national' },
+      { name: 'CHSN', scope: 'regional' },
+    ]);
   });
 });

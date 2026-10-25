@@ -75,26 +75,67 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   21 days) together with the provider's team list (`listTeams`: ESPN
   `/teams`, MLB `/teams`), so offseason teams resolve and a shared city is
   always ambiguous.
-- `SPORTS` = `BET_SPORTS` (modeled; `add_bet` accepts only these) +
+- `SPORTS` = `BET_SPORTS` (modeled, incl. NBA; `add_bet` accepts only these) +
   `SCORE_ONLY_SPORTS` (ncaab, ncaamh, ncaawh, ncaawvb: ESPN scoreboards,
   Scores view only; `evaluate` throws for them). Volleyball's score is sets
   won, its situation the points per set; a fifth set is its "close late".
 - Parlay push/void recompute scales the remaining legs by the book's pricing
   factor (stated price / product of legs).
-- Player props (`market: 'player_prop'`, NFL; `src/models/props.ts`):
-  `PROP_SPECS` per prop type (only `anytime_td` so far; add first_td,
-  2plus_td, yardage there), leg columns `prop_type`/`player_name`, with
-  `selectionTeam` = the player's team (matching resolves its `side`). No
-  player model: P(win) is the entered price de-vigged with an assumed hold
-  (`props.anytimeTdHold` in config: 8% up to +200, 15% above; source
-  `entered_price`). Once the game starts the Tracker fetches the ESPN
-  summary box score (`events.player_stats_json`) with each live poll, then
-  until ESPN marks it complete. Live: a TD = 1, else 1 - (1 - p)^f; no box
-  score = pregame value carried. Final: rushing/receiving/return TDs count,
-  passing TDs don't; a player with no box score line stays open
+- NBA is a margin sport like WNBA (`basketball_normal`: the football_normal
+  machinery without key numbers or possession; 12-minute quarters;
+  `models.nba` σ in config).
+- Player props (`market: 'player_prop'`; `src/models/props.ts`):
+  `PROP_SPECS` per prop type (sport, selections, line, stat keys,
+  dispersion, MLB role): NFL `anytime_td`; NBA points, rebounds, assists,
+  threes, pra; MLB home_runs (yes = over 0.5, "to hit a HR"), total_bases,
+  hits, pitcher_strikeouts, pitcher_outs. Leg columns `prop_type`/
+  `player_name`, with `selectionTeam` = the player's team (matching
+  resolves its `side`). No player model: P(win) is the entered price
+  de-vigged with an assumed hold (`props.anytimeTdHold` 8%/15%,
+  `props.overUnderHold` 7%/12%, split at +200; source `entered_price`).
+  Once the game starts the Tracker fetches the ESPN summary box score
+  (`events.player_stats_json`) with each live poll, then until ESPN marks it
+  complete; MLB events (Stats API) are found on ESPN by teams and date
+  (registry, cached per event). ESPN puts season totals in a pregame MLB box
+  score, so `parsePlayerStats` returns null until the header says the game
+  started. Anytime TD live: a TD = 1, else 1 - (1 - p)^f. Over/unders: final
+  = stat so far + a count to come (Poisson, or negative binomial with
+  variance = dispersion x mean), full-game mean calibrated so P(over) is the
+  de-vigged price; still to come = NBA (stat + μw)/(elapsed + 48w) x minutes
+  left (his share and pace blended with the pregame rate, w = 0.5 games);
+  MLB batters rate per PA x expected PAs left (team outs left, lineup spot
+  from team PAs mod 9, PAs = outs + NegBin(outs, outRate)); pitchers K rate
+  per out (pace-blended) x outs left in the pitch budget (outs props: the
+  calibrated outs mean x pitches/out), capped by outs left in regulation.
+  Pulled (ESPN pitching `active` false), subbed out or ejected = done. MLB
+  total bases = H + 2B + 2x3B + 3xHR with doubles/triples counted from the
+  plays. Final: settle on the box score; no line (or an NBA DNP) stays open
   (`prop_unverified`) for `settle_bet` (legId settles one leg; manual legs
   survive recompute). No joint model covers a prop, so a same-game parlay
   with an open prop is `book_implied`.
+- Series markets (`series_winner`, `series_spread` in games; MLB/NBA/NHL/
+  WNBA; `src/models/series.ts`, `src/gamestate/espnSeries.ts`): legs link to
+  a `series` row via `legs.series_id` (eventId stays null). ESPN has no
+  series id: `espn:<sport>:series:<season>:<lo team id>-<hi>`, read from a
+  team's `/teams/{id}/schedule?seasontype=3` (lists If Necessary games and
+  hosts; "Game N" notes give numbers, MLB titles the round length). home =
+  game 1's host (home field). Matching resolves both names against ESPN's
+  team list and needs postseason games between them within 30 days of the
+  leg's date; anything unsure is candidates. Strength (`series.strength_json`)
+  = neutral-site log-odds from the next/current game's ESPN moneyline minus
+  `HOME_EDGE` for its host, plus each game's own line; else the bet's entered
+  series price fitted at the series state when placed; else neutral. A live
+  game uses ESPN's summary `winprobability`. The DP enumerates the remaining
+  games exactly; legs on one series price jointly (jointJson keyed by series
+  id); placement = the model at the series as of placedAt (games over by
+  then); settled when a team reaches the wins needed, settledAt = deciding
+  game start + GAME_MINUTES. Correlation with game legs in the same series is
+  ignored.
+- Bet origin (`bets.origin`): `recommended` (Claude's +EV pick) | `own`
+  (Dan's one-off) | null (untagged, older bets). add_bet/update_bet set it;
+  list_bets, portfolio and the web page filter by it (`untagged` = null);
+  `portfolio().byOrigin` has stake, P/L, ROI and EV at placement vs realized
+  per origin.
 
 ## MCP
 

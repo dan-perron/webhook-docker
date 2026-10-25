@@ -53,7 +53,11 @@ const enteredOutcome = (l: LegRow): Outcome => ({
 });
 
 const isUnmatched = (l: LegRow) =>
-  l.status === 'open' && (l.matchStatus !== 'matched' || !l.eventId);
+  l.status === 'open' &&
+  (l.matchStatus !== 'matched' || (!l.eventId && !l.seriesId));
+
+/** What a leg is on: legs sharing one are correlated (joint-valued). */
+const groupKey = (l: LegRow) => l.eventId ?? l.seriesId;
 
 /** Flag a model valuation that leans on entered prices. */
 const withSource = (v: BetValuation, unmatched: boolean): BetValuation =>
@@ -76,7 +80,7 @@ export function valueBetRow(bet: BetRow, legRows: LegRow[]): BetValuations {
         ? enteredOutcome(l)
         : // Unevaluated legs count as a coin flip only until the first tick.
           { win: l.pWin ?? 0.5, push: l.pPush ?? 0 },
-      eventId: l.eventId,
+      eventId: groupKey(l),
     })),
     joints(bet.jointJson, legRows)
   );
@@ -92,7 +96,7 @@ export function valueBetRow(bet: BetRow, legRows: LegRow[]): BetValuations {
           outcome: unmatched.has(l.id)
             ? enteredOutcome(l)
             : { win: l.pWinPlacement!, push: l.pPushPlacement ?? 0 },
-          eventId: l.eventId,
+          eventId: groupKey(l),
         })),
         joints(bet.jointPlacementJson, legRows)
       )

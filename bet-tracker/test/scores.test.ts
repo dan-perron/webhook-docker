@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { openDb, type Db } from '../src/db/client.js';
-import { scoreAlerts, watches } from '../src/db/schema.js';
+import { events, scoreAlerts, watches } from '../src/db/schema.js';
 import { createProviders } from '../src/gamestate/registry.js';
 import type { GameState } from '../src/gamestate/types.js';
 import { detectAlerts, inQuietHours, scoreline } from '../src/scores/alerts.js';
@@ -413,6 +413,65 @@ describe('ScoreService', () => {
     expect(b.alerts.map((a) => a.title)).toEqual([
       '⚾ Final: Chicago White Sox 3–0',
     ]);
+  });
+
+  it('keeps followed finals through their local completion day, beyond 18 hours', async () => {
+    const followed = await svc.followTeam('nfl', 'Bears');
+    if (followed.status !== 'followed') throw new Error(followed.status);
+    const game = followed.games[0]!;
+    const finished = nfl({
+      eventId: game.eventId,
+      status: 'final',
+      startTime: '2026-10-03T04:00:00Z',
+      endTime: '2026-10-03T06:00:00Z',
+      fetchedAt: '2026-10-03T06:01:00Z',
+      detail: 'Final',
+      fractionRemaining: 0,
+      winner: 'home',
+    });
+    db.update(events)
+      .set({
+        status: 'final',
+        startTime: finished.startTime,
+        stateJson: JSON.stringify(finished),
+      })
+      .where(eq(events.id, game.eventId))
+      .run();
+    clock = new Date('2026-10-04T04:59:00Z'); // Oct 3, 11:59 PM Chicago
+    expect(svc.board().final.map((c) => c.eventId)).toEqual([game.eventId]);
+    expect(svc.board().final[0]).toMatchObject({
+      followed: true,
+      completedAt: '2026-10-03T06:00:00.000Z',
+    });
+    expect(svc.board('UTC').final).toEqual([]); // Oct 4 in UTC
+    clock = new Date('2026-10-04T05:01:00Z');
+    expect(svc.board().final).toEqual([]);
+  });
+
+  it('does not turn an older final into a today result when fetched today', async () => {
+    const game = await watchCwsCle();
+    const finished = state('mlb', {
+      eventId: game.eventId,
+      status: 'final',
+      startTime: '2026-10-03T01:00:00Z',
+      endTime: '2026-10-03T04:00:00Z', // Oct 2, 11 PM Chicago
+      fetchedAt: NOW.toISOString(),
+      detail: 'Final',
+    });
+    db.update(events)
+      .set({
+        status: 'final',
+        startTime: finished.startTime,
+        stateJson: JSON.stringify(finished),
+      })
+      .where(eq(events.id, game.eventId))
+      .run();
+    expect(svc.board().final).toEqual([]);
+    expect(svc.board('UTC').final.map((c) => c.eventId)).toEqual([
+      game.eventId,
+    ]);
+    svc.unwatchGame(game.eventId);
+    expect(svc.board('UTC').final).toEqual([]);
   });
 
   it('logs but does not push in quiet hours, or with alerts off', async () => {

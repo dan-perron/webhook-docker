@@ -8,6 +8,7 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 import {
+  BET_ORIGINS,
   BET_STATUSES,
   BET_TYPES,
   BOOST_KINDS,
@@ -69,6 +70,38 @@ export const events = sqliteTable(
   (t) => [index('events_status_idx').on(t.status)]
 );
 
+/**
+ * A playoff series (series markets). ESPN has no series id, so `id` is
+ * "espn:<sport>:series:<season>:<teamId>-<teamId>" (ESPN season year and
+ * team ids, lower id first): two teams meet at most once a postseason.
+ * home = the team with home field (game 1's host).
+ */
+export const series = sqliteTable('series', {
+  id: text('id').primaryKey(),
+  sport: text('sport', { enum: SPORTS }).notNull(),
+  season: integer('season').notNull(),
+  title: text('title'),
+  bestOf: integer('best_of').notNull(),
+  homeTeamId: text('home_team_id').notNull(),
+  awayTeamId: text('away_team_id').notNull(),
+  homeName: text('home_name').notNull(),
+  awayName: text('away_name').notNull(),
+  homeAbbr: text('home_abbr'),
+  awayAbbr: text('away_abbr'),
+  // Game 1's scheduled start.
+  startTime: text('start_time').notNull(),
+  status: text('status', { enum: GAME_STATUSES }).notNull().default('pre'),
+  // Last SeriesState (JSON: games, wins, live game) and when it was fetched.
+  stateJson: text('state_json'),
+  stateUpdatedAt: text('state_updated_at'),
+  nextPollAt: text('next_poll_at'),
+  // Per-game strength (JSON SeriesStrength) from the next game's ESPN lines,
+  // kept once the last game starts.
+  strengthJson: text('strength_json'),
+  strengthAt: text('strength_at'),
+  ...timestamps,
+});
+
 export const bets = sqliteTable('bets', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   book: text('book').notNull(),
@@ -90,6 +123,8 @@ export const bets = sqliteTable('bets', {
   // Free text, e.g. "Touchdown Tally token used". Token payout is independent.
   tokenInfo: text('token_info'),
   notes: text('notes'),
+  // recommended (Claude's +EV pick) | own (Dan's one-off); null = untagged.
+  origin: text('origin', { enum: BET_ORIGINS }),
   status: text('status', { enum: BET_STATUSES }).notNull().default('open'),
   settledAt: text('settled_at'),
   // Same-game groups priced from one game model: JSON
@@ -116,6 +151,8 @@ export const legs = sqliteTable(
     participantA: text('participant_a').notNull(),
     participantB: text('participant_b').notNull(),
     eventId: text('event_id').references(() => events.id),
+    // Series markets link to a series instead of an event.
+    seriesId: text('series_id').references(() => series.id),
     matchStatus: text('match_status', { enum: MATCH_STATUSES })
       .notNull()
       .default('unmatched'),
@@ -159,6 +196,7 @@ export const legs = sqliteTable(
   (t) => [
     index('legs_bet_idx').on(t.betId),
     index('legs_event_idx').on(t.eventId),
+    index('legs_series_idx').on(t.seriesId),
   ]
 );
 
@@ -219,6 +257,7 @@ export const meta = sqliteTable('meta', {
 });
 
 export type EventRow = typeof events.$inferSelect;
+export type SeriesRow = typeof series.$inferSelect;
 export type BetRow = typeof bets.$inferSelect;
 export type NewBetRow = typeof bets.$inferInsert;
 export type LegRow = typeof legs.$inferSelect;

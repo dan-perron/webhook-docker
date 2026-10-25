@@ -1,0 +1,992 @@
+{
+ "season": {
+  "year": 2026,
+  "type": 3,
+  "name": "Postseason",
+  "displayName": "2026",
+  "half": 1
+ },
+ "requestedSeason": {
+  "year": 2026,
+  "type": 3,
+  "name": "Postseason",
+  "displayName": "2026"
+ },
+ "events": [
+  {
+   "id": "401908002",
+   "date": "2026-10-04T00:30Z",
+   "name": "San Diego Padres at Milwaukee Brewers",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908002",
+     "date": "2026-10-04T00:30Z",
+     "status": {
+      "type": {
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "shortDetail": "Final"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "NLDS - Game 1"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "8",
+       "homeAway": "home",
+       "winner": true,
+       "score": {
+        "value": 3.0,
+        "displayValue": "3"
+       },
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      },
+      {
+       "id": "25",
+       "homeAway": "away",
+       "winner": false,
+       "score": {
+        "value": 2.0,
+        "displayValue": "2"
+       },
+       "team": {
+        "id": "25",
+        "location": "San Diego",
+        "abbreviation": "SD",
+        "displayName": "San Diego Padres",
+        "shortDisplayName": "Padres"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908003",
+   "date": "2026-10-04T20:00Z",
+   "name": "San Diego Padres at Milwaukee Brewers",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908003",
+     "date": "2026-10-04T20:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "shortDetail": "Final"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "NLDS - Game 2"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "8",
+       "homeAway": "home",
+       "winner": true,
+       "score": {
+        "value": 4.0,
+        "displayValue": "4"
+       },
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      },
+      {
+       "id": "25",
+       "homeAway": "away",
+       "winner": false,
+       "score": {
+        "value": 3.0,
+        "displayValue": "3"
+       },
+       "team": {
+        "id": "25",
+        "location": "San Diego",
+        "abbreviation": "SD",
+        "displayName": "San Diego Padres",
+        "shortDisplayName": "Padres"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908004",
+   "date": "2026-10-07T01:30Z",
+   "name": "Milwaukee Brewers at San Diego Padres",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908004",
+     "date": "2026-10-07T01:30Z",
+     "status": {
+      "type": {
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "shortDetail": "Final"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "NLDS - Game 3"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "25",
+       "homeAway": "home",
+       "winner": true,
+       "score": {
+        "value": 4.0,
+        "displayValue": "4"
+       },
+       "team": {
+        "id": "25",
+        "location": "San Diego",
+        "abbreviation": "SD",
+        "displayName": "San Diego Padres",
+        "shortDisplayName": "Padres"
+       }
+      },
+      {
+       "id": "8",
+       "homeAway": "away",
+       "winner": false,
+       "score": {
+        "value": 3.0,
+        "displayValue": "3"
+       },
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908005",
+   "date": "2026-10-08T02:00Z",
+   "name": "Milwaukee Brewers at San Diego Padres",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908005",
+     "date": "2026-10-08T02:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "shortDetail": "Final"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "NLDS - Game 4"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "25",
+       "homeAway": "home",
+       "winner": false,
+       "score": {
+        "value": 1.0,
+        "displayValue": "1"
+       },
+       "team": {
+        "id": "25",
+        "location": "San Diego",
+        "abbreviation": "SD",
+        "displayName": "San Diego Padres",
+        "shortDisplayName": "Padres"
+       }
+      },
+      {
+       "id": "8",
+       "homeAway": "away",
+       "winner": true,
+       "score": {
+        "value": 3.0,
+        "displayValue": "3"
+       },
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908030",
+   "date": "2026-10-12T00:00Z",
+   "name": "Los Angeles Dodgers at Milwaukee Brewers",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908030",
+     "date": "2026-10-12T00:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "shortDetail": "Final"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "NLCS - Game 1"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "8",
+       "homeAway": "home",
+       "winner": true,
+       "score": {
+        "value": 2.0,
+        "displayValue": "2"
+       },
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      },
+      {
+       "id": "19",
+       "homeAway": "away",
+       "winner": false,
+       "score": {
+        "value": 1.0,
+        "displayValue": "1"
+       },
+       "team": {
+        "id": "19",
+        "location": "Los Angeles",
+        "abbreviation": "LAD",
+        "displayName": "Los Angeles Dodgers",
+        "shortDisplayName": "Dodgers"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908031",
+   "date": "2026-10-12T21:00Z",
+   "name": "Los Angeles Dodgers at Milwaukee Brewers",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908031",
+     "date": "2026-10-12T21:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "shortDetail": "Final"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "NLCS - Game 2"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "8",
+       "homeAway": "home",
+       "winner": true,
+       "score": {
+        "value": 7.0,
+        "displayValue": "7"
+       },
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      },
+      {
+       "id": "19",
+       "homeAway": "away",
+       "winner": false,
+       "score": {
+        "value": 4.0,
+        "displayValue": "4"
+       },
+       "team": {
+        "id": "19",
+        "location": "Los Angeles",
+        "abbreviation": "LAD",
+        "displayName": "Los Angeles Dodgers",
+        "shortDisplayName": "Dodgers"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908032",
+   "date": "2026-10-15T00:00Z",
+   "name": "Milwaukee Brewers at Los Angeles Dodgers",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908032",
+     "date": "2026-10-15T00:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "shortDetail": "Final"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "NLCS - Game 3"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "19",
+       "homeAway": "home",
+       "winner": false,
+       "score": {
+        "value": 2.0,
+        "displayValue": "2"
+       },
+       "team": {
+        "id": "19",
+        "location": "Los Angeles",
+        "abbreviation": "LAD",
+        "displayName": "Los Angeles Dodgers",
+        "shortDisplayName": "Dodgers"
+       }
+      },
+      {
+       "id": "8",
+       "homeAway": "away",
+       "winner": true,
+       "score": {
+        "value": 6.0,
+        "displayValue": "6"
+       },
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908033",
+   "date": "2026-10-16T00:00Z",
+   "name": "Milwaukee Brewers at Los Angeles Dodgers",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908033",
+     "date": "2026-10-16T00:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "shortDetail": "Final"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "NLCS - Game 4"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "19",
+       "homeAway": "home",
+       "winner": false,
+       "score": {
+        "value": 4.0,
+        "displayValue": "4"
+       },
+       "team": {
+        "id": "19",
+        "location": "Los Angeles",
+        "abbreviation": "LAD",
+        "displayName": "Los Angeles Dodgers",
+        "shortDisplayName": "Dodgers"
+       }
+      },
+      {
+       "id": "8",
+       "homeAway": "away",
+       "winner": true,
+       "score": {
+        "value": 6.0,
+        "displayValue": "6"
+       },
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908042",
+   "date": "2026-10-24T00:00Z",
+   "name": "Tampa Bay Rays at Milwaukee Brewers",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908042",
+     "date": "2026-10-24T00:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "shortDetail": "Final"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "World Series - Game 1"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "8",
+       "homeAway": "home",
+       "winner": true,
+       "score": {
+        "value": 3.0,
+        "displayValue": "3"
+       },
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      },
+      {
+       "id": "30",
+       "homeAway": "away",
+       "winner": false,
+       "score": {
+        "value": 2.0,
+        "displayValue": "2"
+       },
+       "team": {
+        "id": "30",
+        "location": "Tampa Bay",
+        "abbreviation": "TB",
+        "displayName": "Tampa Bay Rays",
+        "shortDisplayName": "Rays"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908043",
+   "date": "2026-10-25T00:00Z",
+   "name": "Tampa Bay Rays at Milwaukee Brewers",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908043",
+     "date": "2026-10-25T00:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "shortDetail": "10/24 - 8:00 PM EDT"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "World Series - Game 2"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "8",
+       "homeAway": "home",
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      },
+      {
+       "id": "30",
+       "homeAway": "away",
+       "team": {
+        "id": "30",
+        "location": "Tampa Bay",
+        "abbreviation": "TB",
+        "displayName": "Tampa Bay Rays",
+        "shortDisplayName": "Rays"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908044",
+   "date": "2026-10-27T00:00Z",
+   "name": "Milwaukee Brewers at Tampa Bay Rays",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908044",
+     "date": "2026-10-27T00:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "shortDetail": "10/26 - 8:00 PM EDT"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "World Series - Game 3"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "30",
+       "homeAway": "home",
+       "team": {
+        "id": "30",
+        "location": "Tampa Bay",
+        "abbreviation": "TB",
+        "displayName": "Tampa Bay Rays",
+        "shortDisplayName": "Rays"
+       }
+      },
+      {
+       "id": "8",
+       "homeAway": "away",
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908045",
+   "date": "2026-10-28T00:00Z",
+   "name": "Milwaukee Brewers at Tampa Bay Rays",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908045",
+     "date": "2026-10-28T00:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "shortDetail": "10/27 - 8:00 PM EDT"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "World Series - Game 4"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "30",
+       "homeAway": "home",
+       "team": {
+        "id": "30",
+        "location": "Tampa Bay",
+        "abbreviation": "TB",
+        "displayName": "Tampa Bay Rays",
+        "shortDisplayName": "Rays"
+       }
+      },
+      {
+       "id": "8",
+       "homeAway": "away",
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908046",
+   "date": "2026-10-29T00:00Z",
+   "name": "Milwaukee Brewers at Tampa Bay Rays",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908046",
+     "date": "2026-10-29T00:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "shortDetail": "10/28 - 8:00 PM EDT"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "World Series - Game 5 If Necessary"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "30",
+       "homeAway": "home",
+       "team": {
+        "id": "30",
+        "location": "Tampa Bay",
+        "abbreviation": "TB",
+        "displayName": "Tampa Bay Rays",
+        "shortDisplayName": "Rays"
+       }
+      },
+      {
+       "id": "8",
+       "homeAway": "away",
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908047",
+   "date": "2026-10-31T00:00Z",
+   "name": "Tampa Bay Rays at Milwaukee Brewers",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908047",
+     "date": "2026-10-31T00:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "shortDetail": "10/30 - 8:00 PM EDT"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "World Series - Game 6 If Necessary"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "8",
+       "homeAway": "home",
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      },
+      {
+       "id": "30",
+       "homeAway": "away",
+       "team": {
+        "id": "30",
+        "location": "Tampa Bay",
+        "abbreviation": "TB",
+        "displayName": "Tampa Bay Rays",
+        "shortDisplayName": "Rays"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "401908048",
+   "date": "2026-11-01T00:00Z",
+   "name": "Tampa Bay Rays at Milwaukee Brewers",
+   "season": {
+    "year": 2026,
+    "displayName": "2026"
+   },
+   "seasonType": {
+    "id": "3",
+    "type": 3,
+    "name": "Postseason",
+    "abbreviation": "post"
+   },
+   "competitions": [
+    {
+     "id": "401908048",
+     "date": "2026-11-01T00:00Z",
+     "status": {
+      "type": {
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "shortDetail": "10/31 - 8:00 PM EDT"
+      }
+     },
+     "notes": [
+      {
+       "type": "event",
+       "headline": "World Series - Game 7 If Necessary"
+      }
+     ],
+     "competitors": [
+      {
+       "id": "8",
+       "homeAway": "home",
+       "team": {
+        "id": "8",
+        "location": "Milwaukee",
+        "abbreviation": "MIL",
+        "displayName": "Milwaukee Brewers",
+        "shortDisplayName": "Brewers"
+       }
+      },
+      {
+       "id": "30",
+       "homeAway": "away",
+       "team": {
+        "id": "30",
+        "location": "Tampa Bay",
+        "abbreviation": "TB",
+        "displayName": "Tampa Bay Rays",
+        "shortDisplayName": "Rays"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

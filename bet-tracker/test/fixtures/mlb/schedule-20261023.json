@@ -1,0 +1,53 @@
+{
+ "dates": [
+  {
+   "date": "2026-10-23",
+   "totalItems": 1,
+   "totalEvents": 0,
+   "totalGames": 1,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 849805,
+     "gameType": "W",
+     "gameDate": "2026-10-24T00:00:00Z",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays",
+        "abbreviation": "TB",
+        "teamName": "Rays"
+       },
+       "score": 2,
+       "isWinner": false
+      },
+      "home": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers",
+        "abbreviation": "MIL",
+        "teamName": "Brewers"
+       },
+       "score": 3,
+       "isWinner": true
+      }
+     },
+     "scheduledInnings": 9,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 1,
+     "seriesDescription": "World Series"
+    }
+   ],
+   "events": []
+  }
+ ]
+}

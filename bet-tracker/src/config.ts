@@ -9,6 +9,11 @@ export const appConfig = {
   publicOrigin: config.get<string>('publicOrigin'),
   databasePath: config.get<string>('databasePath'),
   timezone: config.get<string>('timezone'),
+  viewingLocation: config.get<{
+    zipCode: string;
+    name: string;
+    dmaCode: string;
+  }>('viewingLocation'),
   auth: {
     appToken: config.get<string>('auth.appToken'),
     extraRedirectUris: config.get<string[]>('auth.extraRedirectUris'),
@@ -44,6 +49,7 @@ export const appConfig = {
       ncaaf: config.get<FootballSigmas>('models.football.ncaaf'),
     },
     wnba: config.get<FootballSigmas>('models.wnba'),
+    nba: config.get<FootballSigmas>('models.nba'),
   },
   props: config.get<PropParams>('props'),
 };

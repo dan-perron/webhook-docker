@@ -26,6 +26,7 @@ const tracker = new Tracker(db, providers, {
       ncaaf: { marginSigma: 15, totalSigma: 14, sigmaRange: [11, 20] },
     },
     wnba: { marginSigma: 11.5, totalSigma: 15, sigmaRange: [8, 16] },
+    nba: { marginSigma: 13, totalSigma: 18, sigmaRange: [9, 17] },
   },
   polling: { liveSeconds: 30, scheduledSeconds: 600 },
 });

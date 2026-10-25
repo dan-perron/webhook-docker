@@ -29,7 +29,11 @@ import {
   type ScoresPage,
   type TeamsPage,
 } from './scores.js';
-import { validTimeZone } from './daily.js';
+import { settledByDay, validTimeZone } from './daily.js';
+import { ORIGIN_FILTERS, type OriginFilter } from '../domain/types.js';
+import { betViews } from '../tracker/views.js';
+import { calibrationReport } from '../tracker/calibration.js';
+import { SettingsContent, SettingsHeader } from './settings.js';
 import {
   hasSession,
   startSession,
@@ -54,6 +58,10 @@ const isSport = (x: unknown): x is Sport =>
 
 const tabOf = (q: string | undefined): Tab =>
   q === 'settled' ? 'settled' : 'open';
+const originOf = (q: string | undefined): OriginFilter | undefined =>
+  (ORIGIN_FILTERS as readonly string[]).includes(q ?? '')
+    ? (q as OriginFilter)
+    : undefined;
 
 export function webRoutes(s: Services, cfg: WebConfig): Hono {
   const r = new Hono();
@@ -99,10 +107,23 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
       s,
       tabOf(c.req.query('tab')),
       viewerZone(c),
-      cfg.now?.()
+      cfg.now?.(),
+      originOf(c.req.query('origin'))
     );
     return c.html(<Layout d={d} />);
   });
+
+  r.get('/settings', requireSession, (c) =>
+    c.html(
+      <Shell
+        title="Settings"
+        timeZone={viewerZone(c)}
+        summary={<SettingsHeader />}
+        content={<SettingsContent report={calibrationReport(s.db)} />}
+        wide
+      />
+    )
+  );
 
   /**
    * Re-rendered #summary/#content over SSE on every tracker change (and
@@ -119,9 +140,23 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
         void send().catch(() => undefined);
       };
       s.tracker.on('change', onChange);
+      let renderedDay = localDate(
+        (cfg.now?.() ?? new Date()).toISOString(),
+        viewerZone(c)
+      );
       const heartbeat = setInterval(
         () => {
-          if (!closed) void stream.write(': ping\n\n').catch(() => undefined);
+          if (closed) return;
+          const day = localDate(
+            (cfg.now?.() ?? new Date()).toISOString(),
+            viewerZone(c)
+          );
+          if (day !== renderedDay) {
+            renderedDay = day;
+            void send().catch(() => undefined);
+          } else {
+            void stream.write(': ping\n\n').catch(() => undefined);
+          }
         },
         (cfg.heartbeatSeconds ?? 20) * 1000
       );
@@ -150,19 +185,32 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
 
   r.get('/events', requireSession, (c) => {
     const tab = tabOf(c.req.query('tab'));
+    const origin = originOf(c.req.query('origin'));
     return live(c, () => {
-      const d = loadDashboard(s, tab, viewerZone(c), cfg.now?.());
+      const d = loadDashboard(s, tab, viewerZone(c), cfg.now?.(), origin);
       return html(<Summary d={d} />, <Content d={d} />);
     });
   });
 
   // --- Scores ----------------------------------------------------------------
 
-  const scoresPage = (c: Context): ScoresPage => ({
-    board: s.scores.board(),
-    timeZone: viewerZone(c),
-    now: cfg.now?.() ?? new Date(),
-  });
+  const scoresPage = (c: Context): ScoresPage => {
+    const timeZone = viewerZone(c);
+    const now = cfg.now?.() ?? new Date();
+    const bets = betViews(s.db);
+    return {
+      board: s.scores.board(timeZone),
+      bets,
+      today:
+        settledByDay(
+          bets.filter((b) => b.status !== 'open'),
+          timeZone,
+          now
+        ).find((g) => g.label === 'Today') ?? null,
+      timeZone,
+      now,
+    };
+  };
   const today = (c: Context) =>
     localDate((cfg.now?.() ?? new Date()).toISOString(), viewerZone(c));
   /** Back to a Scores page named by the form (never off-site). */
@@ -177,7 +225,7 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
     const p = scoresPage(c);
     return c.html(
       <Shell
-        title="Scores"
+        title="Today"
         events={url('/scores/events')}
         timeZone={p.timeZone}
         summary={<ScoresSummary p={p} />}

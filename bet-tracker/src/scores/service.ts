@@ -1,6 +1,7 @@
 import { and, desc, eq, gte, inArray } from 'drizzle-orm';
 import type { Db } from '../db/client.js';
 import {
+  bets,
   events,
   follows,
   legs,
@@ -30,6 +31,7 @@ import {
 } from '../tracker/tracker.js';
 import { liveView, type LiveView } from '../tracker/views.js';
 import { addDays, localDate } from '../util/date.js';
+import { eventFinalAt } from '../domain/settleTime.js';
 import {
   detectAlerts,
   inQuietHours,
@@ -49,7 +51,7 @@ export interface ScoreOptions {
   followDays: number;
   /** Days ahead searched to resolve a team name (bye weeks). Default 21. */
   resolveDays?: number;
-  /** Hours a finished game stays on the board. */
+  /** Hours of recent alerts retained; completed games use the local day. */
   finalHours: number;
   notifier: Notifier;
   quietHours: string;
@@ -72,8 +74,10 @@ export interface GameCard {
   alerts: boolean;
   /** A followed team's game (unstarring hides it rather than deleting). */
   followed: boolean;
-  /** Has an open bet leg. */
+  /** Has an open ticket with an open leg on this game. */
   bet: boolean;
+  /** Provider end time, or the same finish-time fallback used for settlement. */
+  completedAt: string | null;
 }
 
 export interface FollowView {
@@ -579,7 +583,14 @@ export class ScoreService {
       this.db
         .selectDistinct({ id: legs.eventId })
         .from(legs)
-        .where(and(eq(legs.status, 'open'), inArray(legs.eventId, ids)))
+        .innerJoin(bets, eq(bets.id, legs.betId))
+        .where(
+          and(
+            eq(legs.status, 'open'),
+            eq(bets.status, 'open'),
+            inArray(legs.eventId, ids)
+          )
+        )
         .all()
         .map((r) => r.id)
     );
@@ -601,11 +612,15 @@ export class ScoreService {
       alerts: watched && w.alerts,
       followed: w?.source === 'follow',
       bet,
+      completedAt:
+        live.status === 'final'
+          ? eventFinalAt(e.sport, live.startTime, state, this.now())
+          : null,
     };
   }
 
-  /** Watched games and games with an open bet: live, upcoming, recent finals. */
-  board(): ScoreBoard {
+  /** Active bet games plus watched games, including watched finals today. */
+  board(timeZone = this.opts.timeZone): ScoreBoard {
     const now = this.now();
     const watchedIds = this.db
       .select({ id: watches.eventId })
@@ -616,7 +631,8 @@ export class ScoreService {
     const betIds = this.db
       .selectDistinct({ id: legs.eventId })
       .from(legs)
-      .where(eq(legs.status, 'open'))
+      .innerJoin(bets, eq(bets.id, legs.betId))
+      .where(and(eq(legs.status, 'open'), eq(bets.status, 'open')))
       .all()
       .map((r) => r.id!)
       .filter(Boolean);
@@ -627,7 +643,13 @@ export class ScoreService {
     );
     const byStart = (a: GameCard, b: GameCard) =>
       a.live.startTime.localeCompare(b.live.startTime);
-    const finals = all.filter((c) => c.live.status === 'final');
+    const today = localDate(iso(now), timeZone);
+    const finals = all.filter(
+      (c) =>
+        c.watched &&
+        c.completedAt &&
+        localDate(c.completedAt, timeZone) === today
+    );
     const alerts = this.db
       .select()
       .from(scoreAlerts)
@@ -640,9 +662,9 @@ export class ScoreService {
       upcoming: all
         .filter((c) => c.live.status === 'pre' && c.live.startTime <= horizon)
         .sort(byStart),
-      final: finals
-        .filter((c) => (c.live.fetchedAt || c.live.startTime) >= finalSince)
-        .sort((a, b) => byStart(b, a)),
+      final: finals.sort((a, b) =>
+        b.completedAt!.localeCompare(a.completedAt!)
+      ),
       follows: this.listFollows(),
       alerts: alerts.map((a) => ({
         eventId: a.eventId,

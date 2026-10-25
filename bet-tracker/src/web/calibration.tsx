@@ -3,7 +3,7 @@ import type {
   SportCalibration,
 } from '../tracker/calibration.js';
 
-// Settled-tab calibration: a Brier table (per sport and all) and one
+// Settings-page calibration: a Brier table (per sport and all) and one
 // reliability chart per sport (predicted vs observed win rate, 10% bins, 95%
 // Wilson whiskers, the diagonal = perfectly calibrated). Hover/tap a point
 // for its numbers (public/app.js); each chart has a table view.
@@ -15,6 +15,7 @@ const SPORT_LABEL: Record<string, string> = {
   mlb: 'MLB',
   nhl: 'NHL',
   wnba: 'WNBA',
+  nba: 'NBA',
   soccer: 'Soccer',
   mma: 'UFC',
 };
@@ -156,56 +157,69 @@ export function Calibration({ report }: { report: SportCalibration[] }) {
     );
   }
   const sports = report.filter((c) => c.sport !== 'all');
+  const overall = report.find((c) => c.sport === 'all');
   return (
     <section class="calibration">
       <h2>Calibration</h2>
-      <div class="card">
-        <table class="brier">
-          <thead>
-            <tr>
-              <th>Sport</th>
-              <th>Legs</th>
-              <th>Brier</th>
-              <th>Pregame</th>
-              <th>Skill</th>
-            </tr>
-          </thead>
-          <tbody>
-            {report.map((c) => (
-              <tr class={c.sport === 'all' ? 'all' : ''}>
-                <td>{label(c.sport)}</td>
-                <td>{c.legs}</td>
-                <td>{c.brier.toFixed(3)}</td>
-                <td>
-                  {c.brierPregame == null ? '–' : c.brierPregame.toFixed(3)}
-                </td>
-                <td>
-                  {c.skill == null
-                    ? '–'
-                    : `${c.skill >= 0 ? '+' : '−'}${Math.abs(Math.round(c.skill * 100))}%`}
-                </td>
+      {overall ? (
+        <div class="card calibration-overview">
+          <span class="k">Overall Brier score</span>
+          <strong>{overall.brier.toFixed(3)}</strong>
+          <span class="sub">{overall.legs} settled legs · lower is better</span>
+        </div>
+      ) : null}
+      <details class="analysis" id="calibration-metrics">
+        <summary id="calibration-metrics-toggle">
+          Sport breakdown and baseline comparison
+        </summary>
+        <div class="card">
+          <table class="brier">
+            <thead>
+              <tr>
+                <th>Sport</th>
+                <th>Legs</th>
+                <th>Brier</th>
+                <th>Pregame</th>
+                <th>Skill</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <p class="foot">
-          Brier = mean squared error of P(win): 0 is perfect, 0.250 is a coin
-          flip. Skill = improvement over always predicting the base rate. Each
-          settled leg counts once across its snapshots.
+            </thead>
+            <tbody>
+              {report.map((c) => (
+                <tr class={c.sport === 'all' ? 'all' : ''}>
+                  <td>{label(c.sport)}</td>
+                  <td>{c.legs}</td>
+                  <td>{c.brier.toFixed(3)}</td>
+                  <td>
+                    {c.brierPregame == null ? '–' : c.brierPregame.toFixed(3)}
+                  </td>
+                  <td>
+                    {c.skill == null
+                      ? '–'
+                      : `${c.skill >= 0 ? '+' : '−'}${Math.abs(Math.round(c.skill * 100))}%`}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="foot">
+            Brier = mean squared error of P(win): 0 is perfect, 0.250 is a coin
+            flip. Skill = improvement over always predicting the base rate. Each
+            settled leg counts once across its snapshots.
+          </p>
+        </div>
+      </details>
+      {sports.some((c) => c.legs < FEW_LEGS) ? (
+        <p class="note">
+          Sports with fewer than {FEW_LEGS} settled legs have too little data to
+          judge yet.
         </p>
-      </div>
+      ) : null}
       <div class="multiples">
         {sports.map((c) => (
           <div class="card chart">
             <div class="label">
               {label(c.sport)} <span class="muted">· {c.legs} legs</span>
             </div>
-            {c.legs < FEW_LEGS ? (
-              <div class="note">
-                Too few settled legs to judge yet; dot size shows how many legs
-                each point represents.
-              </div>
-            ) : null}
             <ReliabilityChart c={c} />
             <BinTable c={c} />
           </div>

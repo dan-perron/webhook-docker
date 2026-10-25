@@ -1,0 +1,2734 @@
+[
+  {
+    "date": "2026-10-16T00:15:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Denver Broncos"
+    },
+    "awayTeam": {
+      "fullName": "Seattle Seahawks"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "Prime Video"
+      ],
+      "territory": "NATIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "amazon_prime": [
+          {
+            "PRIME VIDEO - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "490",
+        "491",
+        "493",
+        "495",
+        "498",
+        "500",
+        "501",
+        "502",
+        "503",
+        "504",
+        "505",
+        "506",
+        "507",
+        "508",
+        "509",
+        "510",
+        "511",
+        "512",
+        "513",
+        "514",
+        "515",
+        "516",
+        "517",
+        "518",
+        "519",
+        "520",
+        "521",
+        "522",
+        "523",
+        "524",
+        "525",
+        "526",
+        "527",
+        "528",
+        "529",
+        "530",
+        "531",
+        "532",
+        "533",
+        "534",
+        "535",
+        "536",
+        "537",
+        "538",
+        "539",
+        "540",
+        "541",
+        "542",
+        "543",
+        "544",
+        "545",
+        "546",
+        "547",
+        "548",
+        "549",
+        "550",
+        "551",
+        "552",
+        "553",
+        "554",
+        "555",
+        "556",
+        "557",
+        "558",
+        "559",
+        "560",
+        "561",
+        "563",
+        "564",
+        "565",
+        "566",
+        "567",
+        "569",
+        "570",
+        "571",
+        "573",
+        "574",
+        "575",
+        "576",
+        "577",
+        "581",
+        "582",
+        "583",
+        "584",
+        "588",
+        "592",
+        "596",
+        "597",
+        "598",
+        "600",
+        "602",
+        "603",
+        "604",
+        "605",
+        "606",
+        "609",
+        "610",
+        "611",
+        "612",
+        "613",
+        "616",
+        "617",
+        "618",
+        "619",
+        "622",
+        "623",
+        "624",
+        "625",
+        "626",
+        "627",
+        "628",
+        "630",
+        "631",
+        "632",
+        "633",
+        "634",
+        "635",
+        "636",
+        "637",
+        "638",
+        "639",
+        "640",
+        "641",
+        "642",
+        "643",
+        "644",
+        "647",
+        "648",
+        "649",
+        "650",
+        "651",
+        "652",
+        "656",
+        "657",
+        "658",
+        "659",
+        "661",
+        "662",
+        "669",
+        "670",
+        "671",
+        "673",
+        "675",
+        "676",
+        "678",
+        "679",
+        "682",
+        "686",
+        "687",
+        "691",
+        "692",
+        "693",
+        "698",
+        "702",
+        "705",
+        "709",
+        "710",
+        "711",
+        "716",
+        "717",
+        "718",
+        "722",
+        "724",
+        "725",
+        "734",
+        "736",
+        "737",
+        "740",
+        "743",
+        "744",
+        "745",
+        "746",
+        "747",
+        "749",
+        "751",
+        "752",
+        "753",
+        "754",
+        "755",
+        "756",
+        "757",
+        "758",
+        "759",
+        "760",
+        "762",
+        "764",
+        "765",
+        "766",
+        "767",
+        "770",
+        "771",
+        "773",
+        "789",
+        "790",
+        "798",
+        "800",
+        "801",
+        "802",
+        "803",
+        "804",
+        "807",
+        "810",
+        "811",
+        "813",
+        "819",
+        "820",
+        "821",
+        "825",
+        "828",
+        "839",
+        "855",
+        "862",
+        "866",
+        "868",
+        "881"
+      ],
+      "gameTerritory": "NATIONAL",
+      "networks": [
+        "Prime Video"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T13:30:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Jacksonville Jaguars"
+    },
+    "awayTeam": {
+      "fullName": "Houston Texans"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "NFL NETWORK"
+      ],
+      "territory": "NATIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "espn_unlimited": [
+          {
+            "ESPN UNLIMITED - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "490",
+        "491",
+        "493",
+        "495",
+        "498",
+        "500",
+        "501",
+        "502",
+        "503",
+        "504",
+        "505",
+        "506",
+        "507",
+        "508",
+        "509",
+        "510",
+        "511",
+        "512",
+        "513",
+        "514",
+        "515",
+        "516",
+        "517",
+        "518",
+        "519",
+        "520",
+        "521",
+        "522",
+        "523",
+        "524",
+        "525",
+        "526",
+        "527",
+        "528",
+        "529",
+        "530",
+        "531",
+        "532",
+        "533",
+        "534",
+        "535",
+        "536",
+        "537",
+        "538",
+        "539",
+        "540",
+        "541",
+        "542",
+        "543",
+        "544",
+        "545",
+        "546",
+        "547",
+        "548",
+        "549",
+        "550",
+        "551",
+        "552",
+        "553",
+        "554",
+        "555",
+        "556",
+        "557",
+        "558",
+        "559",
+        "560",
+        "561",
+        "563",
+        "564",
+        "565",
+        "566",
+        "567",
+        "569",
+        "570",
+        "571",
+        "573",
+        "574",
+        "575",
+        "576",
+        "577",
+        "581",
+        "582",
+        "583",
+        "584",
+        "588",
+        "592",
+        "596",
+        "597",
+        "598",
+        "600",
+        "602",
+        "603",
+        "604",
+        "605",
+        "606",
+        "609",
+        "610",
+        "611",
+        "612",
+        "613",
+        "616",
+        "617",
+        "618",
+        "619",
+        "622",
+        "623",
+        "624",
+        "625",
+        "626",
+        "627",
+        "628",
+        "630",
+        "631",
+        "632",
+        "633",
+        "634",
+        "635",
+        "636",
+        "637",
+        "638",
+        "639",
+        "640",
+        "641",
+        "642",
+        "643",
+        "644",
+        "647",
+        "648",
+        "649",
+        "650",
+        "651",
+        "652",
+        "656",
+        "657",
+        "658",
+        "659",
+        "661",
+        "662",
+        "669",
+        "670",
+        "671",
+        "673",
+        "675",
+        "676",
+        "678",
+        "679",
+        "682",
+        "686",
+        "687",
+        "691",
+        "692",
+        "693",
+        "698",
+        "702",
+        "705",
+        "709",
+        "710",
+        "711",
+        "716",
+        "717",
+        "718",
+        "722",
+        "724",
+        "725",
+        "734",
+        "736",
+        "737",
+        "740",
+        "743",
+        "744",
+        "745",
+        "746",
+        "747",
+        "749",
+        "751",
+        "752",
+        "753",
+        "754",
+        "755",
+        "756",
+        "757",
+        "758",
+        "759",
+        "760",
+        "762",
+        "764",
+        "765",
+        "766",
+        "767",
+        "770",
+        "771",
+        "773",
+        "789",
+        "790",
+        "798",
+        "800",
+        "801",
+        "802",
+        "803",
+        "804",
+        "807",
+        "810",
+        "811",
+        "813",
+        "819",
+        "820",
+        "821",
+        "825",
+        "828",
+        "839",
+        "855",
+        "862",
+        "866",
+        "868",
+        "881"
+      ],
+      "gameTerritory": "NATIONAL",
+      "networks": [
+        "NFL NETWORK"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T17:00:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Atlanta Falcons"
+    },
+    "awayTeam": {
+      "fullName": "Chicago Bears"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "FOX"
+      ],
+      "territory": "REGIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "fox_one": [
+          {
+            "FOX_ONE - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "sunday_ticket": [
+          {
+            "SUNDAY_TICKET - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "495",
+        "503",
+        "505",
+        "507",
+        "513",
+        "517",
+        "519",
+        "520",
+        "522",
+        "524",
+        "525",
+        "530",
+        "534",
+        "539",
+        "540",
+        "546",
+        "550",
+        "551",
+        "553",
+        "561",
+        "563",
+        "567",
+        "570",
+        "571",
+        "583",
+        "588",
+        "592",
+        "602",
+        "603",
+        "604",
+        "605",
+        "606",
+        "609",
+        "610",
+        "611",
+        "613",
+        "616",
+        "617",
+        "619",
+        "624",
+        "630",
+        "631",
+        "632",
+        "637",
+        "638",
+        "648",
+        "652",
+        "656",
+        "658",
+        "669",
+        "675",
+        "676",
+        "678",
+        "679",
+        "682",
+        "687",
+        "691",
+        "698",
+        "702",
+        "705",
+        "717",
+        "722",
+        "724",
+        "725",
+        "737",
+        "740",
+        "743",
+        "745",
+        "747",
+        "751",
+        "752",
+        "754",
+        "755",
+        "756",
+        "757",
+        "758",
+        "759",
+        "762",
+        "764",
+        "766",
+        "767",
+        "770",
+        "773",
+        "790",
+        "801",
+        "807",
+        "811",
+        "813",
+        "820",
+        "828",
+        "839",
+        "862"
+      ],
+      "gameTerritory": "REGIONAL",
+      "networks": [
+        "FOX"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T17:00:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Cleveland Browns"
+    },
+    "awayTeam": {
+      "fullName": "Baltimore Ravens"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "FOX"
+      ],
+      "territory": "REGIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "fox_one": [
+          {
+            "FOX_ONE - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "sunday_ticket": [
+          {
+            "SUNDAY_TICKET - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "510",
+        "511",
+        "512",
+        "514",
+        "515",
+        "516",
+        "518",
+        "529",
+        "531",
+        "535",
+        "536",
+        "538",
+        "541",
+        "542",
+        "544",
+        "545",
+        "547",
+        "554",
+        "556",
+        "558",
+        "559",
+        "560",
+        "564",
+        "566",
+        "569",
+        "573",
+        "574",
+        "576",
+        "584",
+        "596",
+        "597",
+        "598"
+      ],
+      "gameTerritory": "REGIONAL",
+      "networks": [
+        "FOX"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T17:00:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Indianapolis Colts"
+    },
+    "awayTeam": {
+      "fullName": "Tennessee Titans"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "FOX"
+      ],
+      "territory": "REGIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "fox_one": [
+          {
+            "FOX_ONE - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "sunday_ticket": [
+          {
+            "SUNDAY_TICKET - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "509",
+        "527",
+        "557",
+        "575",
+        "581",
+        "582",
+        "639",
+        "649",
+        "659",
+        "736"
+      ],
+      "gameTerritory": "REGIONAL",
+      "networks": [
+        "FOX"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T17:00:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "New England Patriots"
+    },
+    "awayTeam": {
+      "fullName": "New York Jets"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "CBS"
+      ],
+      "territory": "REGIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "paramount_plus": [
+          {
+            "PARAMOUNT PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "sunday_ticket": [
+          {
+            "SUNDAY_TICKET - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "521"
+      ],
+      "gameTerritory": "REGIONAL",
+      "networks": [
+        "CBS"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T17:00:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "New York Giants"
+    },
+    "awayTeam": {
+      "fullName": "New Orleans Saints"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "FOX"
+      ],
+      "territory": "REGIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "fox_one": [
+          {
+            "FOX_ONE - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "sunday_ticket": [
+          {
+            "SUNDAY_TICKET - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "490",
+        "491",
+        "500",
+        "501",
+        "502",
+        "523",
+        "526",
+        "528",
+        "532",
+        "533",
+        "537",
+        "543",
+        "548",
+        "549",
+        "552",
+        "555",
+        "565",
+        "577",
+        "600",
+        "612",
+        "618",
+        "622",
+        "623",
+        "625",
+        "626",
+        "627",
+        "628",
+        "633",
+        "634",
+        "635",
+        "636",
+        "640",
+        "641",
+        "642",
+        "643",
+        "644",
+        "647",
+        "650",
+        "651",
+        "657",
+        "661",
+        "662",
+        "670",
+        "671",
+        "673",
+        "686",
+        "692",
+        "693",
+        "709",
+        "710",
+        "711",
+        "716",
+        "718",
+        "734",
+        "746",
+        "749",
+        "765"
+      ],
+      "gameTerritory": "REGIONAL",
+      "networks": [
+        "FOX"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T17:00:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Philadelphia Eagles"
+    },
+    "awayTeam": {
+      "fullName": "Carolina Panthers"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "CBS"
+      ],
+      "territory": "REGIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "paramount_plus": [
+          {
+            "PARAMOUNT PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "sunday_ticket": [
+          {
+            "SUNDAY_TICKET - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "651",
+        "752",
+        "762",
+        "807",
+        "819"
+      ],
+      "gameTerritory": "REGIONAL",
+      "networks": [
+        "CBS"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T17:00:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Tampa Bay Buccaneers"
+    },
+    "awayTeam": {
+      "fullName": "Pittsburgh Steelers"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "CBS"
+      ],
+      "territory": "REGIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "paramount_plus": [
+          {
+            "PARAMOUNT PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "sunday_ticket": [
+          {
+            "SUNDAY_TICKET - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "554",
+        "559",
+        "604",
+        "624",
+        "810",
+        "839"
+      ],
+      "gameTerritory": "REGIONAL",
+      "networks": [
+        "CBS"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T20:05:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Los Angeles Rams"
+    },
+    "awayTeam": {
+      "fullName": "Arizona Cardinals"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "FOX"
+      ],
+      "territory": "REGIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "fox_one": [
+          {
+            "FOX_ONE - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "sunday_ticket": [
+          {
+            "SUNDAY_TICKET - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "504",
+        "506",
+        "508",
+        "521",
+        "744",
+        "753",
+        "760",
+        "771",
+        "789",
+        "800",
+        "802",
+        "803",
+        "804",
+        "810",
+        "819",
+        "821",
+        "825",
+        "855",
+        "866",
+        "868",
+        "881"
+      ],
+      "gameTerritory": "REGIONAL",
+      "networks": [
+        "FOX"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T20:25:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Kansas City Chiefs"
+    },
+    "awayTeam": {
+      "fullName": "Los Angeles Chargers"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "CBS"
+      ],
+      "territory": "REGIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "paramount_plus": [
+          {
+            "PARAMOUNT PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "sunday_ticket": [
+          {
+            "SUNDAY_TICKET - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "521",
+        "604",
+        "624",
+        "651",
+        "752",
+        "762",
+        "810",
+        "819"
+      ],
+      "gameTerritory": "REGIONAL",
+      "networks": [
+        "CBS"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-18T20:25:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Las Vegas Raiders"
+    },
+    "awayTeam": {
+      "fullName": "Buffalo Bills"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "CBS"
+      ],
+      "territory": "REGIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "paramount_plus": [
+          {
+            "PARAMOUNT PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "sunday_ticket": [
+          {
+            "SUNDAY_TICKET - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "554",
+        "559",
+        "807",
+        "839"
+      ],
+      "gameTerritory": "REGIONAL",
+      "networks": [
+        "CBS"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-19T00:20:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "Green Bay Packers"
+    },
+    "awayTeam": {
+      "fullName": "Dallas Cowboys"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "NBC",
+        "UNIVERSO"
+      ],
+      "territory": "NATIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "peacock": [
+          {
+            "PEACOCK - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "490",
+        "491",
+        "493",
+        "495",
+        "498",
+        "500",
+        "501",
+        "502",
+        "503",
+        "504",
+        "505",
+        "506",
+        "507",
+        "508",
+        "509",
+        "510",
+        "511",
+        "512",
+        "513",
+        "514",
+        "515",
+        "516",
+        "517",
+        "518",
+        "519",
+        "520",
+        "521",
+        "522",
+        "523",
+        "524",
+        "525",
+        "526",
+        "527",
+        "528",
+        "529",
+        "530",
+        "531",
+        "532",
+        "533",
+        "534",
+        "535",
+        "536",
+        "537",
+        "538",
+        "539",
+        "540",
+        "541",
+        "542",
+        "543",
+        "544",
+        "545",
+        "546",
+        "547",
+        "548",
+        "549",
+        "550",
+        "551",
+        "552",
+        "553",
+        "554",
+        "555",
+        "556",
+        "557",
+        "558",
+        "559",
+        "560",
+        "561",
+        "563",
+        "564",
+        "565",
+        "566",
+        "567",
+        "569",
+        "570",
+        "571",
+        "573",
+        "574",
+        "575",
+        "576",
+        "577",
+        "581",
+        "582",
+        "583",
+        "584",
+        "588",
+        "592",
+        "596",
+        "597",
+        "598",
+        "600",
+        "602",
+        "603",
+        "604",
+        "605",
+        "606",
+        "609",
+        "610",
+        "611",
+        "612",
+        "613",
+        "616",
+        "617",
+        "618",
+        "619",
+        "622",
+        "623",
+        "624",
+        "625",
+        "626",
+        "627",
+        "628",
+        "630",
+        "631",
+        "632",
+        "633",
+        "634",
+        "635",
+        "636",
+        "637",
+        "638",
+        "639",
+        "640",
+        "641",
+        "642",
+        "643",
+        "644",
+        "647",
+        "648",
+        "649",
+        "650",
+        "651",
+        "652",
+        "656",
+        "657",
+        "658",
+        "659",
+        "661",
+        "662",
+        "669",
+        "670",
+        "671",
+        "673",
+        "675",
+        "676",
+        "678",
+        "679",
+        "682",
+        "686",
+        "687",
+        "691",
+        "692",
+        "693",
+        "698",
+        "702",
+        "705",
+        "709",
+        "710",
+        "711",
+        "716",
+        "717",
+        "718",
+        "722",
+        "724",
+        "725",
+        "734",
+        "736",
+        "737",
+        "740",
+        "743",
+        "744",
+        "745",
+        "746",
+        "747",
+        "749",
+        "751",
+        "752",
+        "753",
+        "754",
+        "755",
+        "756",
+        "757",
+        "758",
+        "759",
+        "760",
+        "762",
+        "764",
+        "765",
+        "766",
+        "767",
+        "770",
+        "771",
+        "773",
+        "789",
+        "790",
+        "798",
+        "800",
+        "801",
+        "802",
+        "803",
+        "804",
+        "807",
+        "810",
+        "811",
+        "813",
+        "819",
+        "820",
+        "821",
+        "825",
+        "828",
+        "839",
+        "855",
+        "862",
+        "866",
+        "868",
+        "881"
+      ],
+      "gameTerritory": "NATIONAL",
+      "networks": [
+        "NBC",
+        "UNIVERSO"
+      ]
+    }
+  },
+  {
+    "date": "2026-10-20T00:15:00Z",
+    "weekType": "REG",
+    "seasonType": "REG",
+    "homeTeam": {
+      "fullName": "San Francisco 49ers"
+    },
+    "awayTeam": {
+      "fullName": "Washington Commanders"
+    },
+    "broadcastInfo": {
+      "homeNetworkChannels": [
+        "ESPN",
+        "ABC",
+        "ESPN2",
+        "NFL NETWORK",
+        "ESPN DEPORTES"
+      ],
+      "territory": "NATIONAL"
+    },
+    "coverageMap": {
+      "authorizations": {
+        "nfl_plus": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "nfl_plus_premium": [
+          {
+            "NFL_PLUS - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd_synacor": [
+          {
+            "MVPD_SYNACOR - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "mvpd": [
+          {
+            "MVPD - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ],
+        "espn_unlimited": [
+          {
+            "ESPN UNLIMITED - LIVE GAME": {
+              "requirements": {
+                "countryCode": [
+                  "US"
+                ],
+                "dmaCode": [
+                  [
+                    "{{asset.dma_codes}}"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "dmaCodes": [
+        "490",
+        "491",
+        "493",
+        "495",
+        "498",
+        "500",
+        "501",
+        "502",
+        "503",
+        "504",
+        "505",
+        "506",
+        "507",
+        "508",
+        "509",
+        "510",
+        "511",
+        "512",
+        "513",
+        "514",
+        "515",
+        "516",
+        "517",
+        "518",
+        "519",
+        "520",
+        "521",
+        "522",
+        "523",
+        "524",
+        "525",
+        "526",
+        "527",
+        "528",
+        "529",
+        "530",
+        "531",
+        "532",
+        "533",
+        "534",
+        "535",
+        "536",
+        "537",
+        "538",
+        "539",
+        "540",
+        "541",
+        "542",
+        "543",
+        "544",
+        "545",
+        "546",
+        "547",
+        "548",
+        "549",
+        "550",
+        "551",
+        "552",
+        "553",
+        "554",
+        "555",
+        "556",
+        "557",
+        "558",
+        "559",
+        "560",
+        "561",
+        "563",
+        "564",
+        "565",
+        "566",
+        "567",
+        "569",
+        "570",
+        "571",
+        "573",
+        "574",
+        "575",
+        "576",
+        "577",
+        "581",
+        "582",
+        "583",
+        "584",
+        "588",
+        "592",
+        "596",
+        "597",
+        "598",
+        "600",
+        "602",
+        "603",
+        "604",
+        "605",
+        "606",
+        "609",
+        "610",
+        "611",
+        "612",
+        "613",
+        "616",
+        "617",
+        "618",
+        "619",
+        "622",
+        "623",
+        "624",
+        "625",
+        "626",
+        "627",
+        "628",
+        "630",
+        "631",
+        "632",
+        "633",
+        "634",
+        "635",
+        "636",
+        "637",
+        "638",
+        "639",
+        "640",
+        "641",
+        "642",
+        "643",
+        "644",
+        "647",
+        "648",
+        "649",
+        "650",
+        "651",
+        "652",
+        "656",
+        "657",
+        "658",
+        "659",
+        "661",
+        "662",
+        "669",
+        "670",
+        "671",
+        "673",
+        "675",
+        "676",
+        "678",
+        "679",
+        "682",
+        "686",
+        "687",
+        "691",
+        "692",
+        "693",
+        "698",
+        "702",
+        "705",
+        "709",
+        "710",
+        "711",
+        "716",
+        "717",
+        "718",
+        "722",
+        "724",
+        "725",
+        "734",
+        "736",
+        "737",
+        "740",
+        "743",
+        "744",
+        "745",
+        "746",
+        "747",
+        "749",
+        "751",
+        "752",
+        "753",
+        "754",
+        "755",
+        "756",
+        "757",
+        "758",
+        "759",
+        "760",
+        "762",
+        "764",
+        "765",
+        "766",
+        "767",
+        "770",
+        "771",
+        "773",
+        "789",
+        "790",
+        "798",
+        "800",
+        "801",
+        "802",
+        "803",
+        "804",
+        "807",
+        "810",
+        "811",
+        "813",
+        "819",
+        "820",
+        "821",
+        "825",
+        "828",
+        "839",
+        "855",
+        "862",
+        "866",
+        "868",
+        "881"
+      ],
+      "gameTerritory": "NATIONAL",
+      "networks": [
+        "ESPN",
+        "ABC",
+        "ESPN2",
+        "NFL NETWORK",
+        "ESPN DEPORTES"
+      ]
+    }
+  }
+]

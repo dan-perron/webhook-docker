@@ -1,0 +1,258 @@
+{
+ "header": {
+  "competitions": [
+   {
+    "status": {
+     "type": {
+      "id": "1",
+      "name": "STATUS_SCHEDULED",
+      "state": "pre",
+      "completed": false,
+      "description": "Scheduled",
+      "detail": "Scheduled",
+      "shortDetail": "10/24 - 8:00 PM EDT"
+     },
+     "periodPrefix": "Top"
+    }
+   }
+  ]
+ },
+ "boxscore": {
+  "players": [
+   {
+    "team": {
+     "displayName": "Tampa Bay Rays"
+    },
+    "statistics": [
+     {
+      "type": "batting",
+      "keys": [
+       "hits-atBats",
+       "atBats",
+       "hits",
+       "RBIs",
+       "homeRuns",
+       "stolenBases",
+       "strikeouts",
+       "avg"
+      ],
+      "athletes": [
+       {
+        "athlete": {
+         "id": "33481",
+         "displayName": "Yandy Diaz"
+        },
+        "stats": [
+         "180-614",
+         "614",
+         "180",
+         "85",
+         "22",
+         "3",
+         "98",
+         ".293"
+        ],
+        "active": true,
+        "batOrder": 1,
+        "atBats": []
+       },
+       {
+        "athlete": {
+         "id": "40810",
+         "displayName": "Jonathan Aranda"
+        },
+        "stats": [
+         "159-580",
+         "580",
+         "159",
+         "92",
+         "22",
+         "0",
+         "163",
+         ".274"
+        ],
+        "active": true,
+        "batOrder": 2,
+        "atBats": []
+       },
+       {
+        "athlete": {
+         "id": "4679983",
+         "displayName": "Chandler Simpson"
+        },
+        "stats": [
+         "175-571",
+         "571",
+         "175",
+         "38",
+         "0",
+         "46",
+         "48",
+         ".306"
+        ],
+        "active": true,
+        "batOrder": 3,
+        "atBats": []
+       }
+      ]
+     },
+     {
+      "type": "pitching",
+      "keys": [
+       "fullInnings.partInnings",
+       "hits",
+       "runs",
+       "earnedRuns",
+       "walks",
+       "strikeouts",
+       "homeRuns",
+       "pitches-strikes",
+       "ERA",
+       "pitches"
+      ],
+      "athletes": [
+       {
+        "athlete": {
+         "id": "42584",
+         "displayName": "Drew Rasmussen"
+        },
+        "stats": [
+         "--.--",
+         "--",
+         "--",
+         "--",
+         "--",
+         "--",
+         "--",
+         "-----",
+         "2.67",
+         "--"
+        ],
+        "active": true,
+        "batOrder": 0,
+        "atBats": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "team": {
+     "displayName": "Milwaukee Brewers"
+    },
+    "statistics": [
+     {
+      "type": "batting",
+      "keys": [
+       "hits-atBats",
+       "atBats",
+       "hits",
+       "RBIs",
+       "homeRuns",
+       "stolenBases",
+       "strikeouts",
+       "avg"
+      ],
+      "athletes": [
+       {
+        "athlete": {
+         "id": "4917869",
+         "displayName": "Jackson Chourio"
+        },
+        "stats": [
+         "152-522",
+         "522",
+         "152",
+         "75",
+         "25",
+         "23",
+         "134",
+         ".291"
+        ],
+        "active": true,
+        "batOrder": 1,
+        "atBats": []
+       },
+       {
+        "athlete": {
+         "id": "35013",
+         "displayName": "Jake Bauers"
+        },
+        "stats": [
+         "127-477",
+         "477",
+         "127",
+         "86",
+         "26",
+         "11",
+         "156",
+         ".266"
+        ],
+        "active": true,
+        "batOrder": 2,
+        "atBats": []
+       },
+       {
+        "athlete": {
+         "id": "31283",
+         "displayName": "Christian Yelich"
+        },
+        "stats": [
+         "104-442",
+         "442",
+         "104",
+         "59",
+         "12",
+         "11",
+         "135",
+         ".235"
+        ],
+        "active": true,
+        "batOrder": 3,
+        "atBats": []
+       }
+      ]
+     },
+     {
+      "type": "pitching",
+      "keys": [
+       "fullInnings.partInnings",
+       "hits",
+       "runs",
+       "earnedRuns",
+       "walks",
+       "strikeouts",
+       "homeRuns",
+       "pitches-strikes",
+       "ERA",
+       "pitches"
+      ],
+      "athletes": [
+       {
+        "athlete": {
+         "id": "4917878",
+         "displayName": "Logan Henderson"
+        },
+        "stats": [
+         "--.--",
+         "--",
+         "--",
+         "--",
+         "--",
+         "--",
+         "--",
+         "-----",
+         "2.47",
+         "--"
+        ],
+        "active": true,
+        "batOrder": 0,
+        "atBats": []
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

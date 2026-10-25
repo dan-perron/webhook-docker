@@ -38,7 +38,7 @@ export interface Prior {
   /** 0 except soccer. */
   draw: number;
   awayWin: number;
-  /** Margin sports (NFL, NCAAF, WNBA): fitted mean final margin, home − away. */
+  /** Margin sports (NFL, NCAAF, NBA, WNBA): fitted mean final margin, home − away. */
   expectedMargin: number | null;
   /** Margin sports: fitted σ of the final margin (null = league default). */
   marginSigma?: number | null;
@@ -69,6 +69,7 @@ export type FootballSigmas = MarginSigmas;
 export interface ModelParams {
   football: { nfl: MarginSigmas; ncaaf: MarginSigmas };
   wnba: MarginSigmas;
+  nba: MarginSigmas;
 }
 
 /** League-average totals used when no source gives one. */
@@ -78,6 +79,7 @@ export const LEAGUE_AVG_TOTAL: Record<Sport, number | null> = {
   mlb: 8.8,
   nhl: 6.0,
   wnba: 162,
+  nba: 228,
   soccer: 2.6,
   mma: null,
   ncaab: null,
@@ -86,13 +88,13 @@ export const LEAGUE_AVG_TOTAL: Record<Sport, number | null> = {
   ncaawvb: null,
 };
 
-export const isMarginSport = (s: Sport): s is 'nfl' | 'ncaaf' | 'wnba' =>
-  s === 'nfl' || s === 'ncaaf' || s === 'wnba';
+export type MarginSport = 'nfl' | 'ncaaf' | 'wnba' | 'nba';
 
-export const marginSigmasFor = (
-  sport: 'nfl' | 'ncaaf' | 'wnba',
-  p: ModelParams
-) => (sport === 'wnba' ? p.wnba : p.football[sport]);
+export const isMarginSport = (s: Sport): s is MarginSport =>
+  s === 'nfl' || s === 'ncaaf' || s === 'wnba' || s === 'nba';
+
+export const marginSigmasFor = (sport: MarginSport, p: ModelParams) =>
+  sport === 'wnba' ? p.wnba : sport === 'nba' ? p.nba : p.football[sport];
 
 /** Neutral soccer split (no lean either way). */
 const NEUTRAL_SOCCER_DRAW = 0.27;

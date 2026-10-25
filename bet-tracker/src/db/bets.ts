@@ -1,10 +1,15 @@
-import { and, asc, count, eq, inArray } from 'drizzle-orm';
+import { and, asc, count, eq, inArray, isNull } from 'drizzle-orm';
 import {
   betInputSchema,
   legInputSchema,
   type BetInput,
 } from '../domain/betInput.js';
-import type { BetStatus } from '../domain/types.js';
+import {
+  UNTAGGED,
+  type BetOrigin,
+  type BetStatus,
+  type OriginFilter,
+} from '../domain/types.js';
 import { betStatus } from '../domain/value.js';
 import type { DbOrTx } from './client.js';
 import {
@@ -45,6 +50,7 @@ export function createBet(db: DbOrTx, input: BetInput): BetWithLegs {
           parsed.statedPayout != null ? toCents(parsed.statedPayout) : null,
         tokenInfo: parsed.tokenInfo ?? null,
         notes: parsed.notes ?? null,
+        origin: parsed.origin ?? null,
       })
       .returning()
       .get();
@@ -89,11 +95,25 @@ export function getBet(db: DbOrTx, id: number): BetWithLegs | undefined {
   return { bet, legs: legRows };
 }
 
-export function listBets(db: DbOrTx, status?: BetStatus): BetWithLegs[] {
+/** Bets, optionally by status and origin ("untagged" = no origin). */
+export function listBets(
+  db: DbOrTx,
+  status?: BetStatus,
+  origin?: OriginFilter
+): BetWithLegs[] {
   const betRows = db
     .select()
     .from(bets)
-    .where(status ? eq(bets.status, status) : undefined)
+    .where(
+      and(
+        status ? eq(bets.status, status) : undefined,
+        origin === UNTAGGED
+          ? isNull(bets.origin)
+          : origin
+            ? eq(bets.origin, origin)
+            : undefined
+      )
+    )
     .orderBy(asc(bets.id))
     .all();
   if (betRows.length === 0) return [];
@@ -132,6 +152,8 @@ export interface BetUpdate {
   statedPayout?: number | null;
   tokenInfo?: string | null;
   notes?: string | null;
+  /** recommended | own; null = untagged. */
+  origin?: BetOrigin | null;
   /** Correct when a settled bet settled (any ISO offset; null clears). */
   settledAt?: string | null;
 }
@@ -157,6 +179,7 @@ export function updateBet(
       u.statedPayout == null ? null : toCents(u.statedPayout);
   if (u.tokenInfo !== undefined) set.tokenInfo = u.tokenInfo;
   if (u.notes !== undefined) set.notes = u.notes;
+  if (u.origin !== undefined) set.origin = u.origin;
   if (u.settledAt !== undefined) {
     const bet = db.select().from(bets).where(eq(bets.id, id)).get();
     if (bet?.status === 'open' && u.settledAt)
@@ -348,7 +371,7 @@ export function updateLeg(db: DbOrTx, legId: number, u: LegUpdate): LegRow {
   else if (parsed.selection.kind !== 'team') side = null;
   else if (newTeam !== leg.selectionTeam) {
     if (leg.side) side = leg.side === 'home' ? 'away' : 'home';
-    else if (leg.eventId) matchStatus = 'unmatched';
+    else if (leg.eventId || leg.seriesId) matchStatus = 'unmatched';
   }
   return db.transaction((tx) => {
     const updated = tx

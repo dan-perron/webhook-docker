@@ -177,6 +177,13 @@ describe('pregame model reproduces the de-vigged market within 1 point', () => {
     );
   });
 
+  it('NBA: WSH @ CHI and BKN @ CLE 10/24, recorded lines', () => {
+    for (const home of ['Bulls', 'Cavaliers'])
+      expectWithin(
+        check('nba', espn('nba', 'nba', 'espn/nba-20261024-live.json', home))
+      );
+  });
+
   it('NFL: LAR @ PHI with a juiced +3.5 (key number)', () => {
     expectWithin(
       check('nfl', {

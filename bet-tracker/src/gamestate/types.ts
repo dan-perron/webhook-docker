@@ -55,7 +55,7 @@ export interface HockeySituation {
 }
 
 /**
- * Clock within the period: WNBA quarters (5+ = overtime), men's college
+ * Clock within the period: NBA/WNBA quarters (5+ = overtime), men's college
  * halves (3+ = overtime).
  */
 export interface BasketballSituation {
@@ -81,6 +81,21 @@ export type Situation =
   | HockeySituation
   | BasketballSituation
   | VolleyballSituation;
+
+export interface Broadcast {
+  name: string;
+  scope: 'national' | 'regional' | 'unknown';
+}
+
+export interface WatchInfo {
+  location: string;
+  ota: 'yes' | 'no' | 'unknown';
+  channels: string[];
+  streams: string[];
+  note: string;
+  source: string;
+  checkedAt: string;
+}
 
 export interface GameState {
   eventId: string;
@@ -110,6 +125,9 @@ export interface GameState {
    * reference and calibration comparison only; never fed to our models.
    */
   providerWinProb: { home: number; away: number; tie?: number } | null;
+  /** US TV/stream listings; these do not imply local availability. */
+  broadcasts?: Broadcast[];
+  watch?: WatchInfo;
   fetchedAt: string;
 }
 
@@ -175,10 +193,25 @@ export type Fetcher = (url: string) => Promise<unknown>;
 /** One player's box score line (only the stats props use). */
 export interface PlayerStatLine {
   name: string;
+  /** Provider athlete id (joins MLB plays to batters). */
+  id?: string;
   /** The team's full name, as events name it. */
   team: string;
-  /** ESPN stat keys, e.g. rushingTouchdowns, receivingYards. */
+  /**
+   * ESPN stat keys, e.g. rushingTouchdowns, receivingYards; MLB pitching
+   * stats are prefixed (pitchingStrikeouts, pitchingOuts) to keep them apart
+   * from batting's.
+   */
   stats: Partial<Record<PlayerStatKey, number>>;
+  /** In the game now (NBA: on the floor; MLB: still in the lineup). */
+  active?: boolean;
+  /** MLB: still the pitcher (false once pulled). */
+  pitchingActive?: boolean;
+  /** NBA: listed but hasn't played. */
+  didNotPlay?: boolean;
+  ejected?: boolean;
+  /** MLB lineup spot 1-9 (a substitute takes his predecessor's). */
+  batOrder?: number;
 }
 
 export const PLAYER_STAT_KEYS = [
@@ -194,6 +227,25 @@ export const PLAYER_STAT_KEYS = [
   'kickReturnTouchdowns',
   'puntReturnTouchdowns',
   'defensiveTouchdowns',
+  // NBA
+  'minutes',
+  'points',
+  'rebounds',
+  'assists',
+  'threePointFieldGoalsMade',
+  // MLB batting (doubles/triples from the plays; total bases derived)
+  'atBats',
+  'plateAppearances',
+  'hits',
+  'doubles',
+  'triples',
+  'homeRuns',
+  'walks',
+  'totalBases',
+  // MLB pitching
+  'pitchingStrikeouts',
+  'pitchingOuts',
+  'pitches',
 ] as const;
 export type PlayerStatKey = (typeof PLAYER_STAT_KEYS)[number];
 
@@ -215,5 +267,45 @@ export interface PlayerStats {
   final: boolean;
   players: PlayerStatLine[];
   touchdowns: TouchdownPlay[];
+  fetchedAt: string;
+}
+
+/** One game of a playoff series (ESPN team schedule). */
+export interface SeriesGame {
+  /** ESPN competition id. */
+  id: string;
+  /** Game number in the series (from ESPN's "Game 5 If Necessary" note). */
+  number: number;
+  startTime: string;
+  /** ESPN team id of this game's host. */
+  homeTeamId: string;
+  status: GameStatus;
+  cancelled: boolean;
+  /** Set once final. */
+  winnerTeamId: string | null;
+  homeScore: number | null;
+  awayScore: number | null;
+  ifNecessary: boolean;
+  detail: string;
+  /** Game in progress: ESPN's live P(host wins). */
+  liveHomeWinProb?: number | null;
+}
+
+/**
+ * A playoff series now. home = the team with home field (game 1's host);
+ * wins count final games.
+ */
+export interface SeriesState {
+  seriesId: string;
+  sport: Sport;
+  title: string | null;
+  bestOf: number;
+  home: { id: string; name: string; abbr: string | null; wins: number };
+  away: { id: string; name: string; abbr: string | null; wins: number };
+  games: SeriesGame[];
+  status: GameStatus;
+  winner: Side | null;
+  /** When the deciding game started (it ends GAME_MINUTES later). */
+  decidedAt: string | null;
   fetchedAt: string;
 }

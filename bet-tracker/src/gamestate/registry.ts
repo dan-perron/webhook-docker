@@ -1,7 +1,10 @@
 import type { Sport } from '../domain/types.js';
 import { matchEvent } from '../matching/match.js';
 import { localDate } from '../util/date.js';
+import { appConfig } from '../config.js';
+import { NflWatchGuide } from './nflWatch.js';
 import { EspnProvider } from './espn.js';
+import { EspnSeriesProvider } from './espnSeries.js';
 import { MlbStatsProvider } from './mlbStats.js';
 import type {
   Fetcher,
@@ -33,18 +36,47 @@ export interface Providers {
    */
   pregameLines(event: LinesTarget): Promise<PregameLines | null>;
   /**
-   * Player box score and touchdowns (player props). Null where no provider
-   * publishes them (only ESPN events have them).
+   * Player box score and touchdowns (player props), from the ESPN summary.
+   * MLB events come from the Stats API, so they are found on ESPN by teams
+   * and date (once per event). Null when ESPN has no box score yet.
    */
   playerStats(event: LinesTarget): Promise<PlayerStats | null>;
+  /** Playoff series (series markets), from ESPN team schedules. */
+  series: EspnSeriesProvider;
 }
 
 /** MLB from the Stats API (richer base/out state); everything else ESPN. */
 export function createProviders(fetcher?: Fetcher): Providers {
-  const espn = new EspnProvider(fetcher);
+  const espn = new EspnProvider(
+    fetcher,
+    undefined,
+    fetcher ? undefined : new NflWatchGuide(appConfig.viewingLocation)
+  );
   const mlb = new MlbStatsProvider(fetcher);
+  const series = new EspnSeriesProvider(espn, fetcher);
   const byName: Record<string, GameStateProvider> = { espn, mlb };
+  // Non-ESPN events -> their ESPN competition (league, id), found once.
+  const espnIds = new Map<string, { league: string | null; id: string }>();
+  const espnEvent = async (event: LinesTarget) => {
+    if (event.provider === 'espn')
+      return { league: event.league, id: event.providerEventId };
+    const hit = espnIds.get(event.id);
+    if (hit) return hit;
+    const listed = await espn.listEvents(
+      event.sport,
+      localDate(event.startTime)
+    );
+    const r = matchEvent([event.homeName, event.awayName], listed);
+    if (r.status !== 'matched' || r.candidate.sides[0] !== 'home') return null;
+    const found = {
+      league: r.candidate.event.league,
+      id: r.candidate.event.providerEventId,
+    };
+    espnIds.set(event.id, found);
+    return found;
+  };
   return {
+    series,
     forSport: (sport) => (sport === 'mlb' ? mlb : espn),
     forEventId: (id) => {
       const p = byName[id.split(':')[0]!];
@@ -52,34 +84,13 @@ export function createProviders(fetcher?: Fetcher): Providers {
       return p;
     },
     async playerStats(event) {
-      if (event.provider !== 'espn') return null;
-      return espn.fetchPlayerStats(
-        event.sport,
-        event.league,
-        event.providerEventId
-      );
+      const e = await espnEvent(event);
+      return e ? espn.fetchPlayerStats(event.sport, e.league, e.id) : null;
     },
     async pregameLines(event) {
       if (event.sport === 'mma') return null; // ESPN publishes no fight odds
-      if (event.provider === 'espn') {
-        return espn.fetchLines(
-          event.sport,
-          event.league,
-          event.providerEventId
-        );
-      }
-      const listed = await espn.listEvents(
-        event.sport,
-        localDate(event.startTime)
-      );
-      const r = matchEvent([event.homeName, event.awayName], listed);
-      if (r.status !== 'matched' || r.candidate.sides[0] !== 'home')
-        return null;
-      return espn.fetchLines(
-        event.sport,
-        r.candidate.event.league,
-        r.candidate.event.providerEventId
-      );
+      const e = await espnEvent(event);
+      return e ? espn.fetchLines(event.sport, e.league, e.id) : null;
     },
   };
 }

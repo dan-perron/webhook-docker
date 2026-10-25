@@ -1,12 +1,14 @@
 import { z } from 'zod';
 import { PROP_SPECS } from '../models/props.js';
 import {
+  BET_ORIGINS,
   BET_SPORTS,
   BOOST_KINDS,
+  isSeriesMarket,
   MARKETS,
-  PROP_SPORTS,
   PROP_TYPES,
   SELECTION_KINDS,
+  SERIES_SPORTS,
 } from './types.js';
 
 // Structured bet input shared by the seed loader and the MCP add_bet tool.
@@ -25,7 +27,10 @@ const dollars = z.number().positive().multipleOf(0.01);
 export const legInputSchema = z
   .object({
     sport: z.enum(BET_SPORTS),
-    /** Local (America/Chicago) date of the event. */
+    /**
+     * Local (America/Chicago) date of the event; series markets: the date of
+     * any game in the series (e.g. the next one).
+     */
     eventDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'YYYY-MM-DD'),
     /** The two teams/fighters, any order. */
     participants: z.tuple([z.string().min(1), z.string().min(1)]),
@@ -45,7 +50,10 @@ export const legInputSchema = z
         team: z.string().min(1),
       })
       .optional(),
-    /** Spread from the selection's perspective, the total, or a prop line. */
+    /**
+     * Spread from the selection's perspective, the total, a prop line, or
+     * a series spread in games (e.g. -2.5).
+     */
     line: z.number().nullish(),
     price: american,
   })
@@ -57,20 +65,39 @@ export const legInputSchema = z
       if (!leg.prop)
         return issue('player_prop needs prop {type, player, team}');
       const spec = PROP_SPECS[leg.prop.type];
-      if (!(PROP_SPORTS as readonly string[]).includes(leg.sport))
-        issue(`player props are supported for ${PROP_SPORTS.join(', ')} only`);
+      if (spec.sport !== leg.sport)
+        issue(`${leg.prop.type} is for ${spec.sport} only (got ${leg.sport})`);
       if (!leg.participants.includes(leg.prop.team))
         issue(`prop.team "${leg.prop.team}" is not one of participants`);
       if (!spec.selections.includes(kind))
         issue(
           `${leg.prop.type} selections: ${spec.selections.join(', ')} (got ${kind})`
         );
-      if (spec.line && leg.line == null) issue(`${leg.prop.type} needs a line`);
-      if (!spec.line && leg.line != null)
-        issue(`${leg.prop.type} takes no line`);
+      // yes on an over/under type (to hit a HR) means over its yes line.
+      const needsLine = spec.line && kind !== 'yes';
+      if (needsLine && leg.line == null) issue(`${leg.prop.type} needs a line`);
+      if (!needsLine && leg.line != null)
+        issue(
+          spec.line
+            ? `${leg.prop.type} yes takes no line (it is over ${spec.yesLine})`
+            : `${leg.prop.type} takes no line`
+        );
       return;
     }
     if (leg.prop) issue('prop is only for market player_prop');
+    if (isSeriesMarket(leg.market)) {
+      if (!(SERIES_SPORTS as readonly string[]).includes(leg.sport))
+        issue(`series markets: ${SERIES_SPORTS.join(', ')} only`);
+      if (kind !== 'team') return issue(`${leg.market} takes a team selection`);
+      if (!team) return issue('team selection needs selection.team');
+      if (!leg.participants.includes(team))
+        issue(`selection.team "${team}" is not one of participants`);
+      if (leg.market === 'series_spread' && leg.line == null)
+        issue('series_spread needs a line (games, e.g. -2.5)');
+      if (leg.market === 'series_winner' && leg.line != null)
+        issue('series_winner takes no line');
+      return;
+    }
     if (kind === 'yes') issue('yes selections are for player props only');
     if (kind === 'team') {
       if (!team) {
@@ -129,6 +156,8 @@ export const betInputSchema = z
     statedPayout: dollars.optional(),
     tokenInfo: z.string().min(1).optional(),
     notes: z.string().min(1).optional(),
+    /** recommended = Claude recommended it as +EV; own = Dan's one-off. */
+    origin: z.enum(BET_ORIGINS).optional(),
     legs: z.array(legInputSchema).min(1),
   })
   .superRefine((bet, ctx) => {
