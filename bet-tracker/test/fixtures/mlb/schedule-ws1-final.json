@@ -1,0 +1,191 @@
+{
+ "dates": [
+  {
+   "date": "2026-10-23",
+   "totalItems": 1,
+   "totalEvents": 0,
+   "totalGames": 1,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 849805,
+     "gameType": "W",
+     "gameDate": "2026-10-24T00:00:00Z",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays",
+        "abbreviation": "TB",
+        "teamName": "Rays"
+       },
+       "score": 2,
+       "isWinner": false
+      },
+      "home": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers",
+        "abbreviation": "MIL",
+        "teamName": "Brewers"
+       },
+       "score": 3,
+       "isWinner": true
+      }
+     },
+     "linescore": {
+      "currentInning": 9,
+      "currentInningOrdinal": "9th",
+      "inningState": "Top",
+      "inningHalf": "Top",
+      "isTopInning": true,
+      "scheduledInnings": 9,
+      "teams": {
+       "home": {
+        "runs": 3,
+        "hits": 8,
+        "errors": 0,
+        "leftOnBase": 8,
+        "isWinner": true
+       },
+       "away": {
+        "runs": 2,
+        "hits": 7,
+        "errors": 0,
+        "leftOnBase": 4,
+        "isWinner": false
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 656730,
+        "fullName": "Trevor Megill",
+        "link": "/api/v1/people/656730"
+       },
+       "catcher": {
+        "id": 661388,
+        "fullName": "William Contreras",
+        "link": "/api/v1/people/661388"
+       },
+       "first": {
+        "id": 641343,
+        "fullName": "Jake Bauers",
+        "link": "/api/v1/people/641343"
+       },
+       "second": {
+        "id": 668930,
+        "fullName": "Brice Turang",
+        "link": "/api/v1/people/668930"
+       },
+       "third": {
+        "id": 687401,
+        "fullName": "Joey Ortiz",
+        "link": "/api/v1/people/687401"
+       },
+       "shortstop": {
+        "id": 806198,
+        "fullName": "Cooper Pratt",
+        "link": "/api/v1/people/806198"
+       },
+       "left": {
+        "id": 694192,
+        "fullName": "Jackson Chourio",
+        "link": "/api/v1/people/694192"
+       },
+       "center": {
+        "id": 669003,
+        "fullName": "Garrett Mitchell",
+        "link": "/api/v1/people/669003"
+       },
+       "right": {
+        "id": 800325,
+        "fullName": "Luis Lara",
+        "link": "/api/v1/people/800325"
+       },
+       "batter": {
+        "id": 687401,
+        "fullName": "Joey Ortiz",
+        "link": "/api/v1/people/687401"
+       },
+       "onDeck": {
+        "id": 694192,
+        "fullName": "Jackson Chourio",
+        "link": "/api/v1/people/694192"
+       },
+       "inHole": {
+        "id": 641343,
+        "fullName": "Jake Bauers",
+        "link": "/api/v1/people/641343"
+       },
+       "battingOrder": 9,
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers",
+        "link": "/api/v1/teams/158"
+       }
+      },
+      "offense": {
+       "batter": {
+        "id": 676356,
+        "fullName": "Jonny DeLuca",
+        "link": "/api/v1/people/676356"
+       },
+       "onDeck": {
+        "id": 683748,
+        "fullName": "Victor Mesa Jr.",
+        "link": "/api/v1/people/683748"
+       },
+       "inHole": {
+        "id": 810938,
+        "fullName": "Ben Williamson",
+        "link": "/api/v1/people/810938"
+       },
+       "second": {
+        "id": 691406,
+        "fullName": "Junior Caminero",
+        "link": "/api/v1/people/691406"
+       },
+       "third": {
+        "id": 802415,
+        "fullName": "Chandler Simpson",
+        "link": "/api/v1/people/802415"
+       },
+       "pitcher": {
+        "id": 642121,
+        "fullName": "Cole Sulser",
+        "link": "/api/v1/people/642121"
+       },
+       "battingOrder": 6,
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays",
+        "link": "/api/v1/teams/139"
+       }
+      },
+      "balls": 2,
+      "strikes": 3,
+      "outs": 3
+     },
+     "gameInfo": {
+      "attendance": 43250,
+      "firstPitch": "2026-10-24T00:16:00.000Z",
+      "gameDurationMinutes": 189
+     },
+     "scheduledInnings": 9,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 1,
+     "seriesDescription": "World Series"
+    }
+   ],
+   "events": []
+  }
+ ]
+}

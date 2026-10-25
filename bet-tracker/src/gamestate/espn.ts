@@ -1,6 +1,7 @@
 import type { GameStatus, Side, Sport } from '../domain/types.js';
 import { addDays, compactDate, localDate } from '../util/date.js';
 import { fetchJson } from './http.js';
+import type { NflWatchGuide } from './nflWatch.js';
 import {
   PLAYER_STAT_KEYS,
   type Competitor,
@@ -62,6 +63,7 @@ const PATHS: Record<
   mlb: { path: 'baseball/mlb', query: '', league: 'mlb' },
   nhl: { path: 'hockey/nhl', query: '', league: 'nhl' },
   wnba: { path: 'basketball/wnba', query: '', league: 'wnba' },
+  nba: { path: 'basketball/nba', query: '', league: 'nba' },
   mma: { path: 'mma/ufc', query: '', league: 'ufc' },
   // Score-only sports. groups=50 = all of Division I (default: ranked only).
   ncaab: {
@@ -88,7 +90,7 @@ const PATHS: Record<
 
 // --- Minimal shapes of the ESPN JSON we read -------------------------------
 
-interface EspnStatus {
+export interface EspnStatus {
   clock?: number;
   displayClock?: string;
   period?: number;
@@ -124,7 +126,7 @@ interface EspnOddsSide {
   open?: { odds?: string; line?: string };
 }
 
-interface EspnOdds {
+export interface EspnOdds {
   provider?: { name?: string };
   spread?: number;
   overUnder?: number;
@@ -167,6 +169,13 @@ interface EspnCompetition {
   competitors: EspnCompetitor[];
   situation?: EspnSituation;
   odds?: EspnOdds[];
+  broadcasts?: { market?: string; names?: string[] }[];
+  geoBroadcasts?: {
+    media?: { shortName?: string };
+    market?: { type?: string };
+    region?: string;
+    type?: { shortName?: string };
+  }[];
 }
 
 interface EspnEvent {
@@ -176,6 +185,7 @@ interface EspnEvent {
   date: string;
   /** type 2 = regular season, 3 = postseason. */
   season?: { type?: number };
+  week?: { number?: number };
   status: EspnStatus;
   competitions: EspnCompetition[];
 }
@@ -186,10 +196,21 @@ export interface EspnScoreboard {
 
 // --- Parsing ----------------------------------------------------------------
 
+/** ESPN site API path for a sport (soccer: its league). */
+export const espnPath = (sport: Sport, league?: string | null) =>
+  sport === 'soccer'
+    ? `soccer/${league ?? DEFAULT_SOCCER_LEAGUES[0]}`
+    : PATHS[sport].path;
+
+export const ESPN_BASE = BASE;
+
 const eventId = (sport: Sport, competitionId: string) =>
   `espn:${sport}:${competitionId}`;
 
-function gameStatus(s: EspnStatus): { status: GameStatus; cancelled: boolean } {
+export function gameStatus(s: EspnStatus): {
+  status: GameStatus;
+  cancelled: boolean;
+} {
   const name = s.type.name;
   if (/POSTPONED|CANCELED|CANCELLED|NO_CONTEST|FORFEIT|ABANDONED/.test(name)) {
     return { status: 'final', cancelled: true };
@@ -208,7 +229,9 @@ export function parseAmerican(v: unknown): number | null {
   return Number.isFinite(n) && Math.abs(n) >= 100 ? n : null;
 }
 
-function pregameLines(odds: EspnOdds[] | undefined): PregameLines | null {
+export function pregameLines(
+  odds: EspnOdds[] | undefined
+): PregameLines | null {
   const o = odds?.[0];
   if (!o) return null;
   const ml = (side: 'home' | 'away' | 'draw') =>
@@ -412,6 +435,35 @@ function baseballFraction(sit: Situation | null): number {
   return Math.max(0, 1 - done / (sit.scheduledInnings * 2));
 }
 
+function competitionBroadcasts(
+  c: EspnCompetition,
+  sport: Sport
+): NonNullable<GameState['broadcasts']> {
+  const out = new Map<string, NonNullable<GameState['broadcasts']>[number]>();
+  const add = (name: string | undefined, market?: string) => {
+    if (!name?.trim()) return;
+    // ESPN calls Sunday regional NFL games "National". Never trust that for OTA.
+    const scope =
+      sport === 'nfl' && /^(fox|cbs)$/i.test(name)
+        ? 'regional'
+        : /^national$/i.test(market ?? '')
+          ? 'national'
+          : /^(local|regional)$/i.test(market ?? '')
+            ? 'regional'
+            : 'unknown';
+    out.set(name.toLowerCase(), { name: name.trim(), scope });
+  };
+  for (const b of c.geoBroadcasts ?? []) {
+    if (b.region && b.region.toLowerCase() !== 'us') continue;
+    if (/radio/i.test(b.type?.shortName ?? '')) continue;
+    add(b.media?.shortName, b.market?.type);
+  }
+  if (!c.geoBroadcasts?.length)
+    for (const b of c.broadcasts ?? [])
+      for (const name of b.names ?? []) add(name, b.market);
+  return [...out.values()];
+}
+
 /** Parse every competition on a scoreboard into normalized states. */
 export function parseScoreboard(
   sport: Sport,
@@ -464,11 +516,13 @@ export function parseScoreboard(
           };
           fractionRemaining =
             p > 3 ? 0 : Math.max(0, ((3 - p) * 1200 + (clock ?? 0)) / 3600);
-        } else if (sport === 'wnba') {
+        } else if (sport === 'wnba' || sport === 'nba') {
+          // Quarters: 10 minutes (WNBA), 12 (NBA).
+          const q = sport === 'nba' ? 720 : 600;
           const p = period ?? 1;
           situation = { kind: 'basketball', period: p, clock: clock ?? 0 };
           fractionRemaining =
-            p > 4 ? 0 : Math.max(0, ((4 - p) * 600 + (clock ?? 0)) / 2400);
+            p > 4 ? 0 : Math.max(0, ((4 - p) * q + (clock ?? 0)) / (4 * q));
         } else if (sport === 'ncaab') {
           const p = period ?? 1;
           situation = { kind: 'basketball', period: p, clock: clock ?? 0 };
@@ -515,6 +569,7 @@ export function parseScoreboard(
                 ...(prob.tiePercentage ? { tie: prob.tiePercentage } : {}),
               }
             : null,
+        broadcasts: competitionBroadcasts(c, sport),
         fetchedAt,
       });
     }
@@ -575,18 +630,38 @@ function allBoardLeagues(
   return out;
 }
 
+/** The parts of a game summary lines and series read. */
+export interface EspnGameSummary {
+  pickcenter?: EspnOdds[];
+  /** Play-by-play win probability; the last entry is the latest. */
+  winprobability?: { homeWinPercentage?: number }[];
+}
+
 /** The parts of a game summary player props read. */
 export interface EspnSummaryStats {
   header?: {
-    competitions?: { status?: { type?: { completed?: boolean } } }[];
+    competitions?: {
+      status?: { type?: { completed?: boolean; state?: string } };
+    }[];
   };
   boxscore?: {
     players?: {
       team?: { displayName?: string };
       statistics?: {
         name?: string;
+        /** MLB: "batting" | "pitching". */
+        type?: string;
         keys?: string[];
-        athletes?: { athlete?: { displayName?: string }; stats?: string[] }[];
+        athletes?: {
+          athlete?: { id?: string; displayName?: string };
+          stats?: string[];
+          active?: boolean;
+          didNotPlay?: boolean;
+          ejected?: boolean;
+          batOrder?: number;
+          /** MLB: one entry per plate appearance. */
+          atBats?: unknown[];
+        }[];
       }[];
     }[];
   };
@@ -598,9 +673,59 @@ export interface EspnSummaryStats {
     period?: { number?: number };
     clock?: { displayValue?: string };
   }[];
+  /** MLB play-by-play: hit types credit the batter. */
+  plays?: {
+    type?: { type?: string };
+    participants?: { athlete?: { id?: string }; type?: string }[];
+  }[];
 }
 
 const STAT_KEYS = new Set<string>(PLAYER_STAT_KEYS);
+
+/** MLB batting stats props read (the rest of the line is ignored). */
+const BATTING_KEYS = new Set(['atBats', 'hits', 'homeRuns', 'walks']);
+/** MLB pitching keys, renamed apart from batting's. */
+const PITCHING_KEYS: Record<string, PlayerStatKey> = {
+  strikeouts: 'pitchingStrikeouts',
+  pitches: 'pitches',
+  'fullInnings.partInnings': 'pitchingOuts',
+};
+
+/** Innings pitched "5.2" (5 innings and 2 outs) -> 17 outs. */
+export function inningsToOuts(ip: string): number {
+  const [full, part] = ip.split('.');
+  return Number(full) * 3 + (Number(part ?? 0) || 0);
+}
+
+/**
+ * Stat key/value pairs from one box score cell. Combined columns
+ * ("threePointFieldGoalsMade-threePointFieldGoalsAttempted": "2-5") give
+ * each part.
+ */
+function cellStats(
+  category: string | undefined,
+  key: string,
+  raw: string | undefined
+): [PlayerStatKey, number][] {
+  if (raw == null) return [];
+  if (category === 'pitching') {
+    const k = PITCHING_KEYS[key];
+    if (!k) return [];
+    const v = k === 'pitchingOuts' ? inningsToOuts(raw) : Number(raw);
+    return Number.isFinite(v) ? [[k, v]] : [];
+  }
+  const keys = key.split('-');
+  const values = raw.split('-');
+  if (keys.length > 1 && keys.length !== values.length) return [];
+  const out: [PlayerStatKey, number][] = [];
+  keys.forEach((k, i) => {
+    const v = Number(keys.length > 1 ? values[i] : raw);
+    if (category === 'batting' && !BATTING_KEYS.has(k)) return;
+    if (STAT_KEYS.has(k) && Number.isFinite(v))
+      out.push([k as PlayerStatKey, v]);
+  });
+  return out;
+}
 
 /**
  * Who scored a touchdown, from scoring-play text: the receiver on "X 8 Yd
@@ -619,32 +744,57 @@ export function touchdownScorer(text: string): string | null {
 
 /**
  * Player box score and touchdown plays from a game summary; null when it has
- * no box score yet (pregame, or the response came back empty).
+ * no box score yet (pregame, or the response came back empty). Before the
+ * start ESPN fills the MLB box score with season totals, so a summary whose
+ * game hasn't started has none. NBA lines
+ * carry minutes and whether he is on the floor; MLB batting lines carry the
+ * lineup spot, plate appearances and (from the plays) doubles, triples and
+ * total bases; MLB pitching lines carry outs, strikeouts and pitch count.
  */
 export function parsePlayerStats(
   summary: EspnSummaryStats,
   fetchedAt: string
 ): PlayerStats | null {
   if (!summary.boxscore?.players?.length) return null;
+  if (summary.header?.competitions?.[0]?.status?.type?.state === 'pre')
+    return null;
   const byName = new Map<string, PlayerStatLine>();
   for (const t of summary.boxscore?.players ?? []) {
     const team = t.team?.displayName ?? '';
     for (const cat of t.statistics ?? []) {
+      const category = cat.type ?? cat.name;
       const keys = cat.keys ?? [];
       for (const a of cat.athletes ?? []) {
         const name = a.athlete?.displayName;
         if (!name) continue;
         const k = `${team}|${name}`;
-        const line = byName.get(k) ?? { name, team, stats: {} };
+        const line: PlayerStatLine = byName.get(k) ?? {
+          name,
+          team,
+          stats: {},
+          ...(a.athlete?.id ? { id: a.athlete.id } : {}),
+        };
         byName.set(k, line);
         keys.forEach((key, i) => {
-          const v = Number(a.stats?.[i]);
-          if (STAT_KEYS.has(key) && Number.isFinite(v))
-            line.stats[key as PlayerStatKey] = v;
+          for (const [sk, v] of cellStats(category, key, a.stats?.[i]))
+            line.stats[sk] = v;
         });
+        if (category === 'pitching') {
+          if (a.active != null) line.pitchingActive = a.active;
+          continue;
+        }
+        if (a.active != null) line.active = a.active;
+        if (a.didNotPlay) line.didNotPlay = true;
+        if (a.ejected) line.ejected = true;
+        if (category === 'batting') {
+          if (a.batOrder) line.batOrder = a.batOrder;
+          if (a.atBats) line.stats.plateAppearances = a.atBats.length;
+        }
       }
     }
   }
+  const players = [...byName.values()];
+  addExtraBaseHits(summary, players);
   const touchdowns: TouchdownPlay[] = (summary.scoringPlays ?? [])
     .filter((p) => p.scoringType?.name === 'touchdown')
     .map((p) => ({
@@ -657,10 +807,40 @@ export function parsePlayerStats(
     }));
   return {
     final: !!summary.header?.competitions?.[0]?.status?.type?.completed,
-    players: [...byName.values()],
+    players,
     touchdowns,
     fetchedAt,
   };
+}
+
+/**
+ * MLB: the box score has hits and home runs but not doubles or triples;
+ * count those from the plays (by batter id) and derive total bases =
+ * H + 2B + 2 x 3B + 3 x HR.
+ */
+function addExtraBaseHits(
+  summary: EspnSummaryStats,
+  players: PlayerStatLine[]
+) {
+  const batters = players.filter((l) => l.stats.hits != null);
+  if (!batters.length) return;
+  const count = new Map<string, { doubles: number; triples: number }>();
+  for (const p of summary.plays ?? []) {
+    const type = p.type?.type;
+    if (type !== 'double' && type !== 'triple') continue;
+    const id = p.participants?.find((x) => x.type === 'batter')?.athlete?.id;
+    if (!id) continue;
+    const c = count.get(id) ?? { doubles: 0, triples: 0 };
+    c[type === 'double' ? 'doubles' : 'triples']++;
+    count.set(id, c);
+  }
+  for (const l of batters) {
+    const c = (l.id && count.get(l.id)) || { doubles: 0, triples: 0 };
+    const s = l.stats;
+    s.doubles = c.doubles;
+    s.triples = c.triples;
+    s.totalBases = s.hits! + c.doubles + 2 * c.triples + 3 * (s.homeRuns ?? 0);
+  }
 }
 
 export class EspnProvider implements GameStateProvider {
@@ -670,7 +850,8 @@ export class EspnProvider implements GameStateProvider {
 
   constructor(
     private readonly fetcher: Fetcher = fetchJson,
-    private readonly soccerLeagues: string[] = DEFAULT_SOCCER_LEAGUES
+    private readonly soccerLeagues: string[] = DEFAULT_SOCCER_LEAGUES,
+    private readonly watchGuide?: NflWatchGuide
   ) {}
 
   /**
@@ -682,16 +863,23 @@ export class EspnProvider implements GameStateProvider {
     league: string | null,
     competitionId: string
   ): Promise<PregameLines | null> {
+    const summary = await this.fetchSummary(sport, league, competitionId);
+    return pregameLines(summary.pickcenter);
+  }
+
+  /** A game's summary: lines (pickcenter) and live win probability. */
+  async fetchSummary(
+    sport: Sport,
+    league: string | null,
+    competitionId: string
+  ): Promise<EspnGameSummary> {
     const path =
       sport === 'soccer'
         ? `soccer/${league ?? this.soccerLeagues[0]}`
         : PATHS[sport].path;
-    const summary = (await this.fetcher(
+    return (await this.fetcher(
       `${BASE}/${path}/summary?event=${competitionId}`
-    )) as {
-      pickcenter?: EspnOdds[];
-    };
-    return pregameLines(summary.pickcenter);
+    )) as EspnGameSummary;
   }
 
   /** Player box score and touchdown plays from a game's summary. */
@@ -823,9 +1011,18 @@ export class EspnProvider implements GameStateProvider {
       const board = (await this.fetcher(
         this.url(g.sport, g.league, g.date)
       )) as EspnScoreboard;
-      for (const s of parseScoreboard(g.sport, board)) {
-        if (wanted.has(s.eventId)) states.set(s.eventId, s);
+      const parsed = parseScoreboard(g.sport, board).filter((s) =>
+        wanted.has(s.eventId)
+      );
+      if (g.sport === 'nfl' && this.watchGuide) {
+        const ev = board.events?.[0];
+        await this.watchGuide.enrich(
+          parsed,
+          ev?.week?.number,
+          ev?.season?.type
+        );
       }
+      for (const s of parsed) states.set(s.eventId, s);
     }
     return states;
   }

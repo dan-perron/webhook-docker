@@ -8,7 +8,12 @@ import {
 } from './football.js';
 import { mlbScores, runRates } from './mlb.js';
 import { nhlScores } from './nhl.js';
-import { marginSigmasFor, type ModelParams, type Prior } from './prior.js';
+import {
+  marginSigmasFor,
+  type MarginSport,
+  type ModelParams,
+  type Prior,
+} from './prior.js';
 import {
   jointFromScores,
   outcomeFromScores,
@@ -102,7 +107,9 @@ function model(
   switch (sport) {
     case 'nfl':
     case 'ncaaf':
-    case 'wnba': {
+    case 'wnba':
+    case 'nba': {
+      const basketball = sport === 'wnba' || sport === 'nba';
       const d = footballDistribution(
         state,
         prior,
@@ -110,14 +117,14 @@ function model(
       );
       return {
         kind: 'margin',
-        name: sport === 'wnba' ? 'basketball_normal' : 'football_normal',
+        name: basketball ? 'basketball_normal' : 'football_normal',
         inputs: {
           marginMean: round(d.marginMean),
           marginSd: round(d.marginSd),
           sigma: round(d.sigma),
           totalMean: round(d.totalMean),
           totalSd: round(d.totalSd),
-          ...(sport === 'wnba' ? {} : { possessionEp: round(d.possessionEp) }),
+          ...(basketball ? {} : { possessionEp: round(d.possessionEp) }),
           fractionRemaining: round(state.fractionRemaining, 3),
         },
       };
@@ -192,7 +199,7 @@ function rawOutcome(
       state,
       prior,
       sel,
-      marginSigmasFor(state.sport as 'nfl' | 'ncaaf' | 'wnba', params)
+      marginSigmasFor(state.sport as MarginSport, params)
     );
   }
   // MMA: no usable live state; the prior holds until the fight is final.
@@ -283,7 +290,7 @@ export function jointOutcomes(
       state,
       prior,
       sels,
-      marginSigmasFor(sport as 'nfl' | 'ncaaf' | 'wnba', params)
+      marginSigmasFor(sport as MarginSport, params)
     );
   return null;
 }

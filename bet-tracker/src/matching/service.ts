@@ -1,20 +1,25 @@
 import { and, eq, inArray, ne } from 'drizzle-orm';
 import type { Db, DbOrTx } from '../db/client.js';
-import { events, legs, type LegRow } from '../db/schema.js';
-import type { Side, Sport } from '../domain/types.js';
+import { events, legs, series, type LegRow } from '../db/schema.js';
+import { isSeriesMarket, type Side, type Sport } from '../domain/types.js';
+import type { SeriesListing } from '../gamestate/espnSeries.js';
 import type { Providers } from '../gamestate/registry.js';
 import type { ProviderEvent } from '../gamestate/types.js';
 import { recordLines } from '../tracker/lines.js';
 import { matchEvent, type Candidate } from './match.js';
 
-/** What we store/return per candidate so a later confirm needs no refetch. */
+/**
+ * What we store/return per candidate so a later confirm needs no refetch.
+ * Series legs: eventId is the series id and `series` replaces `event`.
+ */
 export interface StoredCandidate {
   eventId: string;
   label: string;
   startTime: string;
   score: number;
   sides: [Side, Side];
-  event: ProviderEvent;
+  event?: ProviderEvent;
+  series?: SeriesListing;
 }
 
 export interface LegMatchOutcome {
@@ -23,8 +28,10 @@ export interface LegMatchOutcome {
   eventLabel: string;
   status: LegRow['matchStatus'];
   eventId: string | null;
+  /** Series legs: the series matched. */
+  seriesId?: string | null;
   side: Side | null;
-  candidates: Omit<StoredCandidate, 'event'>[];
+  candidates: Omit<StoredCandidate, 'event' | 'series'>[];
 }
 
 const eventLabel = (e: ProviderEvent) =>
@@ -76,6 +83,31 @@ export function upsertEvent(db: DbOrTx, e: ProviderEvent): void {
   }
 }
 
+/** Insert or refresh a series row from a listing. */
+export function upsertSeries(db: DbOrTx, s: SeriesListing): void {
+  const now = new Date().toISOString();
+  const row = {
+    sport: s.sport,
+    season: s.season,
+    title: s.title,
+    bestOf: s.bestOf,
+    homeTeamId: s.home.id,
+    awayTeamId: s.away.id,
+    homeName: s.home.name,
+    awayName: s.away.name,
+    homeAbbr: s.home.abbr,
+    awayAbbr: s.away.abbr,
+    startTime: s.startTime,
+  };
+  db.insert(series)
+    .values({ id: s.id, ...row })
+    .onConflictDoUpdate({ target: series.id, set: { ...row, updatedAt: now } })
+    .run();
+}
+
+const seriesLabel = (s: SeriesListing) =>
+  `${s.away.name} v ${s.home.name}${s.title ? ` (${s.title})` : ''}`;
+
 /**
  * Home/away of the backed team (a player prop's: the player's team), given
  * which side each participant matched.
@@ -106,13 +138,29 @@ function outcome(leg: LegRow, stored: StoredCandidate[] = []): LegMatchOutcome {
     eventLabel: leg.eventLabel,
     status: leg.matchStatus,
     eventId: leg.eventId,
+    ...(leg.seriesId ? { seriesId: leg.seriesId } : {}),
     side: leg.side,
-    candidates: stored.map(({ event: _e, ...rest }) => rest),
+    candidates: stored.map(({ event: _e, series: _s, ...rest }) => rest),
   };
 }
 
 function applyMatch(db: DbOrTx, leg: LegRow, c: StoredCandidate): LegRow {
-  upsertEvent(db, c.event);
+  if (c.series) {
+    upsertSeries(db, c.series);
+    return db
+      .update(legs)
+      .set({
+        seriesId: c.series.id,
+        side: selectionSide(leg, c.sides),
+        matchStatus: 'matched',
+        matchCandidatesJson: null,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(legs.id, leg.id))
+      .returning()
+      .get();
+  }
+  upsertEvent(db, c.event!);
   return db
     .update(legs)
     .set({
@@ -160,6 +208,10 @@ export async function matchLegs(
 
   const results: LegMatchOutcome[] = [];
   for (const leg of pending) {
+    if (isSeriesMarket(leg.market)) {
+      results.push(await matchSeriesLeg(db, providers, leg));
+      continue;
+    }
     const listed = await list(leg.sport, leg.eventDate);
     const r = matchEvent([leg.participantA, leg.participantB], listed);
     if (r.status === 'matched') {
@@ -183,6 +235,45 @@ export async function matchLegs(
     results.push(outcome(updated, stored));
   }
   return results;
+}
+
+/** Match a series-market leg to a playoff series. */
+async function matchSeriesLeg(
+  db: Db,
+  providers: Providers,
+  leg: LegRow
+): Promise<LegMatchOutcome> {
+  const r = await providers.series.findSeries(
+    leg.sport,
+    [leg.participantA, leg.participantB],
+    leg.eventDate
+  );
+  const stored = (
+    c: { series: SeriesListing; sides: [Side, Side]; score: number },
+    score = c.score
+  ): StoredCandidate => ({
+    eventId: c.series.id,
+    label: seriesLabel(c.series),
+    startTime: c.series.startTime,
+    score: Math.round(score * 100) / 100,
+    sides: c.sides,
+    series: c.series,
+  });
+  if (r.status === 'matched')
+    return outcome(applyMatch(db, leg, stored({ ...r, score: 1 })));
+  const cands = r.status === 'needs_confirmation' ? r.candidates : [];
+  const list = cands.map((c) => stored(c));
+  const updated = db
+    .update(legs)
+    .set({
+      matchStatus: list.length ? 'needs_confirmation' : 'unmatched',
+      matchCandidatesJson: list.length ? JSON.stringify(list) : null,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(legs.id, leg.id))
+    .returning()
+    .get();
+  return outcome(updated, list);
 }
 
 /** Confirm one of a leg's stored candidates. */

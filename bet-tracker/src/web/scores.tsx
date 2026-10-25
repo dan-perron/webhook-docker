@@ -7,12 +7,18 @@ import type {
   ScoreBoard,
 } from '../scores/service.js';
 import { addDays } from '../util/date.js';
-import { url } from '../util/url.js';
-import { situationText, timeLabel, type TimeKind } from './format.js';
+import { home, url } from '../util/url.js';
+import type { BetView } from '../tracker/views.js';
+import type { DayResults } from './daily.js';
+import { Freshness, GameScore } from './game.js';
+import { pct, signedUsd, timeLabel, usd, type TimeKind } from './format.js';
 import { ViewNav } from './page.js';
+import { BetHeadline } from './betHeadline.js';
 
 export interface ScoresPage {
   board: ScoreBoard;
+  bets: BetView[];
+  today: DayResults | null;
   timeZone: string;
   now: Date;
 }
@@ -23,6 +29,7 @@ const SPORT_NAME: Record<Sport, string> = {
   mlb: 'MLB',
   nhl: 'NHL',
   wnba: 'WNBA',
+  nba: 'NBA',
   soccer: 'Soccer',
   mma: 'UFC',
   ncaab: 'NCAA MBB',
@@ -76,37 +83,25 @@ export function GameCardView({
   c,
   p,
   back,
+  bets = [],
 }: {
   c: GameCard;
   p: Pick<ScoresPage, 'timeZone' | 'now'>;
   back: string;
+  bets?: BetView[];
 }) {
   const { live } = c;
-  const scored = c.sport !== 'mma' && live.status !== 'pre';
-  const sit = situationText(live);
-  const row = (side: 'away' | 'home') => {
-    const t = live[side];
-    return (
-      <div class={`team ${c.leader === side ? 'lead' : ''}`}>
-        <span class="name">{t.name}</span>
-        {scored ? <span class="score">{t.score}</span> : null}
-      </div>
-    );
-  };
   return (
-    <article class={`game ${live.status}`}>
+    <article
+      id={`game-${c.eventId}`}
+      class={`game ${live.status}`}
+      data-sport={c.sport}
+    >
       <div class="g-head">
         <span class="g-sport">
           {c.icon} {SPORT_NAME[c.sport]}
         </span>
-        <span class="g-status">
-          {live.status === 'pre' ? (
-            <Time iso={live.startTime} kind="start" {...p} />
-          ) : (
-            live.detail
-          )}
-        </span>
-        {c.bet ? (
+        {c.bet && !bets.length ? (
           <span class="tag" title="You have an open bet on this game">
             bet
           </span>
@@ -143,33 +138,85 @@ export function GameCardView({
           )}
         </span>
       </div>
-      {row('away')}
-      {row('home')}
-      {sit ? <div class="sit">{sit}</div> : null}
+      <GameScore
+        watchId={`watch-game-${c.eventId}`}
+        live={live}
+        timeZone={p.timeZone}
+        now={p.now}
+        fight={c.sport === 'mma'}
+      />
+      {bets.length ? (
+        <div class="game-bets">
+          {bets.map((b) => (
+            <a
+              class="game-bet"
+              aria-label={`View ${b.label} ticket`}
+              href={`${b.status === 'open' ? home : `${home}?tab=settled`}#bet-${b.id}`}
+            >
+              <span class="game-bet-selection">
+                {b.legs
+                  .filter((l) => l.match.eventId === c.eventId)
+                  .map((l) => l.selection)
+                  .join(' · ')}
+              </span>
+              <span class="game-bet-estimate">
+                {b.status === 'open'
+                  ? `${pct(b.now.pWin)} ${b.now.source === 'model' ? 'est. win' : b.now.source === 'book_implied' ? 'book implied' : 'price implied'}`
+                  : `${b.status} · ${signedUsd(b.now.ev)}`}
+              </span>
+              <span class="sub">
+                {b.status === 'open'
+                  ? `${usd(b.stake)} stake · ${usd(b.payout)} total return if won`
+                  : `${usd(b.stake)} staked · ${usd(b.now.value)} returned`}
+                {b.legs.length > 1
+                  ? ` · ${b.legs.length}-leg parlay · estimate for full ticket`
+                  : ''}{' '}
+                <span aria-hidden="true">↗</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      ) : null}
     </article>
   );
 }
 
 export function ScoresSummary({ p }: { p: ScoresPage }) {
   const b = p.board;
+  const openEV =
+    p.bets
+      .filter((b) => b.status === 'open')
+      .reduce((cents, b) => cents + Math.round(b.now.ev * 100), 0) / 100;
+  const times = [...b.live, ...b.upcoming]
+    .map((c) => c.live.fetchedAt)
+    .filter(Boolean)
+    .sort();
   return (
     <div class="summary">
       <ViewNav active="scores" />
-      <nav class="subnav">
-        <a href={url('/scores/browse')}>＋ Add games</a>
-        <a href={url('/scores/teams')}>Teams ({b.follows.length})</a>
-      </nav>
+      <div class="stats">
+        <div>
+          <span class="k">Live games</span>
+          <span class="v">{b.live.length}</span>
+        </div>
+        <div>
+          <span class="k">Upcoming</span>
+          <span class="v">{b.upcoming.length}</span>
+        </div>
+        <div>
+          <BetHeadline settledToday={p.today?.net ?? 0} openEV={openEV} />
+        </div>
+      </div>
       <div class="meta">
-        <span>
-          {b.live.length} live · {b.upcoming.length} upcoming
-        </span>
-        <span>
-          {b.pushConfigured
-            ? `Push on${b.quietHours ? ` · quiet ${b.quietHours}` : ''}`
-            : 'Push off (NTFY_URL not set)'}
-        </span>
-        <span class="conn" id="conn" title="Live updates">
-          ●
+        {times.length ? (
+          <Freshness at={times.at(-1)!} now={p.now} live={b.live.length > 0} />
+        ) : (
+          <span class="muted">
+            {b.final.length ? 'All tracked games finished' : 'No active games'}
+          </span>
+        )}
+        <span class="conn" id="conn" role="status" aria-live="polite">
+          Connecting…
         </span>
       </div>
     </div>
@@ -179,11 +226,26 @@ export function ScoresSummary({ p }: { p: ScoresPage }) {
 function Section(props: { title: string; games: GameCard[]; p: ScoresPage }) {
   if (!props.games.length) return null;
   return (
-    <section>
-      <h2>{props.title}</h2>
+    <section data-game-section data-title={props.title}>
+      <h2>
+        {props.title} ({props.games.length})
+      </h2>
       <div class="games">
         {props.games.map((c) => (
-          <GameCardView c={c} p={props.p} back="/scores" />
+          <GameCardView
+            c={c}
+            p={props.p}
+            back="/scores"
+            bets={
+              c.live.status === 'final'
+                ? []
+                : props.p.bets.filter(
+                    (b) =>
+                      b.status === 'open' &&
+                      b.legs.some((l) => l.match.eventId === c.eventId)
+                  )
+            }
+          />
         ))}
       </div>
     </section>
@@ -192,21 +254,45 @@ function Section(props: { title: string; games: GameCard[]; p: ScoresPage }) {
 
 export function ScoresContent({ p }: { p: ScoresPage }) {
   const b = p.board;
-  const empty = !b.live.length && !b.upcoming.length && !b.final.length;
+  const games = [...b.live, ...b.upcoming, ...b.final];
+  const sports = SPORTS.filter((s) => games.some((c) => c.sport === s));
   return (
     <div>
-      {empty ? (
+      {sports.length > 1 ? (
+        <nav class="sport-filters" aria-label="Filter games by sport">
+          <button
+            type="button"
+            id="sport-all"
+            data-sport-filter="all"
+            aria-pressed="true"
+          >
+            All sports
+          </button>
+          {sports.map((s) => (
+            <button
+              type="button"
+              id={`sport-${s}`}
+              data-sport-filter={s}
+              aria-pressed="false"
+            >
+              {SPORT_NAME[s]}
+            </button>
+          ))}
+        </nav>
+      ) : null}
+      {!games.length ? (
         <p class="empty">
-          No games yet. <a href={url('/scores/browse')}>Add games</a> or{' '}
-          <a href={url('/scores/teams')}>follow a team</a>.
+          No games to follow right now. Add a game or follow a team through MCP.
         </p>
       ) : null}
       <Section title="Live" games={b.live} p={p} />
+      <Section title="Completed today" games={b.final} p={p} />
       <Section title="Upcoming" games={b.upcoming} p={p} />
-      <Section title="Final" games={b.final} p={p} />
       {b.alerts.length ? (
-        <section>
-          <h2>Recent alerts</h2>
+        <details class="analysis" id="recent-alerts">
+          <summary id="recent-alerts-toggle">
+            Recent alerts ({b.alerts.length})
+          </summary>
           <ul class="alerts card">
             {b.alerts.map((a) => (
               <li>
@@ -218,8 +304,17 @@ export function ScoresContent({ p }: { p: ScoresPage }) {
               </li>
             ))}
           </ul>
-        </section>
+        </details>
       ) : null}
+      <details class="analysis" id="notification-details">
+        <summary id="notification-toggle">Notifications</summary>
+        <p class="note">
+          {b.pushConfigured
+            ? `Push on${b.quietHours ? ` · quiet ${b.quietHours}` : ''}`
+            : 'Push off'}{' '}
+          · Manage followed teams and games through MCP.
+        </p>
+      </details>
     </div>
   );
 }

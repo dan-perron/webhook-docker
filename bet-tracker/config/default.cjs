@@ -28,6 +28,8 @@ const config = {
   // SQLite file. Lives on a named volume in production.
   databasePath: process.env.DATABASE_PATH || './data/bet-tracker.sqlite',
   timezone: process.env.TZ || 'America/Chicago',
+  // Owner's viewing location. ZIP and DMA must describe the same market.
+  viewingLocation: { zipCode: '60640', name: 'Chicago', dmaCode: '602' },
   auth: {
     // Bearer token for the HTTP API/MCP and the password for the web login.
     // Empty disables the server (it refuses to start without one outside tests).
@@ -63,7 +65,7 @@ const config = {
     followDays: 7,
     // Minutes between schedule scans for followed teams' games.
     discoverMinutes: 60,
-    // Hours a finished game stays on the Scores view.
+    // Hours of recent alerts shown; finished watched games stay for their local day.
     finalHours: 18,
     alerts: {
       // Full ntfy topic URL, e.g. https://ntfy.sh/<secret-topic>. Empty = no
@@ -92,6 +94,8 @@ const config = {
     },
     // WNBA final margin and total (points); σ fitted per game within the range.
     wnba: { marginSigma: 11.5, totalSigma: 15, sigmaRange: [8, 16] },
+    // NBA: same model, 48 minutes.
+    nba: { marginSigma: 13, totalSigma: 18, sigmaRange: [9, 17] },
   },
   props: {
     // Hold assumed when de-vigging an anytime TD price (no "no" side posted):
@@ -99,6 +103,23 @@ const config = {
     anytimeTdHold: {
       upTo200: envNumber('ATD_HOLD', 0.08),
       above200: envNumber('ATD_HOLD_LONG', 0.15),
+    },
+    // Hold assumed on an over/under prop price (NBA, MLB) and to hit a HR.
+    overUnderHold: {
+      upTo200: envNumber('PROP_HOLD', 0.07),
+      above200: envNumber('PROP_HOLD_LONG', 0.12),
+    },
+    // NBA live props: minutes assumed before a player has any, and the
+    // weight (in games) of the pregame rate against his pace so far.
+    nba: { expectedMinutes: 32, priorWeight: 0.5 },
+    // MLB live props: a starter's assumed pitch count (strikeout props),
+    // pitches per out, share of PAs that are outs, and the weight (in
+    // starts) of the pregame strikeout rate against his pace.
+    mlb: {
+      pitchBudget: 90,
+      pitchesPerOut: 5.6,
+      outRate: 0.7,
+      priorWeight: 0.5,
     },
   },
 };

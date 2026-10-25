@@ -108,7 +108,7 @@ describe('player_prop input', () => {
       'anytime_td selections: yes (got over)',
     ]);
     expect(issues({ sport: 'ncaaf' })).toEqual([
-      'player props are supported for nfl only',
+      'anytime_td is for nfl only (got ncaaf)',
     ]);
   });
 

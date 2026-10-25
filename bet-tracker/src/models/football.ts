@@ -2,7 +2,7 @@ import type { Side } from '../domain/types.js';
 import type { JointOutcome } from '../domain/value.js';
 import type { FootballSituation, GameState } from '../gamestate/types.js';
 import nflKeyNumbers from './data/nfl-key-numbers.json' with { type: 'json' };
-import type { FootballSigmas, Prior } from './prior.js';
+import type { FootballSigmas, MarginSport, Prior } from './prior.js';
 import { leastSquares, logit, normalCdf } from './stats.js';
 import {
   beatLine,
@@ -234,7 +234,7 @@ export function footballDistribution(
     signed;
   const marginSd = sigma * Math.sqrt(f);
   // NFL pregame: m = 0 is a true tie (historical finals include OT). Live,
-  // and always in NCAAF/WNBA (no ties), a regulation tie goes to overtime.
+  // and always in NCAAF/NBA/WNBA (no ties), a regulation tie goes to overtime.
   const margin = marginPmf(
     marginMean,
     marginSd,
@@ -360,7 +360,7 @@ export interface MarginFit {
  */
 export function fitMarginModel(
   prior: Prior,
-  sport: 'nfl' | 'ncaaf' | 'wnba',
+  sport: MarginSport,
   sigmas: FootballSigmas
 ): MarginFit {
   const pre = {

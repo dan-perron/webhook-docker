@@ -292,3 +292,45 @@ describe('EspnProvider', () => {
     expect([...states.keys()].sort()).toEqual(refs.map((r) => r.id).sort());
   });
 });
+
+describe('ESPN US broadcast listings', () => {
+  it('deduplicates US TV and streaming channels and excludes radio and foreign listings', () => {
+    const board = structuredClone(
+      fixture<EspnScoreboard>('espn/nfl-20261004-pre.json')
+    );
+    board.events![0]!.competitions[0]!.geoBroadcasts = [
+      {
+        region: 'us',
+        type: { shortName: 'TV' },
+        media: { shortName: 'FOX' },
+        market: { type: 'National' },
+      },
+      {
+        region: 'us',
+        type: { shortName: 'TV' },
+        media: { shortName: 'FOX' },
+        market: { type: 'National' },
+      },
+      { region: 'ca', type: { shortName: 'TV' }, media: { shortName: 'TSN' } },
+      {
+        region: 'us',
+        type: { shortName: 'Radio' },
+        media: { shortName: 'SiriusXM' },
+      },
+    ];
+    expect(parseScoreboard('nfl', board)[0]!.broadcasts).toEqual([
+      { name: 'FOX', scope: 'regional' },
+    ]);
+  });
+  it('preserves the basic broadcaster list when geo listings are absent', () => {
+    const board = structuredClone(
+      fixture<EspnScoreboard>('espn/nfl-20261004-pre.json')
+    );
+    const c = board.events![0]!.competitions[0]!;
+    c.geoBroadcasts = [];
+    c.broadcasts = [{ market: 'national', names: ['Prime Video'] }];
+    expect(parseScoreboard('nfl', board)[0]!.broadcasts).toEqual([
+      { name: 'Prime Video', scope: 'national' },
+    ]);
+  });
+});

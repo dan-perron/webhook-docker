@@ -17,6 +17,7 @@ export const GAME_MINUTES: Record<Sport, number> = {
   mlb: 180,
   nhl: 155,
   wnba: 135,
+  nba: 145,
   soccer: 115,
   mma: 150,
   ncaab: 130,

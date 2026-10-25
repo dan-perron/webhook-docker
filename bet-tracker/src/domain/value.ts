@@ -13,6 +13,7 @@ export interface LegValueInput {
   status: LegStatus;
   /** Model outcome for open legs (ignored once settled). */
   outcome: Outcome;
+  /** The event (or series) the leg is on; shared ids are correlated. */
   eventId: string | null;
 }
 
