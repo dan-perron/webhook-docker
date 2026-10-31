@@ -20,6 +20,7 @@ export function createServices(db: Db): Services {
       enabled: appConfig.oddsApi.pregameSnapshot,
       leadMinutes: appConfig.oddsApi.pregameSnapshotLeadMinutes,
     },
+    clv: { client: odds, ...appConfig.oddsApi.clv },
   });
   const { alerts, ...scoreOpts } = appConfig.scores;
   const scores = new ScoreService(db, providers, tracker, {

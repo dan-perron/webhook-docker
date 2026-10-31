@@ -15,6 +15,7 @@ import {
   type Portfolio,
 } from '../tracker/views.js';
 import { home, url } from '../util/url.js';
+import type { CloseSource } from '../tracker/clv.js';
 import { Freshness, GameScore, SeriesScore } from './game.js';
 import { BetHeadline } from './betHeadline.js';
 import { record, settledByDay, type DayResults } from './daily.js';
@@ -313,6 +314,21 @@ function LegRow({
   );
 }
 
+const ratioPct = (r: number | null) =>
+  r == null ? '–' : `${r > 0 ? '+' : ''}${(r * 100).toFixed(1)}%`;
+
+/** Probability points, e.g. +1.8 pts. */
+const signedPoints = (p: number) =>
+  `${p > 0 ? '+' : ''}${(p * 100).toFixed(1)} pts`;
+
+const CLOSE_LABEL: Record<CloseSource, string> = {
+  exact: '–',
+  interpolated: '–',
+  unsupported: 'n/a',
+  missed: 'Missed',
+  live: 'Live bet',
+};
+
 export function BetCard({
   b,
   d,
@@ -421,7 +437,7 @@ export function BetCard({
           <div class="sub">{b.status === 'open' ? estimate : t.label}</div>
         </div>
       </header>
-      <div class="ticket-money">
+      <div class={`ticket-money${b.atClose ? ' with-clv' : ''}`}>
         <div>
           <span class="k">Stake</span>
           <strong>{usd(b.stake)}</strong>
@@ -432,6 +448,18 @@ export function BetCard({
           </span>
           <strong>{usd(b.status === 'open' ? b.payout : b.now.value)}</strong>
         </div>
+        {b.atClose ? (
+          <div>
+            <span class="k">CLV</span>
+            <strong
+              class={
+                b.clv == null ? '' : b.clv > 0 ? 'pos' : b.clv < 0 ? 'neg' : ''
+              }
+            >
+              {b.clv == null ? CLOSE_LABEL[b.atClose.source] : ratioPct(b.clv)}
+            </strong>
+          </div>
+        ) : null}
       </div>
       <div class="ticket-games">{activeGroups.map(renderGame)}</div>
       {completedGroups.length ? (
@@ -461,6 +489,15 @@ export function BetCard({
         ) : b.atPlacement ? (
           <div class="note">EV at placement {signedUsd(b.atPlacement.ev)}</div>
         ) : null}
+        {b.atClose?.ev != null ? (
+          <div class="note">
+            EV at close {signedUsd(b.atClose.ev)} · P(win) at close{' '}
+            {pct(b.atClose.pWin!)}
+            {b.atClose.source === 'interpolated'
+              ? ' (off the closing line: interpolated)'
+              : ''}
+          </div>
+        ) : null}
         {b.settledAt ? (
           <div class="note">
             Settled <LocalTime iso={b.settledAt} kind="start" d={d} />
@@ -488,6 +525,10 @@ export function BetCard({
             {b.legs.map((l) => (
               <li>
                 {l.selection} · {american(l.priceAmerican)}
+                {l.close?.price != null
+                  ? ` · closed ${american(l.close.price)}`
+                  : ''}
+                {l.clv != null ? ` (${signedPoints(l.clv)})` : ''}
               </li>
             ))}
           </ul>
@@ -618,8 +659,44 @@ function ExposureTable({ e, d }: { e: Exposure; d: Dashboard }) {
   );
 }
 
-const ratioPct = (r: number | null) =>
-  r == null ? '–' : `${r > 0 ? '+' : ''}${(r * 100).toFixed(1)}%`;
+/** Pick quality by origin, from every bet whose games have reached close. */
+export function ClvTable({ rows }: { rows: OriginBreakdown[] }) {
+  const withClv = rows.filter((r) => r.clvCount > 0 || r.clvLegCount > 0);
+  if (!withClv.length) return null;
+  return (
+    <table class="origin-table clv-table">
+      <thead>
+        <tr>
+          <th>Origin</th>
+          <th>Bets</th>
+          <th>Beat the close</th>
+          <th>Avg CLV</th>
+          <th>EV at close</th>
+          <th>At placement</th>
+          <th>P/L</th>
+        </tr>
+      </thead>
+      <tbody>
+        {withClv.map((r) => (
+          <tr>
+            <td>{ORIGIN_LABEL[r.origin]}</td>
+            <td>{r.clvCount}</td>
+            <td>
+              {r.pctBeatClose == null ? '–' : pct(r.pctBeatClose)} of{' '}
+              {r.clvLegCount} legs
+            </td>
+            <td>{ratioPct(r.avgClv)}</td>
+            <td>{signedUsd(r.evAtClose)}</td>
+            <td>{signedUsd(r.evAtPlacementWithClv)}</td>
+            <td class={r.profitWithClv >= 0 ? 'pos' : 'neg'}>
+              {signedUsd(r.profitWithClv)}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
 
 /** Settled results by origin: stake, P/L, ROI, and EV at placement. */
 function OriginTable({ rows }: { rows: OriginBreakdown[] }) {
@@ -692,6 +769,7 @@ export function Content({ d }: { d: Dashboard }) {
           {d.portfolio.byOrigin.length ? (
             <div class="card">
               <OriginTable rows={d.portfolio.byOrigin} />
+              <ClvTable rows={d.portfolio.byOrigin} />
             </div>
           ) : null}
         </details>
@@ -734,6 +812,7 @@ export function Content({ d }: { d: Dashboard }) {
                 <span>EV now {signedUsd(d.portfolio.open.ev)}</span>
                 <span>Open ({d.counts.open})</span>
               </div>
+              <ClvTable rows={d.portfolio.byOrigin} />
               <div class="note">
                 {d.quota.remaining == null
                   ? 'Odds API quota not checked yet'

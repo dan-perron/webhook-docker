@@ -78,6 +78,13 @@
       "when": 1792882333939,
       "tag": "0010_series_props_origin",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1793461030671,
+      "tag": "0011_clv",
+      "breakpoints": true
     }
   ]
 }

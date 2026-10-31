@@ -1,0 +1,1 @@
+ALTER TABLE `legs` ADD `close_json` text;

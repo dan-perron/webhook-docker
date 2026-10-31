@@ -191,6 +191,9 @@ export const legs = sqliteTable(
     anchorSource: text('anchor_source'),
     // How pWinPlacement was derived (JSON: source, detail, lines time).
     placementJson: text('placement_json'),
+    // The market at close (JSON LegClose, tracker/clv.ts). Market data, not
+    // derived: kept across recomputes; null = not resolved yet (or pre-CLV).
+    closeJson: text('close_json'),
     ...timestamps,
   },
   (t) => [

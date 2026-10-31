@@ -54,6 +54,20 @@ const config = {
     // How long before scheduled start the pregame snapshot is taken (minutes).
     pregameSnapshotLeadMinutes: 20,
     regions: 'us',
+    // Closing line value: one consensus snapshot per sport shortly before the
+    // earliest start in each window of open legs (tracker/clv.ts).
+    clv: {
+      enabled: process.env.CLV_SNAPSHOTS !== 'false',
+      // Minutes before the window's earliest start to fetch (retry fits before
+      // the 2-minute mark).
+      leadMinutes: 3,
+      // Legs starting this many minutes after the earliest share its snapshot.
+      windowMinutes: 15,
+      retrySeconds: 60,
+      // Below this many requests left, stop until the monthly reset; the rest
+      // stay available to check_odds.
+      quotaFloor: 40,
+    },
   },
   polling: {
     // Seconds between game-state polls for events with an open bet.
