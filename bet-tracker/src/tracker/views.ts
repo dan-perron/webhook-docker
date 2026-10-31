@@ -21,6 +21,13 @@ import {
 import type { GameState, SeriesState } from '../gamestate/types.js';
 import type { Prior } from '../models/prior.js';
 import { PROP_SPECS } from '../models/props.js';
+import {
+  betClose,
+  legClv,
+  parseClose,
+  type CloseSource,
+  type LegClose,
+} from './clv.js';
 import { valueBetRow } from './valuation.js';
 
 // Read models for the MCP tools and the web page. Money in dollars, prices in
@@ -216,6 +223,12 @@ export interface LegView {
   pWin: number | null;
   pPush: number | null;
   pWinAtPlacement: number | null;
+  /** The market at close; null until resolved (and on bets older than CLV). */
+  close: LegClose | null;
+  /** close.p - pWinAtPlacement (probability points; positive = beat the close). */
+  clv: number | null;
+  /** close.p / pWinAtPlacement - 1. */
+  clvPct: number | null;
   /** How pWinAtPlacement was derived (prior source, lines as of, anchor). */
   placement?: Record<string, unknown> | null;
   model: string | null;
@@ -255,6 +268,8 @@ function legView(
           ...(typeof inputs?.note === 'string' ? { note: inputs.note } : {}),
         }
       : undefined;
+  const close = parseClose(l);
+  const clv = legClv(l);
   return {
     id: l.id,
     sport: l.sport,
@@ -276,6 +291,9 @@ function legView(
     pWin: prob(l.pWin),
     pPush: prob(l.pPush),
     pWinAtPlacement: prob(l.pWinPlacement),
+    close: close && { ...close, p: prob(close.p) },
+    clv: prob(clv?.clv),
+    clvPct: prob(clv?.clvPct),
     model: l.model,
     ...(full
       ? {
@@ -318,6 +336,15 @@ export interface ValueView {
   ev: number;
 }
 
+/** The bet at the market's closing prices, boost included. */
+export interface CloseView {
+  /** Product of the legs' close.p; null when source has no price. */
+  pWin: number | null;
+  value: number | null;
+  ev: number | null;
+  source: CloseSource;
+}
+
 export interface BetView {
   id: number;
   book: string;
@@ -344,6 +371,10 @@ export interface BetView {
   origin: BetOrigin | null;
   now: ValueView;
   atPlacement: ValueView | null;
+  /** Null until every leg's close is resolved (and on bets older than CLV). */
+  atClose: CloseView | null;
+  /** atClose.pWin / P(win) at placement - 1. */
+  clv: number | null;
   /** Open legs not matched to an event yet (present only when any). */
   unmatchedLegIds?: number[];
   /** Open player prop legs (present only when any). */
@@ -418,6 +449,7 @@ export function betView(
 ): BetView {
   const v = valueBetRow(bet, legs);
   const payout = winPayout(bet, legs);
+  const close = betClose(bet, legs);
   // A manual settle_bet can disagree with the legs; the recorded result wins.
   const manual = bet.status !== 'open' && bet.status !== v.now.status;
   const settledCents = settledValueCents(
@@ -463,6 +495,16 @@ export function betView(
         : v.now
     ),
     atPlacement: v.atPlacement ? valueView(v.atPlacement) : null,
+    atClose: close.atClose && {
+      pWin: prob(close.atClose.pWin),
+      value:
+        close.atClose.valueCents == null
+          ? null
+          : dollars(close.atClose.valueCents),
+      ev: close.atClose.evCents == null ? null : dollars(close.atClose.evCents),
+      source: close.atClose.source,
+    },
+    clv: prob(close.clv),
     ...(v.unmatchedLegIds.length ? { unmatchedLegIds: v.unmatchedLegIds } : {}),
     ...(v.propLegIds.length ? { propLegIds: v.propLegIds } : {}),
     sameGameEventIds: v.now.sameGameEventIds,
@@ -543,6 +585,20 @@ export interface OriginBreakdown {
     /** Settled bets with no placement value (left out of the EV sums). */
     withoutPlacement: number;
   };
+  /** Bets (open or settled) with a CLV: their games have started. */
+  clvCount: number;
+  /** Stake-weighted bet CLV (null with none). */
+  avgClv: number | null;
+  /** Legs with a CLV. */
+  clvLegCount: number;
+  /** Share of those legs with clv > 0 (null with none). */
+  pctBeatClose: number | null;
+  /** Σ EV at close of the bets with a CLV. */
+  evAtClose: number;
+  /** Σ EV at placement of those same bets, to set against evAtClose. */
+  evAtPlacementWithClv: number;
+  /** Realized profit of those bets that have settled. */
+  profitWithClv: number;
 }
 
 export interface Portfolio {
@@ -662,6 +718,9 @@ export function portfolio(db: Db, origin?: OriginFilter): Portfolio {
       const staked = sum(st.map((v) => v.stake));
       const profit = sum(st.map((v) => v.now.ev));
       const evAtPlacement = sum(placed.map((v) => v.atPlacement!.ev));
+      const withClv = vs.filter((v) => v.clv != null);
+      const clvStake = sum(withClv.map((v) => v.stake));
+      const legClvs = vs.flatMap((v) => v.legs).filter((l) => l.clv != null);
       return [
         {
           origin: o,
@@ -686,6 +745,20 @@ export function portfolio(db: Db, origin?: OriginFilter): Portfolio {
             ]),
             withoutPlacement: st.length - placed.length,
           },
+          clvCount: withClv.length,
+          avgClv: ratio(
+            withClv.reduce((a, v) => a + v.clv! * v.stake, 0),
+            clvStake
+          ),
+          clvLegCount: legClvs.length,
+          pctBeatClose: legClvs.length
+            ? ratio(legClvs.filter((l) => l.clv! > 0).length, legClvs.length)
+            : null,
+          evAtClose: sum(withClv.map((v) => v.atClose!.ev!)),
+          evAtPlacementWithClv: sum(withClv.map((v) => v.atPlacement?.ev ?? 0)),
+          profitWithClv: sum(
+            withClv.filter((v) => v.status !== 'open').map((v) => v.now.ev)
+          ),
         },
       ];
     }

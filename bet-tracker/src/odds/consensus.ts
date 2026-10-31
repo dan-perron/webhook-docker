@@ -133,6 +133,30 @@ export function filterEvents(events: OddsEvent[], query?: string): OddsEvent[] {
   );
 }
 
+/**
+ * The Odds API event for one of our events: both names match, and it is the
+ * nearest start within 12 hours (a doubleheader lists the same teams twice).
+ */
+export function findOddsEvent(
+  odds: OddsEvent[],
+  e: { homeName: string; awayName: string; startTime: string }
+): OddsEvent | undefined {
+  const start = new Date(e.startTime).getTime();
+  const gap = (o: OddsEvent) =>
+    Math.abs(new Date(o.commence_time).getTime() - start);
+  return filterEvents(odds, `${e.awayName} @ ${e.homeName}`)
+    .filter((o) => gap(o) < 12 * 3600_000)
+    .sort((a, b) => gap(a) - gap(b))[0];
+}
+
+/** Fights have no home/away: does the API list our home side as its away? */
+export function sidesSwapped(
+  homeName: string,
+  odds: { home: string; away: string }
+): boolean {
+  return nameScore(homeName, [odds.home]) < nameScore(homeName, [odds.away]);
+}
+
 /** A probability as a vig-free American price. */
 const fairPrice = (p: number) => decimalToAmerican(1 / p);
 
@@ -159,6 +183,21 @@ export function linesFromOdds(e: EventOdds): LinesInput {
     overPrice: price(totals?.consensus['Over']),
     underPrice: price(totals?.consensus['Under']),
   };
+}
+
+/** linesFromOdds with the API's sides aligned to our event's. */
+export function linesForEvent(homeName: string, e: EventOdds): LinesInput {
+  const lines = linesFromOdds(e);
+  return sidesSwapped(homeName, e)
+    ? {
+        ...lines,
+        homeMoneyline: lines.awayMoneyline,
+        awayMoneyline: lines.homeMoneyline,
+        spreadHome: lines.spreadHome == null ? null : -lines.spreadHome,
+        spreadHomePrice: lines.spreadAwayPrice ?? null,
+        spreadAwayPrice: lines.spreadHomePrice ?? null,
+      }
+    : lines;
 }
 
 /** One outcome of a market line, with its own point. */

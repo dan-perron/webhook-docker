@@ -136,6 +136,20 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   list_bets, portfolio and the web page filter by it (`untagged` = null);
   `portfolio().byOrigin` has stake, P/L, ROI and EV at placement vs realized
   per origin.
+- Closing line value (`src/tracker/clv.ts`, `Tracker.closingSnapshots`):
+  `legs.close_json` is the market at close; `clv`, `atClose` and the portfolio
+  numbers are derived on read. One snapshot per sport per window (legs starting
+  within 15 min of the earliest) 3 min before its earliest start, requesting
+  only the markets its open legs need; a failure retries once after 60 s, then
+  `missed`. Same consensus as check_odds. Sources: `exact`; `interpolated` (off
+  the closing line, margin sports only, from the model fitted to the closing
+  lines); `unsupported` (props, series, same-game legs, anything the API lacks;
+  no call made when known up front); `missed`; `live`. Below 40 requests left
+  no snapshots run until the month changes (a reading from last month doesn't
+  count). `close.p` is unconditional P(win), the fair price x (1 - P(push) at
+  placement), to compare with `pWinPlacement`; `atClose.ev` refunds pushes like
+  `atPlacement`. No backfill: settled legs stay null. Off switch:
+  `CLV_SNAPSHOTS=false`.
 
 ## MCP
 

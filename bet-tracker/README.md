@@ -152,6 +152,7 @@ mapped in `docker-compose.yml`:
 | `APP_TOKEN`                               | `BET_APP_TOKEN`        | required                   | Web login, bearer token for HTTP MCP, OAuth approval                |
 | `ODDS_API_KEY`                            | `ODDS_API_KEY`         | empty (odds off)           | The Odds API key; never logged or returned                          |
 | `PREGAME_SNAPSHOT`                        | `BET_PREGAME_SNAPSHOT` | `true`                     | One Odds API snapshot per game before start when ESPN has no lines  |
+| `CLV_SNAPSHOTS`                           | —                      | `true`                     | Closing-line snapshots for CLV (see CLAUDE.md); `false` turns off   |
 | `BASE_PATH`                               | `BET_BASE_PATH`        | `/bets`                    | Path the app is served under                                        |
 | `PUBLIC_ORIGIN`                           | `BET_PUBLIC_ORIGIN`    | `https://djperron.com`     | Absolute origin for OAuth metadata and Secure cookies               |
 | `DATABASE_PATH`                           | —                      | `/data/bet-tracker.sqlite` | SQLite file (named volume `bet-tracker-data`)                       |

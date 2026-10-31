@@ -229,7 +229,7 @@ export function createMcpServer(s: Services): McpServer {
     'list_bets',
     {
       title: 'List bets',
-      description: `Bets with stake, prices, payout, origin and current model P(win), value (expected return) and EV now (value - stake), plus EV at placement (from the pregame prior, or the de-vigged entered price for live bets). Legs include live score/situation (series legs: the series score and next game; props: the stat so far). ${UNITS} ${ORIGIN} ${PROVENANCE}`,
+      description: `Bets with stake, prices, payout, origin and current model P(win), value (expected return) and EV now (value - stake), plus EV at placement (from the pregame prior, or the de-vigged entered price for live bets), and once games near their start the closing line: per leg close {p, price, line, source: exact | interpolated | unsupported | missed | live, snapshotAt}, clv (close.p - pWinAtPlacement) and clvPct; per bet atClose {pWin, value, ev, source} and clv (pWin at close / at placement - 1). Null = not resolved yet, or a bet from before CLV. Legs include live score/situation (series legs: the series score and next game; props: the stat so far). ${UNITS} ${ORIGIN} ${PROVENANCE}`,
       inputSchema: {
         status: z.enum(BET_STATUSES).optional().describe('Default: all'),
         origin: z
@@ -248,7 +248,7 @@ export function createMcpServer(s: Services): McpServer {
     'get_bet',
     {
       title: 'Get a bet',
-      description: `Full detail for one bet: each leg's live state (score, clock/inning, situation; series legs: the series score and next game), model name and inputs (means/sds, run rates, minutes left...; props: the stat so far, minutes/plate appearances/pitches and the mean still to come; series: per-game win probabilities), the prior used (source: espn_lines | pregame_snapshot | entered_odds | neutral, or entered_price for player props, with its numbers), P(win) now and at placement, value and EV. ${UNITS} ${PROVENANCE}`,
+      description: `Full detail for one bet: each leg's live state (score, clock/inning, situation; series legs: the series score and next game), model name and inputs (means/sds, run rates, minutes left...; props: the stat so far, minutes/plate appearances/pitches and the mean still to come; series: per-game win probabilities), the prior used (source: espn_lines | pregame_snapshot | entered_odds | neutral, or entered_price for player props, with its numbers), P(win) now and at placement, value and EV, and the closing line (close, clv, clvPct per leg; atClose, clv per bet; see list_bets). ${UNITS} ${PROVENANCE}`,
       inputSchema: { id: z.number().int() },
       annotations: { readOnlyHint: true },
     },
@@ -399,7 +399,7 @@ export function createMcpServer(s: Services): McpServer {
     'portfolio',
     {
       title: 'Portfolio',
-      description: `Totals for open bets (staked, current value, EV now) and settled bets (staked, returned, profit); byOrigin breaks them down by origin (recommended / own / untagged): stake, profit/loss, ROI, and for settled bets EV at placement next to the realized profit (expectedRoi vs roi, realizedVsExpected); plus an exposure grid for every event carrying two or more open bets: expected P&L per outcome for each bet and net. Moneyline singles are exact; parlays weight by their other legs' current model P(win). origin filters everything to one origin. ${UNITS} ${ORIGIN} ${PROVENANCE}`,
+      description: `Totals for open bets (staked, current value, EV now) and settled bets (staked, returned, profit); byOrigin breaks them down by origin (recommended / own / untagged): stake, profit/loss, ROI, and for settled bets EV at placement next to the realized profit (expectedRoi vs roi, realizedVsExpected), and closing line value: clvCount (bets with CLV), avgClv (stake-weighted), clvLegCount, pctBeatClose (share of legs with clv > 0), evAtClose with evAtPlacementWithClv and profitWithClv over the same bets; plus an exposure grid for every event carrying two or more open bets: expected P&L per outcome for each bet and net. Moneyline singles are exact; parlays weight by their other legs' current model P(win). origin filters everything to one origin. ${UNITS} ${ORIGIN} ${PROVENANCE}`,
       inputSchema: {
         origin: z
           .enum(ORIGIN_FILTERS)

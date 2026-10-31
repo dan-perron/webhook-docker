@@ -23,13 +23,22 @@ import type {
   PregameLines,
   SeriesState,
 } from '../gamestate/types.js';
-import { nameScore } from '../matching/match.js';
 import { matchLegs } from '../matching/service.js';
+import {
+  closeFromOdds,
+  closeMarket,
+  closeWindows,
+  quotaBelowFloor,
+  unavailableClose,
+  type CloseCandidate,
+  type LegClose,
+} from './clv.js';
 import { linesAsOf, recordLines } from './lines.js';
 import {
-  filterEvents,
-  linesFromOdds,
+  findOddsEvent,
+  linesForEvent,
   summarizeEvent,
+  type EventOdds,
 } from '../odds/consensus.js';
 import {
   sportKey,
@@ -88,6 +97,15 @@ export interface TrackerOptions {
     client: OddsApiClient;
     enabled: boolean;
     leadMinutes: number;
+  };
+  /** Closing-line snapshots (tracker/clv.ts). */
+  clv?: {
+    client: OddsApiClient;
+    enabled: boolean;
+    leadMinutes: number;
+    windowMinutes: number;
+    retrySeconds: number;
+    quotaFloor: number;
   };
 }
 
@@ -205,6 +223,10 @@ export class Tracker extends EventEmitter {
   private lastRematch = 0;
   private readonly matchAttempted = new Set<number>();
   private running = false;
+  /** Failed closing snapshots by window: tries so far and when last tried. */
+  private readonly clvTries = new Map<string, { count: number; at: number }>();
+  /** The month the quota floor was last logged, so it logs once. */
+  private clvFloorLogged: string | null = null;
 
   constructor(
     private readonly db: Db,
@@ -233,6 +255,7 @@ export class Tracker extends EventEmitter {
       const betDue = due.filter((e) => this.hasOpenLeg(e.id));
       await this.refreshLines(betDue, result);
       await this.pregameSnapshots(betDue, result);
+      await this.closingSnapshots(result);
       await this.pollStates(due, result);
       const withStats = await this.refreshPlayerStats(result);
       const polledSeries = await this.pollSeries(result);
@@ -477,34 +500,9 @@ export class Tracker extends EventEmitter {
           sportKey: sportKey(e.sport, e.league),
           markets: Tracker.snapshotMarkets(e),
         });
-        const hit = filterEvents(
-          odds.events,
-          `${e.awayName} @ ${e.homeName}`
-        ).find(
-          (o) =>
-            Math.abs(
-              new Date(o.commence_time).getTime() -
-                new Date(e.startTime).getTime()
-            ) <
-            12 * 3600_000
-        );
+        const hit = findOddsEvent(odds.events, e);
         if (hit) {
-          const lines = linesFromOdds(summarizeEvent(hit));
-          // Fights have no home/away: align the API's sides with ours.
-          const swapped =
-            nameScore(e.homeName, [hit.home_team]) <
-            nameScore(e.homeName, [hit.away_team]);
-          json = JSON.stringify(
-            swapped
-              ? {
-                  ...lines,
-                  homeMoneyline: lines.awayMoneyline,
-                  awayMoneyline: lines.homeMoneyline,
-                  spreadHome:
-                    lines.spreadHome == null ? null : -lines.spreadHome,
-                }
-              : lines
-          );
+          json = JSON.stringify(linesForEvent(e.homeName, summarizeEvent(hit)));
         }
       } catch (err) {
         result.errors.push(`snapshot ${e.id}: ${(err as Error).message}`);
@@ -518,6 +516,154 @@ export class Tracker extends EventEmitter {
       if (json)
         recordLines(this.db, e.id, 'snapshot', JSON.parse(json), iso(now));
     }
+  }
+
+  /**
+   * Resolve the close of open legs (any bet status: a dead parlay's later legs
+   * still say whether the pick was sound). Legs with no close to fetch are
+   * stamped right away; the rest share one snapshot per sport per window.
+   */
+  private async closingSnapshots(result: TickResult) {
+    const clv = this.opts.clv;
+    if (!clv?.enabled) return;
+    const rows = this.db
+      .select({ leg: legs, bet: bets })
+      .from(legs)
+      .innerJoin(bets, eq(bets.id, legs.betId))
+      .where(and(isNull(legs.closeJson), eq(legs.status, 'open')))
+      .all();
+    if (!rows.length) return;
+    const now = this.now();
+    const at = iso(now);
+    const stamps: { leg: LegRow; close: LegClose }[] = [];
+    const stamp = (leg: LegRow, source: LegClose['source']) =>
+      stamps.push({ leg, close: unavailableClose(source, at) });
+    const candidates: CloseCandidate<{ leg: LegRow; e: EventRow }>[] = [];
+    for (const { leg, bet } of rows) {
+      const market = closeMarket(leg);
+      if (bet.placedLive) stamp(leg, 'live');
+      else if (!market) stamp(leg, 'unsupported');
+      else if (leg.matchStatus !== 'matched' || !leg.eventId) {
+        // Never matched: its day is over (36 h clears every US time zone).
+        const end = new Date(`${leg.eventDate}T00:00:00Z`).getTime();
+        if (now.getTime() > end + 36 * 3600_000) stamp(leg, 'missed');
+      } else {
+        const siblings = this.db
+          .select({ id: legs.id })
+          .from(legs)
+          .where(and(eq(legs.betId, bet.id), eq(legs.eventId, leg.eventId)))
+          .all();
+        const e = this.db
+          .select()
+          .from(events)
+          .where(eq(events.id, leg.eventId))
+          .get();
+        let key: string | null = null;
+        try {
+          key = e ? sportKey(e.sport, e.league) : null;
+        } catch {
+          // A sport or league the API doesn't cover.
+        }
+        const start = e ? new Date(e.startTime).getTime() : 0;
+        if (siblings.length > 1 || !e || !key) stamp(leg, 'unsupported');
+        else if (e.status !== 'pre' || now.getTime() >= start)
+          stamp(leg, 'missed');
+        else candidates.push({ key, start, market, item: { leg, e } });
+      }
+    }
+    this.writeCloses(stamps, result);
+
+    for (const w of closeWindows(candidates, clv.windowMinutes * 60_000)) {
+      if (now.getTime() < w.start - clv.leadMinutes * 60_000) continue;
+      const id = `${w.key}|${w.start}`;
+      const tried = this.clvTries.get(id);
+      if (tried && now.getTime() < tried.at + clv.retrySeconds * 1000) continue;
+      if (!clv.client.configured) continue;
+      const quota = clv.client.quota();
+      if (quotaBelowFloor(quota, clv.quotaFloor, now)) {
+        const month = at.slice(0, 7);
+        if (this.clvFloorLogged !== month) {
+          this.clvFloorLogged = month;
+          result.errors.push(
+            `clv: Odds API ${quota.remaining} left, below the floor of ${clv.quotaFloor}: no closing snapshots until the monthly reset`
+          );
+        }
+        continue;
+      }
+      let found: Awaited<ReturnType<OddsApiClient['getOdds']>>;
+      try {
+        found = await clv.client.getOdds({
+          sportKey: w.key,
+          markets: w.markets,
+        });
+      } catch (err) {
+        const count = (tried?.count ?? 0) + 1;
+        this.clvTries.set(id, { count, at: now.getTime() });
+        result.errors.push(`clv ${w.key}: ${(err as Error).message}`);
+        if (count >= 2) {
+          this.clvTries.delete(id);
+          this.writeCloses(
+            w.items.map(({ leg }) => ({
+              leg,
+              close: unavailableClose('missed', at),
+            })),
+            result
+          );
+        }
+        continue;
+      }
+      this.clvTries.delete(id);
+      const closes = w.items.map(({ leg, e }) => {
+        const hit = findOddsEvent(found.events, e);
+        try {
+          return {
+            leg,
+            close: hit
+              ? closeFromOdds(leg, e, summarizeEvent(hit), at, (l, odds) =>
+                  this.interpolateClose(l, e, odds)
+                )
+              : unavailableClose('unsupported', at),
+          };
+        } catch (err) {
+          result.errors.push(`clv leg ${leg.id}: ${(err as Error).message}`);
+          return { leg, close: unavailableClose('unsupported', at) };
+        }
+      });
+      this.writeCloses(closes, result);
+    }
+  }
+
+  /** A leg off the closing line, from the model fitted to the closing lines. */
+  private interpolateClose(leg: LegRow, e: EventRow, odds: EventOdds) {
+    const state = preState(e);
+    const prior = ensureFit(
+      e.sport,
+      resolvePrior(
+        e.sport,
+        { snapshot: linesForEvent(e.homeName, odds) },
+        this.opts.params
+      ),
+      this.opts.params,
+      this.postseasonOf(e.stateJson ? JSON.parse(e.stateJson) : state)
+    );
+    return evaluateEvent(e.sport, state, prior, [selectionOf(leg)], {
+      params: this.opts.params,
+    })[0]!.outcome;
+  }
+
+  private writeCloses(
+    closes: { leg: LegRow; close: LegClose }[],
+    result: TickResult
+  ) {
+    if (!closes.length) return;
+    this.db.transaction((tx) => {
+      for (const { leg, close } of closes)
+        tx.update(legs)
+          .set({ closeJson: JSON.stringify(close) })
+          .where(eq(legs.id, leg.id))
+          .run();
+    });
+    result.changedBets.push(...new Set(closes.map((c) => c.leg.betId)));
   }
 
   private nextPoll(state: GameState): string | null {

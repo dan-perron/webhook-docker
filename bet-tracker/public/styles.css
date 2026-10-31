@@ -779,6 +779,9 @@ summary:focus-visible {
   margin: 12px 0;
   font-variant-numeric: tabular-nums;
 }
+.ticket-money.with-clv {
+  grid-template-columns: 1fr 1fr 1fr;
+}
 .ticket-money strong {
   display: block;
   font-size: 19px;
@@ -1155,6 +1158,9 @@ summary:focus-visible {
   border-collapse: collapse;
   font-size: 13px;
   font-variant-numeric: tabular-nums;
+}
+.clv-table {
+  margin-top: 10px;
 }
 .origin-table th,
 .origin-table td {

@@ -189,8 +189,9 @@ export function updateBet(
   if (Object.keys(set).length === 0) return getBet(db, id);
   if (u.placedLive !== undefined) {
     // Placement probabilities depend on it (prior vs entered price): redo.
+    // A live bet has no close, so its close is re-resolved too.
     db.update(legs)
-      .set({ pWinPlacement: null, pPushPlacement: null })
+      .set({ pWinPlacement: null, pPushPlacement: null, closeJson: null })
       .where(eq(legs.betId, id))
       .run();
   }
@@ -373,6 +374,8 @@ export function updateLeg(db: DbOrTx, legId: number, u: LegUpdate): LegRow {
     if (leg.side) side = leg.side === 'home' ? 'away' : 'home';
     else if (leg.eventId || leg.seriesId) matchStatus = 'unmatched';
   }
+  const marketChanged =
+    selectionChanged || parsed.line !== (leg.line ?? undefined);
   return db.transaction((tx) => {
     const updated = tx
       .update(legs)
@@ -383,12 +386,14 @@ export function updateLeg(db: DbOrTx, legId: number, u: LegUpdate): LegRow {
         selectionTeam: newTeam,
         side,
         matchStatus,
+        // A close priced a different market: re-resolve it (missed if started).
+        ...(marketChanged ? { closeJson: null } : {}),
         updatedAt: new Date().toISOString(),
       })
       .where(eq(legs.id, legId))
       .returning()
       .get();
-    if (selectionChanged || parsed.line !== (leg.line ?? undefined)) {
+    if (marketChanged) {
       tx.delete(predictionSnapshots)
         .where(eq(predictionSnapshots.legId, legId))
         .run();
