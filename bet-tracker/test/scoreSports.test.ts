@@ -106,7 +106,8 @@ describe('score-only sports', () => {
         selection: { kind: 'team', team: 'Wisconsin' },
         price: -150,
       });
-    expect(leg('ncaab').success).toBe(false);
+    expect(leg('ncaamh').success).toBe(false);
+    expect(leg('ncaab').success).toBe(true);
     expect(leg('ncaaf').success).toBe(true);
   });
 

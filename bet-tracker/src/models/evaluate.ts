@@ -9,6 +9,7 @@ import {
 import { mlbScores, runRates } from './mlb.js';
 import { nhlScores } from './nhl.js';
 import {
+  isBasketball,
   marginSigmasFor,
   type MarginSport,
   type ModelParams,
@@ -33,6 +34,7 @@ export type ModelName =
   | 'prop_pregame'
   | 'prop_live'
   | 'prop_unverified'
+  | 'postponed'
   | 'manual'
   | 'settled';
 
@@ -80,6 +82,12 @@ export function settleSelection(
   return cmp(sideMargin + sel.line);
 }
 
+/**
+ * Sports whose postponed/canceled games are not auto-voided: the legs stay
+ * open (model 'postponed') until settled by hand.
+ */
+export const HOLD_CANCELLED: ReadonlySet<Sport> = new Set<Sport>(['ncaab']);
+
 export interface EvaluateOptions {
   params: ModelParams;
   /**
@@ -108,8 +116,9 @@ function model(
     case 'nfl':
     case 'ncaaf':
     case 'wnba':
-    case 'nba': {
-      const basketball = sport === 'wnba' || sport === 'nba';
+    case 'nba':
+    case 'ncaab': {
+      const basketball = isBasketball(sport);
       const d = footballDistribution(
         state,
         prior,
@@ -243,6 +252,32 @@ export function evaluateEvent(
   selections: ModelSelection[],
   opts: EvaluateOptions
 ): LegEvaluation[] {
+  if (
+    state.status === 'final' &&
+    state.cancelled &&
+    HOLD_CANCELLED.has(sport)
+  ) {
+    // Books regrade postponed college games case by case (played within a
+    // window, or void): keep the leg open at its pregame value for settle_bet.
+    const pre: GameState = {
+      ...state,
+      status: 'pre',
+      cancelled: false,
+      home: { ...state.home, score: 0 },
+      away: { ...state.away, score: 0 },
+      fractionRemaining: 1,
+      situation: null,
+      winner: null,
+    };
+    return evaluateEvent(sport, pre, prior, selections, opts).map((ev) => ({
+      ...ev,
+      model: 'postponed',
+      inputs: {
+        ...ev.inputs,
+        note: 'postponed or canceled: settle by hand with settle_bet',
+      },
+    }));
+  }
   if (state.status === 'final') {
     return selections.map((sel) => {
       const status = settleSelection(sport, state, sel);

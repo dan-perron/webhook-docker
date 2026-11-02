@@ -9,21 +9,17 @@ export const BET_SPORTS = [
   'nhl',
   'wnba',
   'nba',
+  'ncaab',
   'soccer',
   'mma',
 ] as const;
 export type BetSport = (typeof BET_SPORTS)[number];
 
 /**
- * Followed on the Scores view only (no model, no bets): men's college
- * basketball, men's and women's college hockey, women's college volleyball.
+ * Followed on the Scores view only (no model, no bets): men's and women's
+ * college hockey, women's college volleyball.
  */
-export const SCORE_ONLY_SPORTS = [
-  'ncaab',
-  'ncaamh',
-  'ncaawh',
-  'ncaawvb',
-] as const;
+export const SCORE_ONLY_SPORTS = ['ncaamh', 'ncaawh', 'ncaawvb'] as const;
 
 export const SPORTS = [...BET_SPORTS, ...SCORE_ONLY_SPORTS] as const;
 export type Sport = (typeof SPORTS)[number];

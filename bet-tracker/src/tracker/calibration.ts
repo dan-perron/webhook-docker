@@ -126,6 +126,7 @@ const SPORT_ORDER = [
   'nhl',
   'nba',
   'wnba',
+  'ncaab',
   'soccer',
   'mma',
 ];

@@ -57,6 +57,7 @@ export const appConfig = {
     },
     wnba: config.get<FootballSigmas>('models.wnba'),
     nba: config.get<FootballSigmas>('models.nba'),
+    ncaab: config.get<FootballSigmas>('models.ncaab'),
   },
   props: config.get<PropParams>('props'),
 };

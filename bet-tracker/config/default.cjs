@@ -110,6 +110,9 @@ const config = {
     wnba: { marginSigma: 11.5, totalSigma: 15, sigmaRange: [8, 16] },
     // NBA: same model, 48 minutes.
     nba: { marginSigma: 13, totalSigma: 18, sigmaRange: [9, 17] },
+    // Men's college basketball: two 20-minute halves, ~68 possessions a side
+    // (NBA ~100), so a tighter final margin and total.
+    ncaab: { marginSigma: 11, totalSigma: 15, sigmaRange: [8, 15] },
   },
   props: {
     // Hold assumed when de-vigging an anytime TD price (no "no" side posted):

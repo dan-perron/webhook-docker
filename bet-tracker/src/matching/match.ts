@@ -11,18 +11,79 @@ const MAX_CANDIDATES = 5;
 
 const STOPWORDS = new Set(['the', 'fc', 'cf', 'sc', 'university', 'of']);
 
-/** Lowercase, strip accents/punctuation and filler words. */
+/**
+ * College names written out where ESPN uses the short form (after "St" is
+ * expanded): the leading words are replaced on both sides of a comparison.
+ */
+const CANONICAL: ReadonlyArray<readonly [string, string]> = [
+  ['ut san antonio', 'utsa'],
+  ['texas san antonio', 'utsa'],
+  ['alabama birmingham', 'uab'],
+  ['alabama at birmingham', 'uab'],
+  ['texas el paso', 'utep'],
+  ['nevada las vegas', 'unlv'],
+  ['central florida', 'ucf'],
+  ['virginia commonwealth', 'vcu'],
+  ['southern methodist', 'smu'],
+  ['brigham young', 'byu'],
+  ['texas christian', 'tcu'],
+  ['louisiana state', 'lsu'],
+  ['southern california', 'usc'],
+  ['florida international', 'fiu'],
+  ['florida atlantic', 'fau'],
+  ['miami florida', 'miami'],
+  ['miami fl', 'miami'],
+  ['miami ohio', 'miami oh'],
+];
+
+/**
+ * Lowercase, strip accents/punctuation and filler words. "St" leading a
+ * name is Saint, anywhere else State ("San José St" = "San Jose State");
+ * known long college names become ESPN's short form ("UT San Antonio" =
+ * "UTSA", "Miami (FL)" = "Miami").
+ */
 export function normalizeName(s: string): string {
-  return s
+  const words = s
     .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/&/g, ' and ')
     .replace(/[^a-z0-9 ]+/g, ' ')
     .split(/\s+/)
     .filter((t) => t && !STOPWORDS.has(t))
-    .join(' ');
+    .map((t, i) => (t === 'st' ? (i === 0 ? 'saint' : 'state') : t));
+  let out = words.join(' ');
+  for (const [long, short] of CANONICAL) {
+    if (out === long || out.startsWith(`${long} `)) {
+      out = short + out.slice(long.length);
+      break;
+    }
+  }
+  return out;
 }
+
+/**
+ * Words that make a different school when they follow a name: "Georgia" is
+ * not "Georgia State", "Miami" is not "Miami (OH)".
+ */
+const QUALIFIERS = new Set([
+  'state',
+  'tech',
+  'southern',
+  'northern',
+  'eastern',
+  'western',
+  'central',
+  'christian',
+  'international',
+  'baptist',
+  'atlantic',
+  'poly',
+  'and', // A&M
+  'oh',
+  'fl',
+  'upstate',
+]);
 
 function bigrams(s: string): string[] {
   const t = s.replace(/ /g, '');
@@ -52,20 +113,23 @@ export function dice(a: string, b: string): number {
 /**
  * How well an entered name matches one side's aliases (0..1).
  * 1.0 exact alias; 0.9 the entered words lead an alias ("Minnesota" vs
- * "Minnesota Golden Gophers"); 0.88 a near-identical spelling; else scaled
- * bigram similarity.
+ * "Minnesota Golden Gophers"); 0.88 a near-identical spelling; 0.8 when the
+ * next word makes it another school (only a candidate: "Georgia" vs "Georgia
+ * State Panthers", "Miami" vs "Miami (OH) RedHawks"); else scaled bigram
+ * similarity.
  */
 export function nameScore(entered: string, aliases: string[]): number {
   const e = normalizeName(entered);
   if (!e) return 0;
+  const norm = aliases.map(normalizeName).filter(Boolean);
+  if (norm.includes(e)) return 1;
+  const ew = e.split(' ');
   let best = 0;
-  for (const raw of aliases) {
-    const a = normalizeName(raw);
-    if (!a) continue;
-    if (a === e) return 1;
+  for (const a of norm) {
     const words = a.split(' ');
-    const sequential = e.split(' ').every((w, i) => words[i] === w);
-    if (sequential) best = Math.max(best, 0.9);
+    if (words.length > ew.length && ew.every((w, i) => words[i] === w)) {
+      best = Math.max(best, QUALIFIERS.has(words[ew.length]!) ? 0.8 : 0.9);
+    }
     // Near-identical spellings ("Mississipi") are confident; the rest scale
     // below the confidence bar so they only ever become candidates.
     const d = dice(e, a);
