@@ -1,8 +1,8 @@
 # Upgrading signs: Ubuntu 20.04 → 22.04 → 24.04
 
-Written 2026-10-04 from a read-only survey of `signs`. Re-check the
-"Current state" facts before starting; anything that changed since then
-changes the plan.
+Written 2026-10-04 from a read-only survey of `signs`; re-checked
+2026-10-11 (Phase 1 not yet done). Re-check the "Current state" facts
+before starting; anything that changed since then changes the plan.
 
 ## Current state
 
@@ -11,7 +11,7 @@ changes the plan.
   security updates until **April 2030**. Unattended upgrades on. The release
   upgrade is for newer libraries, not security.
 - `/` (including `/boot` and `/var/lib/docker`) is the LVM volume
-  `ubuntu-vg/root`, 467 GB, 159 GB used. `/boot/efi` is a separate partition.
+  `ubuntu-vg/root`, 467 GB, 165 GB used. `/boot/efi` is a separate partition.
 - Networking, all hand-built, all must survive each hop:
   - NetworkManager runs `eno1` and the VLAN sub-interface `eno1.60`
     (netplan only says "renderer: NetworkManager").
@@ -22,7 +22,10 @@ changes the plan.
     10.1.1.11 and 10.1.1.21. `systemd-resolved` has `DNSStubListener=no`.
 - Services: Apache 2.4 (TLS for djperron.com via certbot from Ubuntu's repo),
   Docker CE 28 (Docker's repo), Plex (Plex's repo), Samba stopped, ufw on.
-  Every running container has `restart: unless-stopped`.
+  Every running container has `restart: unless-stopped`, including
+  `embrace-core-api` (ports 3100/9329, from `~/repos/embrace-core`; its
+  Postgres and Redis containers are stopped) and `apache-proxy` (port 8081,
+  from the sabnzbd stack — separate from the host Apache).
 - `ubuntu-desktop` is installed and it boots to `graphical.target`.
 - Stale apt sources from 18.04 (nothing installed from the last two):
   certbot PPA (dead), `mongodb-org 4.2`, `nodesource node_12.x`.
@@ -56,10 +59,10 @@ throughout.
    ```
    (The two `.cifscreds-thunderdome` files hold the NAS mount credentials
    referenced by `/etc/fstab`.)
-2. **Check LVM space for a rollback snapshot:** `sudo vgs`. If `VFree` is
-   50 GB or more, each hop gets a snapshot (Phase 3, step 1). If it's 0,
-   there's no instant rollback: the backups above are the fallback, and it's
-   worth considering whether that's acceptable.
+2. **No LVM snapshot:** `sudo vgs` shows `VFree 0` (checked 2026-10-11; the
+   root volume fills the disk), so there's no instant rollback. Instead each
+   hop starts with a full copy of `/` to the NAS (Phase 3, step 1), restored
+   from a live USB if needed (an hour or two, not a reboot).
 3. **Remove the stale sources** (and the leftovers from the last upgrade):
    ```bash
    cd /etc/apt/sources.list.d
@@ -96,10 +99,12 @@ throughout.
 
 Do one hop, verify, live with it for a day or two, then the next.
 
-1. **Snapshot** (if `vgs` showed space; size it to the free space, at least 50 GB):
+1. **Full copy of `/` to the NAS** (about 30–60 min, services stay up):
    ```bash
-   sudo lvcreate -s -n root-pre-upgrade -L 50G ubuntu-vg/root
+   sudo ~/docker-compose/webhook-docker/ops/image-root
    ```
+   It writes `/mnt/archive/backups/signs/rootfs/root-<release>-<date>.tar.gz`
+   and tests it. Don't start the upgrade unless it ends with "done".
 2. **Run the upgrade inside tmux** (it survives an SSH drop; over SSH the
    upgrader also starts a fallback sshd on port 1022, and ufw must allow it):
    ```bash
@@ -129,23 +134,34 @@ Do one hop, verify, live with it for a day or two, then the next.
    release-specific, so just uncomment it).
 5. **Verify** (next section). If something is broken and can't be fixed
    quickly, roll back.
-6. **Remove the snapshot** once you're happy (a snapshot that fills up is
-   invalidated, so don't leave it for weeks):
-   ```bash
-   sudo lvremove ubuntu-vg/root-pre-upgrade
-   sudo ufw delete allow 1022/tcp
-   ```
+6. **Close the fallback SSH port** once you're happy:
+   `sudo ufw delete allow 1022/tcp`. Keep the root copy until the next hop
+   has succeeded, then delete it.
 
-### Rollback (only with a snapshot)
+### Rollback without a snapshot
+
+Boot an Ubuntu live USB ("Try Ubuntu") on `signs`, then:
 
 ```bash
-sudo lvconvert --merge ubuntu-vg/root-pre-upgrade
-sudo reboot     # the merge completes as the volume activates; the system comes back as it was
+sudo apt install -y cifs-utils pigz
+sudo vgchange -ay ubuntu-vg
+uuid=$(sudo blkid -s UUID -o value /dev/ubuntu-vg/root)   # reuse it so GRUB and fstab still match
+sudo mkfs.ext4 -F -U "$uuid" /dev/ubuntu-vg/root           # wipes the upgraded system
+sudo mkdir -p /mnt/root /mnt/nas
+sudo mount /dev/ubuntu-vg/root /mnt/root
+sudo mount -t cifs //thunderdome/archive /mnt/nas -o ro,username=<nas user>
+sudo tar -xpf /mnt/nas/backups/signs/rootfs/root-20.04-<date>.tar.gz \
+  --use-compress-program=pigz --numeric-owner --acls --xattrs --xattrs-include='*' \
+  --exclude='./boot/efi/*' -C /mnt/root
+sudo mount /dev/nvme0n1p1 /mnt/root/boot/efi             # then the old GRUB EFI files (vfat: no owners)
+sudo tar -xf /mnt/nas/backups/signs/rootfs/root-20.04-<date>.tar.gz \
+  --use-compress-program=pigz --no-same-owner --no-same-permissions -C /mnt/root ./boot/efi
+sudo umount /mnt/root/boot/efi /mnt/root && sudo reboot
 ```
 
-`/boot` is on the root volume, so the old kernels come back too. The EFI
-partition isn't in the snapshot; the newer GRUB EFI binary boots the old
-system fine.
+If it doesn't boot, chroot in from the live USB and run `grub-install` and
+`update-grub`. Mongo and bet-tracker were copied live; if either won't start,
+restore it from the nightly backup (`ops/README.md`).
 
 ## Verify (after Phase 1 and after each hop)
 

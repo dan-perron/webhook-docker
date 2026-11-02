@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Full copy of signs's root filesystem (plus /boot/efi) to the NAS, as the
+# rollback for a release-upgrade hop: the LVM volume group has no free space,
+# so there's no snapshot. Run with sudo right before do-release-upgrade.
+# Restore steps are in ops/UPGRADE-UBUNTU.md ("Rollback without a snapshot").
+set -euo pipefail
+
+[[ $EUID -eq 0 ]] || { echo "run with sudo" >&2; exit 1; }
+findmnt -n /mnt/archive >/dev/null || { echo "/mnt/archive is not mounted" >&2; exit 1; }
+
+dest=/mnt/archive/backups/signs/rootfs
+mkdir -p "$dest"
+out="$dest/root-$(lsb_release -sr)-$(date +%F).tar.gz"
+
+# Tar rather than rsync: the NAS is CIFS and can't hold Linux ownership,
+# permissions or xattrs, but a tar file carries them. --one-file-system keeps
+# it to / and /boot/efi (named explicitly), skipping /proc, /sys, the NAS
+# mounts and Docker's overlay mounts. Databases are copied live, so restore
+# Mongo and bet-tracker from the nightly backup if they won't start.
+echo "writing $out"
+start=$SECONDS
+set +e
+tar --create --one-file-system --numeric-owner --acls --xattrs --xattrs-include='*' \
+  --sparse --warning=no-file-changed --warning=no-file-removed \
+  --exclude='./tmp/*' --exclude='./var/tmp/*' --exclude='./var/cache/apt/archives/*.deb' \
+  --use-compress-program='pigz -p 10' \
+  --file "$out.partial" --directory / . ./boot/efi
+rc=$?
+set -e
+# Exit 1 only means files changed while being read (logs etc.), expected live.
+if (( rc > 1 )); then
+  echo "tar failed (exit $rc); $out.partial is incomplete" >&2
+  exit "$rc"
+fi
+
+echo "testing the archive"
+pigz -t "$out.partial"
+mv "$out.partial" "$out"
+
+echo "done in $(( (SECONDS - start) / 60 )) min: $(du -h "$out" | cut -f1) $out"
