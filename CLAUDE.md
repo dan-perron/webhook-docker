@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 Docker Compose orchestration for the app stack on the `signs` home server. Runs
-four app services plus MongoDB. Some app directories are git submodules with
+the app services below plus MongoDB. Some app directories are git submodules with
 their own repos; others are plain directories committed straight into this repo.
 
 Apache2 on the host (not in Docker) terminates TLS for `djperron.com` and
@@ -35,6 +35,8 @@ docker compose down
 - `calcium-tracker`: Node/TypeScript Hono app (port 3001) — from the `./calcium-tracker` submodule. Proxied at `/calcium`.
 - `meeting-scheduler`: Node/TypeScript Hono app (port 3002) — plain directory, **not** a submodule. A self-hosted When2Meet. Proxied at `/meet`.
 - `bet-tracker`: Node/TypeScript Hono app (port 3003) — plain directory, **not** a submodule. Live bet tracker + a Scores view (followed teams/starred games, ntfy alerts) + MCP server; uses its own SQLite on the `bet-tracker-data` volume, not Mongo. Proxied at `/bets`. Build/test via `bet-tracker/bin/dev` (see its CLAUDE.md).
+- `recipes`: Node/TypeScript Hono app (port 3004) — plain directory, **not** a submodule. Family recipe box: per-person ratings, cook log, what-to-cook recommendations, schema.org URL import; MCP-first (see its CLAUDE.md). Mongo db `recipes`. Proxied at `/recipes`.
+- `mcp-gateway`: Node/TypeScript Hono app (port 3005) — plain directory. The single remote MCP connector (`https://djperron.com/mcp`, OAuth) that merges every app's MCP tools (`MCP_BACKENDS`); see its CLAUDE.md. Mongo db `mcp`. Proxied at `/mcp`.
 - `personal-assistant`: Node/TypeScript Slack bot (Socket Mode, no HTTP port) — plain directory, **not** a submodule.
 - `mongodb`: MongoDB 6.0 with persistent `mongodb-data` volume. **Not published to the host** — only reachable on this stack's network as hostname `mongodb`, which is why every app here deploys as a service in this stack.
 - `windows-rdp-automation`: Python RDP automation (currently commented out) — from the `./windows-rdp-automation` submodule.
@@ -48,7 +50,7 @@ Each app uses its own logical database on the shared MongoDB (`webhook-server`,
 - `windows-rdp-automation` — Python service for driving OOTP simulations via RDP.
 
 **Plain directories** (committed to this repo, no separate remote): `personal-assistant`,
-`meeting-scheduler`. These deploy with a plain `docker compose up -d --build <name>` —
+`meeting-scheduler`, `bet-tracker`, `recipes`, `mcp-gateway`. These deploy with a plain `docker compose up -d --build <name>` —
 no submodule bump. Prefer this for small apps; reach for a submodule only when the
 app genuinely needs its own repo and history.
 
@@ -58,7 +60,9 @@ eslint/prettier/husky), make it base-path aware from day one, give it the next
 free port, add the `MONGODB_CONNSTRING` env line, and add a two-line
 `ProxyPass`/`ProxyPassReverse` pair to
 `/etc/apache2/sites-enabled/000-default-le-ssl.conf` (the path passes through
-verbatim — no rewrite — because the app knows its own base path).
+verbatim — no rewrite — because the app knows its own base path). For MCP
+tools, give the app a stateless bearer-token `/mcp` and register it with
+`mcp-gateway` instead of adding OAuth or a separate connector.
 
 **Environment**: `.env` file (gitignored) provides `MONGO_USERNAME` and `MONGO_PASSWORD`. See `.env_template` for required variables.
 

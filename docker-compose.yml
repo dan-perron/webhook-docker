@@ -66,6 +66,43 @@ services:
     restart: unless-stopped
     volumes:
       - bet-tracker-data:/data
+  recipes:
+    build:
+      context: ./recipes
+    container_name: recipes
+    image: "dan-perron/recipes"
+    environment:
+      - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/?authSource=admin
+      - MONGODB_DATABASE=recipes
+      - BASE_PATH=${RECIPES_BASE_PATH:-/recipes}
+      - PORT=3004
+      - RECIPES_PASSWORD=${MCP_APP_TOKEN}
+      - RECIPES_APP_TOKEN=${RECIPES_APP_TOKEN}
+      # Set false only to test over plain http (e.g. http://signs:3004/recipes).
+      - COOKIE_SECURE=${RECIPES_COOKIE_SECURE:-true}
+      - PUBLIC_ORIGIN=${RECIPES_PUBLIC_ORIGIN:-https://djperron.com}
+      - TZ=America/Chicago
+    ports:
+      - 3004:3004
+    restart: unless-stopped
+  mcp-gateway:
+    build:
+      context: ./mcp-gateway
+    container_name: mcp-gateway
+    image: "dan-perron/mcp-gateway"
+    environment:
+      - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/?authSource=admin
+      - MONGODB_DATABASE=mcp
+      - MCP_APP_TOKEN=${MCP_APP_TOKEN}
+      - PUBLIC_ORIGIN=${MCP_PUBLIC_ORIGIN:-https://djperron.com}
+      # name=url pairs on this stack's network; each backend's bearer token is
+      # MCP_TOKEN_<NAME>.
+      - MCP_BACKENDS=bets=http://bet-tracker:3003/bets/mcp,recipes=http://recipes:3004/recipes/mcp
+      - MCP_TOKEN_BETS=${BET_APP_TOKEN}
+      - MCP_TOKEN_RECIPES=${RECIPES_APP_TOKEN}
+    ports:
+      - 3005:3005
+    restart: unless-stopped
   mongodb:
     image: mongo:6.0
     volumes:
