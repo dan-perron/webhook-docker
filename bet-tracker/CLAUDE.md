@@ -75,15 +75,27 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   21 days) together with the provider's team list (`listTeams`: ESPN
   `/teams`, MLB `/teams`), so offseason teams resolve and a shared city is
   always ambiguous.
-- `SPORTS` = `BET_SPORTS` (modeled, incl. NBA; `add_bet` accepts only these) +
-  `SCORE_ONLY_SPORTS` (ncaab, ncaamh, ncaawh, ncaawvb: ESPN scoreboards,
-  Scores view only; `evaluate` throws for them). Volleyball's score is sets
+- `SPORTS` = `BET_SPORTS` (modeled, incl. NBA and NCAAB; `add_bet` accepts
+  only these) + `SCORE_ONLY_SPORTS` (ncaamh, ncaawh, ncaawvb: ESPN
+  scoreboards, Scores view only; `evaluate` throws for them). Volleyball's score is sets
   won, its situation the points per set; a fifth set is its "close late".
 - Parlay push/void recompute scales the remaining legs by the book's pricing
   factor (stated price / product of legs).
 - NBA is a margin sport like WNBA (`basketball_normal`: the football_normal
   machinery without key numbers or possession; 12-minute quarters;
-  `models.nba` σ in config).
+  `models.nba` σ in config). NCAAB (men's college basketball) is the same
+  model: two 20-minute halves, 5-minute OT measured on the 40-minute scale
+  (fraction = OT clock / 2400), `models.ncaab` σ 11 (~68 possessions vs
+  NBA ~100); scoreboard `groups=50&limit=500` (all of D-I; the default is
+  ranked/featured only); Odds API `basketball_ncaab`; no props or series.
+  A postponed/canceled NCAAB game is not auto-voided (`HOLD_CANCELLED`):
+  its legs stay open (model `postponed`, pregame value) for `settle_bet`.
+- Name matching (`src/matching/match.ts`): "St" is Saint leading a name,
+  else State; `CANONICAL` maps written-out college names to ESPN's short
+  form (UT San Antonio = UTSA, Miami (FL) = Miami, Miami Ohio = Miami (OH)).
+  A leading-words match is confident (0.9) unless the next word makes it
+  another school (`QUALIFIERS`: State, Tech, (OH)...), then 0.8 = candidate
+  only ("Georgia" vs Georgia State).
 - Player props (`market: 'player_prop'`; `src/models/props.ts`):
   `PROP_SPECS` per prop type (sport, selections, line, stat keys,
   dispersion, MLB role): NFL `anytime_td`; NBA points, rebounds, assists,

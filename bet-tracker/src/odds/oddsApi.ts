@@ -20,6 +20,7 @@ const SPORT_KEYS: Partial<Record<Exclude<Sport, 'soccer'>, string>> = {
   nhl: 'icehockey_nhl',
   wnba: 'basketball_wnba',
   nba: 'basketball_nba',
+  ncaab: 'basketball_ncaab',
   mma: 'mma_mixed_martial_arts',
 };
 export const SOCCER_LEAGUE_KEYS: Record<string, string> = {

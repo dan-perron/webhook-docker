@@ -70,6 +70,7 @@ export interface ModelParams {
   football: { nfl: MarginSigmas; ncaaf: MarginSigmas };
   wnba: MarginSigmas;
   nba: MarginSigmas;
+  ncaab: MarginSigmas;
 }
 
 /** League-average totals used when no source gives one. */
@@ -82,19 +83,23 @@ export const LEAGUE_AVG_TOTAL: Record<Sport, number | null> = {
   nba: 228,
   soccer: 2.6,
   mma: null,
-  ncaab: null,
+  ncaab: 145,
   ncaamh: null,
   ncaawh: null,
   ncaawvb: null,
 };
 
-export type MarginSport = 'nfl' | 'ncaaf' | 'wnba' | 'nba';
+export type BasketballSport = 'wnba' | 'nba' | 'ncaab';
+export type MarginSport = 'nfl' | 'ncaaf' | BasketballSport;
+
+export const isBasketball = (s: Sport): s is BasketballSport =>
+  s === 'wnba' || s === 'nba' || s === 'ncaab';
 
 export const isMarginSport = (s: Sport): s is MarginSport =>
-  s === 'nfl' || s === 'ncaaf' || s === 'wnba' || s === 'nba';
+  s === 'nfl' || s === 'ncaaf' || isBasketball(s);
 
 export const marginSigmasFor = (sport: MarginSport, p: ModelParams) =>
-  sport === 'wnba' ? p.wnba : sport === 'nba' ? p.nba : p.football[sport];
+  isBasketball(sport) ? p[sport] : p.football[sport];
 
 /** Neutral soccer split (no lean either way). */
 const NEUTRAL_SOCCER_DRAW = 0.27;

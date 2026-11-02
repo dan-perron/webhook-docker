@@ -9,6 +9,7 @@ export const PARAMS: ModelParams = {
   },
   wnba: { marginSigma: 11.5, totalSigma: 15, sigmaRange: [8, 16] },
   nba: { marginSigma: 13, totalSigma: 18, sigmaRange: [9, 17] },
+  ncaab: { marginSigma: 11, totalSigma: 15, sigmaRange: [8, 15] },
 };
 
 /** Build a GameState with sensible defaults for model tests. */

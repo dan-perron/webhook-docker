@@ -65,7 +65,7 @@ const PATHS: Record<
   wnba: { path: 'basketball/wnba', query: '', league: 'wnba' },
   nba: { path: 'basketball/nba', query: '', league: 'nba' },
   mma: { path: 'mma/ufc', query: '', league: 'ufc' },
-  // Score-only sports. groups=50 = all of Division I (default: ranked only).
+  // groups=50 = all of Division I (default: ranked/featured games only).
   ncaab: {
     path: 'basketball/mens-college-basketball',
     query: '&groups=50&limit=500',
@@ -524,10 +524,14 @@ export function parseScoreboard(
           fractionRemaining =
             p > 4 ? 0 : Math.max(0, ((4 - p) * q + (clock ?? 0)) / (4 * q));
         } else if (sport === 'ncaab') {
+          // Two 20-minute halves; overtime is 5 minutes, measured on the same
+          // 40-minute scale so the model keeps a full period's spread.
           const p = period ?? 1;
           situation = { kind: 'basketball', period: p, clock: clock ?? 0 };
           fractionRemaining =
-            p > 2 ? 0 : Math.max(0, ((2 - p) * 1200 + (clock ?? 0)) / 2400);
+            p > 2
+              ? Math.max(0, Math.min(300, clock ?? 0) / 2400)
+              : Math.max(0, ((2 - p) * 1200 + (clock ?? 0)) / 2400);
         } else if (sport === 'ncaawvb') {
           situation = volleyballSituation(home, away, period);
           // Sets still needed by the team closest to three, of three.

@@ -1,0 +1,2576 @@
+{
+ "leagues": [],
+ "events": [
+  {
+   "id": "401921173",
+   "uid": "s:40~l:41~e:401921173",
+   "date": "2026-11-02T16:00Z",
+   "name": "Miami (OH) Middletown ThunderHawks at IU Indianapolis Jaguars",
+   "shortName": "MMID @ IUIN",
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401921173",
+     "uid": "s:40~l:41~e:401921173~c:401921173",
+     "date": "2026-11-02T16:00Z",
+     "attendance": 0,
+     "type": {
+      "id": "1",
+      "abbreviation": "STD"
+     },
+     "timeValid": true,
+     "neutralSite": false,
+     "conferenceCompetition": false,
+     "playByPlayAvailable": true,
+     "recent": true,
+     "venue": {
+      "id": "12371",
+      "fullName": "James T. Morris Arena",
+      "address": {
+       "city": "Indianapolis",
+       "state": "IN"
+      },
+      "indoor": true
+     },
+     "competitors": [
+      {
+       "id": "85",
+       "uid": "s:40~l:41~t:85",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "team": {
+        "id": "85",
+        "uid": "s:40~l:41~t:85",
+        "location": "IU Indianapolis",
+        "name": "Jaguars",
+        "abbreviation": "IUIN",
+        "displayName": "IU Indianapolis Jaguars",
+        "shortDisplayName": "IU Indy",
+        "color": "A81F30",
+        "alternateColor": "d59f0f",
+        "isActive": true,
+        "venue": {
+         "id": "12371"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/85.png",
+        "conferenceId": "45"
+       },
+       "score": "42",
+       "linescores": [
+        {
+         "value": 42.0,
+         "displayValue": "42",
+         "period": 1
+        }
+       ],
+       "curatedRank": {
+        "current": 99
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      },
+      {
+       "id": "126972",
+       "uid": "s:40~l:41~t:126972",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "team": {
+        "id": "126972",
+        "uid": "s:40~l:41~t:126972",
+        "location": "Miami (OH) Middletown",
+        "name": "ThunderHawks",
+        "abbreviation": "MMID",
+        "displayName": "Miami (OH) Middletown ThunderHawks",
+        "shortDisplayName": "Miami Mid'town",
+        "isActive": false
+       },
+       "score": "24",
+       "linescores": [
+        {
+         "value": 24.0,
+         "displayValue": "24",
+         "period": 1
+        }
+       ],
+       "curatedRank": {
+        "current": 99
+       }
+      }
+     ],
+     "notes": [],
+     "situation": {
+      "lastPlay": {
+       "id": "401921173120424481",
+       "type": {
+        "id": "558",
+        "text": "JumpShot"
+       },
+       "text": "Manasseh Stackhouse misses 23-foot three point jumper",
+       "scoreValue": 3,
+       "team": {
+        "id": "85"
+       },
+       "probability": {
+        "tiePercentage": 0.0,
+        "homeWinPercentage": 0.945,
+        "awayWinPercentage": 0.05500000000000005
+       },
+       "athletesInvolved": [
+        {
+         "id": "5241670",
+         "fullName": "Manasseh Stackhouse",
+         "displayName": "Manasseh Stackhouse",
+         "shortName": "M. Stackhouse",
+         "headshot": "https://a.espncdn.com/i/headshots/mens-college-basketball/players/full/5241670.png",
+         "jersey": "10",
+         "position": "F",
+         "team": {
+          "id": "85"
+         }
+        }
+       ]
+      }
+     },
+     "status": {
+      "clock": 251.0,
+      "displayClock": "4:11",
+      "period": 1,
+      "type": {
+       "id": "2",
+       "name": "STATUS_IN_PROGRESS",
+       "state": "in",
+       "completed": false,
+       "description": "In Progress",
+       "detail": "4:11 - 1st Half",
+       "shortDetail": "4:11 - 1st"
+      }
+     },
+     "broadcasts": [
+      {
+       "market": "national",
+       "names": [
+        "ESPN+"
+       ]
+      }
+     ],
+     "format": {
+      "regulation": {
+       "periods": 2
+      }
+     },
+     "startDate": "2026-11-02T16:00Z",
+     "broadcast": "ESPN+"
+    }
+   ],
+   "status": {
+    "clock": 251.0,
+    "displayClock": "4:11",
+    "period": 1,
+    "type": {
+     "id": "2",
+     "name": "STATUS_IN_PROGRESS",
+     "state": "in",
+     "completed": false,
+     "description": "In Progress",
+     "detail": "4:11 - 1st Half",
+     "shortDetail": "4:11 - 1st"
+    }
+   }
+  },
+  {
+   "id": "401911469",
+   "uid": "s:40~l:41~e:401911469",
+   "date": "2026-11-02T20:00Z",
+   "name": "UTSA Roadrunners at San Jos\u00e9 State Spartans",
+   "shortName": "UTSA @ SJSU",
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401911469",
+     "uid": "s:40~l:41~e:401911469~c:401911469",
+     "date": "2026-11-02T20:00Z",
+     "attendance": 0,
+     "type": {
+      "id": "1",
+      "abbreviation": "STD"
+     },
+     "timeValid": true,
+     "neutralSite": false,
+     "conferenceCompetition": false,
+     "playByPlayAvailable": false,
+     "recent": true,
+     "venue": {
+      "id": "2192",
+      "fullName": "Provident Credit Union Event Center",
+      "address": {
+       "city": "San Jose",
+       "state": "CA"
+      },
+      "indoor": true
+     },
+     "competitors": [
+      {
+       "id": "23",
+       "uid": "s:40~l:41~t:23",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "team": {
+        "id": "23",
+        "uid": "s:40~l:41~t:23",
+        "location": "San Jos\u00e9 State",
+        "name": "Spartans",
+        "abbreviation": "SJSU",
+        "displayName": "San Jos\u00e9 State Spartans",
+        "shortDisplayName": "San Jos\u00e9 St",
+        "color": "0038a8",
+        "alternateColor": "ffb81a",
+        "isActive": true,
+        "venue": {
+         "id": "2192"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/23.png",
+        "conferenceId": "44"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      },
+      {
+       "id": "2636",
+       "uid": "s:40~l:41~t:2636",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "team": {
+        "id": "2636",
+        "uid": "s:40~l:41~t:2636",
+        "location": "UTSA",
+        "name": "Roadrunners",
+        "abbreviation": "UTSA",
+        "displayName": "UTSA Roadrunners",
+        "shortDisplayName": "UTSA",
+        "color": "0c2340",
+        "alternateColor": "f15a22",
+        "isActive": true,
+        "venue": {
+         "id": "2115"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2636.png",
+        "conferenceId": "62"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      }
+     ],
+     "notes": [],
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Mon, November 2nd at 3:00 PM EST",
+       "shortDetail": "11/2 - 3:00 PM EST"
+      }
+     },
+     "broadcasts": [
+      {
+       "market": "national",
+       "names": [
+        "MW+"
+       ]
+      }
+     ],
+     "format": {
+      "regulation": {
+       "periods": 2
+      }
+     },
+     "startDate": "2026-11-02T20:00Z",
+     "broadcast": "MW+",
+     "odds": [
+      {
+       "provider": {
+        "id": "100",
+        "name": "DraftKings",
+        "priority": 1
+       },
+       "details": "SJSU -8.5",
+       "overUnder": 155.5,
+       "spread": -8.5,
+       "awayTeamOdds": {
+        "favorite": false,
+        "underdog": true,
+        "team": {
+         "id": "2636",
+         "uid": "s:40~l:41~t:2636",
+         "abbreviation": "UTSA",
+         "name": "Roadrunners",
+         "displayName": "UTSA Roadrunners"
+        },
+        "favoriteAtOpen": false
+       },
+       "homeTeamOdds": {
+        "favorite": true,
+        "underdog": false,
+        "team": {
+         "id": "23",
+         "uid": "s:40~l:41~t:23",
+         "abbreviation": "SJSU",
+         "name": "Spartans",
+         "displayName": "San Jos\u00e9 State Spartans"
+        },
+        "favoriteAtOpen": true
+       },
+       "moneyline": {
+        "displayName": "Moneyline",
+        "shortDisplayName": "ML",
+        "home": {
+         "close": {
+          "odds": "-360",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "home",
+            "desktop",
+            "bets",
+            "draftkings"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940942%3Foutcomes%3D0ML87037663_1",
+           "text": "Home Bet",
+           "shortText": "Home Bet",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911469,
+             "betSide": "home",
+             "betType": "straight"
+            }
+           }
+          }
+         },
+         "open": {
+          "odds": "-310"
+         }
+        },
+        "away": {
+         "close": {
+          "odds": "+285",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "away",
+            "desktop",
+            "bets",
+            "draftkings"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940942%3Foutcomes%3D0ML87037663_3",
+           "text": "Away Bet",
+           "shortText": "Away Bet",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911469,
+             "betSide": "away",
+             "betType": "straight"
+            }
+           }
+          }
+         },
+         "open": {
+          "odds": "+250"
+         }
+        }
+       },
+       "pointSpread": {
+        "displayName": "Spread",
+        "shortDisplayName": "Spread",
+        "home": {
+         "close": {
+          "line": "-8.5",
+          "odds": "-102",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "homeSpread",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940942%3Foutcomes%3D0HC87037663N850_1",
+           "text": "Home Point Spread",
+           "shortText": "Home Point Spread",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911469,
+             "betSide": "none",
+             "betType": "straight",
+             "betDetails": "Spread:SJSU-8.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "-7.5",
+          "odds": "-115"
+         }
+        },
+        "away": {
+         "close": {
+          "line": "+8.5",
+          "odds": "-118",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "awaySpread",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940942%3Foutcomes%3D0HC87037663P850_3",
+           "text": "Away Point Spread",
+           "shortText": "Away Point Spread",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911469,
+             "betSide": "none",
+             "betType": "straight",
+             "betDetails": "Spread:UTSA+8.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "+7.5",
+          "odds": "-105"
+         }
+        }
+       },
+       "total": {
+        "displayName": "Total",
+        "shortDisplayName": "Total",
+        "over": {
+         "close": {
+          "line": "o155.5",
+          "odds": "-108",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "over",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940942%3Foutcomes%3D0OU87037663O15550_1",
+           "text": "Over Odds",
+           "shortText": "Over Odds",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911469,
+             "betSide": "over",
+             "betType": "straight",
+             "betDetails": "Over:155.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "o153.5",
+          "odds": "-105"
+         }
+        },
+        "under": {
+         "close": {
+          "line": "u155.5",
+          "odds": "-112",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "under",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940942%3Foutcomes%3D0OU87037663U15550_3",
+           "text": "Under Odds",
+           "shortText": "Under Odds",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911469,
+             "betSide": "under",
+             "betType": "straight",
+             "betDetails": "Under:155.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "u153.5",
+          "odds": "-115"
+         }
+        }
+       },
+       "link": {
+        "language": "en-US",
+        "rel": [
+         "game",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940942",
+        "text": "See More Odds",
+        "shortText": "Game",
+        "isExternal": true,
+        "isPremium": false,
+        "tracking": {
+         "campaign": "betting-integrations",
+         "tags": {
+          "league": "mens-college-basketball",
+          "sport": "basketball",
+          "gameId": 401911469,
+          "betSide": "none",
+          "betType": "straight"
+         }
+        }
+       },
+       "header": {
+        "text": "Game Odds"
+       },
+       "footer": {
+        "disclaimer": "GAMBLING PROBLEM? CALL 1-800-GAMBLER or 1-800-MY-RESET, (800) 327-5050 or visit gamblinghelplinema.org (MA). Call 877-8-HOPENY/text HOPENY (467369) (NY). Call 888-789-7777/visit ccpg.org (CT), or visit www.mdgamblinghelp.org (MD), 1-800-981-0023 (PR). 21+ and present in most states. (18+ DC/KY/NH/PR/WY). Void in ONT. Eligibility restrictions apply. Terms: draftkings.com/sportsbook. On behalf of Boot Hill Casino (KS). Pass-thru of per wager tax may apply in IL."
+       }
+      }
+     ]
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Mon, November 2nd at 3:00 PM EST",
+     "shortDetail": "11/2 - 3:00 PM EST"
+    }
+   }
+  },
+  {
+   "id": "401919014",
+   "uid": "s:40~l:41~e:401919014",
+   "date": "2026-11-02T22:30Z",
+   "name": "UAB Blazers at McNeese Cowboys",
+   "shortName": "UAB VS MCN",
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401919014",
+     "uid": "s:40~l:41~e:401919014~c:401919014",
+     "date": "2026-11-02T22:30Z",
+     "attendance": 0,
+     "type": {
+      "id": "1",
+      "abbreviation": "STD"
+     },
+     "timeValid": true,
+     "neutralSite": true,
+     "conferenceCompetition": false,
+     "playByPlayAvailable": false,
+     "recent": false,
+     "venue": {
+      "id": "7239",
+      "fullName": "Rock Hill Sports & Event Center",
+      "address": {
+       "city": "Rock Hill",
+       "state": "SC"
+      },
+      "indoor": true
+     },
+     "competitors": [
+      {
+       "id": "2377",
+       "uid": "s:40~l:41~t:2377",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "team": {
+        "id": "2377",
+        "uid": "s:40~l:41~t:2377",
+        "location": "McNeese",
+        "name": "Cowboys",
+        "abbreviation": "MCN",
+        "displayName": "McNeese Cowboys",
+        "shortDisplayName": "McNeese",
+        "color": "00529C",
+        "alternateColor": "ffd204",
+        "isActive": true,
+        "venue": {
+         "id": "6007"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2377.png",
+        "conferenceId": "25"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      },
+      {
+       "id": "5",
+       "uid": "s:40~l:41~t:5",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "team": {
+        "id": "5",
+        "uid": "s:40~l:41~t:5",
+        "location": "UAB",
+        "name": "Blazers",
+        "abbreviation": "UAB",
+        "displayName": "UAB Blazers",
+        "shortDisplayName": "UAB",
+        "color": "1a5632",
+        "alternateColor": "fdb913",
+        "isActive": true,
+        "venue": {
+         "id": "2155"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/5.png",
+        "conferenceId": "62"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      }
+     ],
+     "notes": [
+      {
+       "type": "event",
+       "headline": "Field of 68 Opening Day Marathon"
+      }
+     ],
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Mon, November 2nd at 5:30 PM EST",
+       "shortDetail": "11/2 - 5:30 PM EST"
+      }
+     },
+     "broadcasts": [
+      {
+       "market": "national",
+       "names": [
+        "YouTube"
+       ]
+      }
+     ],
+     "format": {
+      "regulation": {
+       "periods": 2
+      }
+     },
+     "startDate": "2026-11-02T22:30Z",
+     "broadcast": "YouTube",
+     "odds": [
+      {
+       "provider": {
+        "id": "100",
+        "name": "DraftKings",
+        "priority": 1
+       },
+       "details": "MCN -3.5",
+       "overUnder": 151.5,
+       "spread": -3.5,
+       "awayTeamOdds": {
+        "favorite": false,
+        "underdog": true,
+        "team": {
+         "id": "5",
+         "uid": "s:40~l:41~t:5",
+         "abbreviation": "UAB",
+         "name": "Blazers",
+         "displayName": "UAB Blazers"
+        },
+        "favoriteAtOpen": false
+       },
+       "homeTeamOdds": {
+        "favorite": true,
+        "underdog": false,
+        "team": {
+         "id": "2377",
+         "uid": "s:40~l:41~t:2377",
+         "abbreviation": "MCN",
+         "name": "Cowboys",
+         "displayName": "McNeese Cowboys"
+        },
+        "favoriteAtOpen": true
+       },
+       "moneyline": {
+        "displayName": "Moneyline",
+        "shortDisplayName": "ML",
+        "home": {
+         "close": {
+          "odds": "-170",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "home",
+            "desktop",
+            "bets",
+            "draftkings"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34941758%3Foutcomes%3D0ML87039486_1",
+           "text": "Home Bet",
+           "shortText": "Home Bet",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401919014,
+             "betSide": "home",
+             "betType": "straight"
+            }
+           }
+          }
+         },
+         "open": {
+          "odds": "-180"
+         }
+        },
+        "away": {
+         "close": {
+          "odds": "+142",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "away",
+            "desktop",
+            "bets",
+            "draftkings"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34941758%3Foutcomes%3D0ML87039486_3",
+           "text": "Away Bet",
+           "shortText": "Away Bet",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401919014,
+             "betSide": "away",
+             "betType": "straight"
+            }
+           }
+          }
+         },
+         "open": {
+          "odds": "+150"
+         }
+        }
+       },
+       "pointSpread": {
+        "displayName": "Spread",
+        "shortDisplayName": "Spread",
+        "home": {
+         "close": {
+          "line": "-3.5",
+          "odds": "-112",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "homeSpread",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34941758%3Foutcomes%3D0HC87039486N350_1",
+           "text": "Home Point Spread",
+           "shortText": "Home Point Spread",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401919014,
+             "betSide": "none",
+             "betType": "straight",
+             "betDetails": "Spread:MCN-3.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "-3.5",
+          "odds": "-110"
+         }
+        },
+        "away": {
+         "close": {
+          "line": "+3.5",
+          "odds": "-108",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "awaySpread",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34941758%3Foutcomes%3D0HC87039486P350_3",
+           "text": "Away Point Spread",
+           "shortText": "Away Point Spread",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401919014,
+             "betSide": "none",
+             "betType": "straight",
+             "betDetails": "Spread:UAB+3.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "+3.5",
+          "odds": "-110"
+         }
+        }
+       },
+       "total": {
+        "displayName": "Total",
+        "shortDisplayName": "Total",
+        "over": {
+         "close": {
+          "line": "o151.5",
+          "odds": "-112",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "over",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34941758%3Foutcomes%3D0OU87039486O15150_1",
+           "text": "Over Odds",
+           "shortText": "Over Odds",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401919014,
+             "betSide": "over",
+             "betType": "straight",
+             "betDetails": "Over:151.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "o148.5",
+          "odds": "-110"
+         }
+        },
+        "under": {
+         "close": {
+          "line": "u151.5",
+          "odds": "-108",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "under",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34941758%3Foutcomes%3D0OU87039486U15150_3",
+           "text": "Under Odds",
+           "shortText": "Under Odds",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401919014,
+             "betSide": "under",
+             "betType": "straight",
+             "betDetails": "Under:151.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "u148.5",
+          "odds": "-110"
+         }
+        }
+       },
+       "link": {
+        "language": "en-US",
+        "rel": [
+         "game",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34941758",
+        "text": "See More Odds",
+        "shortText": "Game",
+        "isExternal": true,
+        "isPremium": false,
+        "tracking": {
+         "campaign": "betting-integrations",
+         "tags": {
+          "league": "mens-college-basketball",
+          "sport": "basketball",
+          "gameId": 401919014,
+          "betSide": "none",
+          "betType": "straight"
+         }
+        }
+       },
+       "header": {
+        "text": "Game Odds"
+       },
+       "footer": {
+        "disclaimer": "GAMBLING PROBLEM? CALL 1-800-GAMBLER or 1-800-MY-RESET, (800) 327-5050 or visit gamblinghelplinema.org (MA). Call 877-8-HOPENY/text HOPENY (467369) (NY). Call 888-789-7777/visit ccpg.org (CT), or visit www.mdgamblinghelp.org (MD), 1-800-981-0023 (PR). 21+ and present in most states. (18+ DC/KY/NH/PR/WY). Void in ONT. Eligibility restrictions apply. Terms: draftkings.com/sportsbook. On behalf of Boot Hill Casino (KS). Pass-thru of per wager tax may apply in IL."
+       }
+      }
+     ]
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Mon, November 2nd at 5:30 PM EST",
+     "shortDetail": "11/2 - 5:30 PM EST"
+    }
+   }
+  },
+  {
+   "id": "401906769",
+   "uid": "s:40~l:41~e:401906769",
+   "date": "2026-11-02T23:00Z",
+   "name": "Miami Hurricanes at Florida Gators",
+   "shortName": "MIA VS FLA",
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401906769",
+     "uid": "s:40~l:41~e:401906769~c:401906769",
+     "date": "2026-11-02T23:00Z",
+     "attendance": 0,
+     "type": {
+      "id": "1",
+      "abbreviation": "STD"
+     },
+     "timeValid": true,
+     "neutralSite": true,
+     "conferenceCompetition": false,
+     "playByPlayAvailable": false,
+     "recent": false,
+     "venue": {
+      "id": "1396",
+      "fullName": "Benchmark International Arena",
+      "address": {
+       "city": "Tampa",
+       "state": "FL"
+      },
+      "indoor": true
+     },
+     "competitors": [
+      {
+       "id": "57",
+       "uid": "s:40~l:41~t:57",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "team": {
+        "id": "57",
+        "uid": "s:40~l:41~t:57",
+        "location": "Florida",
+        "name": "Gators",
+        "abbreviation": "FLA",
+        "displayName": "Florida Gators",
+        "shortDisplayName": "Florida",
+        "color": "0021a5",
+        "alternateColor": "fa4616",
+        "isActive": true,
+        "venue": {
+         "id": "360"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/57.png",
+        "conferenceId": "23"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 1
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      },
+      {
+       "id": "2390",
+       "uid": "s:40~l:41~t:2390",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "team": {
+        "id": "2390",
+        "uid": "s:40~l:41~t:2390",
+        "location": "Miami",
+        "name": "Hurricanes",
+        "abbreviation": "MIA",
+        "displayName": "Miami Hurricanes",
+        "shortDisplayName": "Miami",
+        "color": "f47423",
+        "alternateColor": "035131",
+        "isActive": true,
+        "venue": {
+         "id": "1985"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2390.png",
+        "conferenceId": "2"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 14
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      }
+     ],
+     "notes": [
+      {
+       "type": "event",
+       "headline": "Orion180 Tipoff Classic"
+      }
+     ],
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Mon, November 2nd at 6:00 PM EST",
+       "shortDetail": "11/2 - 6:00 PM EST"
+      }
+     },
+     "broadcasts": [
+      {
+       "market": "national",
+       "names": [
+        "ESPN2"
+       ]
+      }
+     ],
+     "format": {
+      "regulation": {
+       "periods": 2
+      }
+     },
+     "startDate": "2026-11-02T23:00Z",
+     "broadcast": "ESPN2",
+     "odds": [
+      {
+       "provider": {
+        "id": "100",
+        "name": "DraftKings",
+        "priority": 1
+       },
+       "details": "FLA -5.5",
+       "overUnder": 158.5,
+       "spread": -5.5,
+       "awayTeamOdds": {
+        "favorite": false,
+        "underdog": true,
+        "team": {
+         "id": "2390",
+         "uid": "s:40~l:41~t:2390",
+         "abbreviation": "MIA",
+         "name": "Hurricanes",
+         "displayName": "Miami Hurricanes"
+        },
+        "favoriteAtOpen": false
+       },
+       "homeTeamOdds": {
+        "favorite": true,
+        "underdog": false,
+        "team": {
+         "id": "57",
+         "uid": "s:40~l:41~t:57",
+         "abbreviation": "FLA",
+         "name": "Gators",
+         "displayName": "Florida Gators"
+        },
+        "favoriteAtOpen": true
+       },
+       "moneyline": {
+        "displayName": "Moneyline",
+        "shortDisplayName": "ML",
+        "home": {
+         "close": {
+          "odds": "-238",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "home",
+            "desktop",
+            "bets",
+            "draftkings"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34864868%3Foutcomes%3D0ML86833056_3",
+           "text": "Home Bet",
+           "shortText": "Home Bet",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401906769,
+             "betSide": "home",
+             "betType": "straight"
+            }
+           }
+          }
+         },
+         "open": {
+          "odds": "-230"
+         }
+        },
+        "away": {
+         "close": {
+          "odds": "+195",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "away",
+            "desktop",
+            "bets",
+            "draftkings"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34864868%3Foutcomes%3D0ML86833056_1",
+           "text": "Away Bet",
+           "shortText": "Away Bet",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401906769,
+             "betSide": "away",
+             "betType": "straight"
+            }
+           }
+          }
+         },
+         "open": {
+          "odds": "+190"
+         }
+        }
+       },
+       "pointSpread": {
+        "displayName": "Spread",
+        "shortDisplayName": "Spread",
+        "home": {
+         "close": {
+          "line": "-5.5",
+          "odds": "-108",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "homeSpread",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34864868%3Foutcomes%3D0HC86833056N550_3",
+           "text": "Home Point Spread",
+           "shortText": "Home Point Spread",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401906769,
+             "betSide": "none",
+             "betType": "straight",
+             "betDetails": "Spread:FLA-5.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "-5.5",
+          "odds": "-110"
+         }
+        },
+        "away": {
+         "close": {
+          "line": "+5.5",
+          "odds": "-112",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "awaySpread",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34864868%3Foutcomes%3D0HC86833056P550_1",
+           "text": "Away Point Spread",
+           "shortText": "Away Point Spread",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401906769,
+             "betSide": "none",
+             "betType": "straight",
+             "betDetails": "Spread:MIA+5.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "+5.5",
+          "odds": "-110"
+         }
+        }
+       },
+       "total": {
+        "displayName": "Total",
+        "shortDisplayName": "Total",
+        "over": {
+         "close": {
+          "line": "o158.5",
+          "odds": "-110",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "over",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34864868%3Foutcomes%3D0OU86833056O15850_1",
+           "text": "Over Odds",
+           "shortText": "Over Odds",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401906769,
+             "betSide": "over",
+             "betType": "straight",
+             "betDetails": "Over:158.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "o159.5",
+          "odds": "-115"
+         }
+        },
+        "under": {
+         "close": {
+          "line": "u158.5",
+          "odds": "-110",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "under",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34864868%3Foutcomes%3D0OU86833056U15850_3",
+           "text": "Under Odds",
+           "shortText": "Under Odds",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401906769,
+             "betSide": "under",
+             "betType": "straight",
+             "betDetails": "Under:158.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "u159.5",
+          "odds": "-105"
+         }
+        }
+       },
+       "link": {
+        "language": "en-US",
+        "rel": [
+         "game",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34864868",
+        "text": "See More Odds",
+        "shortText": "Game",
+        "isExternal": true,
+        "isPremium": false,
+        "tracking": {
+         "campaign": "betting-integrations",
+         "tags": {
+          "league": "mens-college-basketball",
+          "sport": "basketball",
+          "gameId": 401906769,
+          "betSide": "none",
+          "betType": "straight"
+         }
+        }
+       },
+       "header": {
+        "text": "Game Odds"
+       },
+       "footer": {
+        "disclaimer": "GAMBLING PROBLEM? CALL 1-800-GAMBLER or 1-800-MY-RESET, (800) 327-5050 or visit gamblinghelplinema.org (MA). Call 877-8-HOPENY/text HOPENY (467369) (NY). Call 888-789-7777/visit ccpg.org (CT), or visit www.mdgamblinghelp.org (MD), 1-800-981-0023 (PR). 21+ and present in most states. (18+ DC/KY/NH/PR/WY). Void in ONT. Eligibility restrictions apply. Terms: draftkings.com/sportsbook. On behalf of Boot Hill Casino (KS). Pass-thru of per wager tax may apply in IL."
+       }
+      }
+     ]
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Mon, November 2nd at 6:00 PM EST",
+     "shortDetail": "11/2 - 6:00 PM EST"
+    }
+   }
+  },
+  {
+   "id": "401910994",
+   "uid": "s:40~l:41~e:401910994",
+   "date": "2026-11-02T23:00Z",
+   "name": "Bowling Green Falcons at Georgia State Panthers",
+   "shortName": "BGSU @ GAST",
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401910994",
+     "uid": "s:40~l:41~e:401910994~c:401910994",
+     "date": "2026-11-02T23:00Z",
+     "attendance": 0,
+     "type": {
+      "id": "1",
+      "abbreviation": "STD"
+     },
+     "timeValid": true,
+     "neutralSite": false,
+     "conferenceCompetition": false,
+     "playByPlayAvailable": false,
+     "recent": false,
+     "venue": {
+      "id": "7393",
+      "fullName": "GSU Convocation Center",
+      "address": {
+       "city": "Atlanta",
+       "state": "GA"
+      },
+      "indoor": true
+     },
+     "competitors": [
+      {
+       "id": "2247",
+       "uid": "s:40~l:41~t:2247",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "team": {
+        "id": "2247",
+        "uid": "s:40~l:41~t:2247",
+        "location": "Georgia State",
+        "name": "Panthers",
+        "abbreviation": "GAST",
+        "displayName": "Georgia State Panthers",
+        "shortDisplayName": "Georgia St",
+        "color": "0039a6",
+        "alternateColor": "ffffff",
+        "isActive": true,
+        "venue": {
+         "id": "7393"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2247.png",
+        "conferenceId": "27"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      },
+      {
+       "id": "189",
+       "uid": "s:40~l:41~t:189",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "team": {
+        "id": "189",
+        "uid": "s:40~l:41~t:189",
+        "location": "Bowling Green",
+        "name": "Falcons",
+        "abbreviation": "BGSU",
+        "displayName": "Bowling Green Falcons",
+        "shortDisplayName": "Bowling Green",
+        "color": "fd5000",
+        "alternateColor": "4f2c1d",
+        "isActive": true,
+        "venue": {
+         "id": "2220"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/189.png",
+        "conferenceId": "14"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      }
+     ],
+     "notes": [
+      {
+       "type": "event",
+       "headline": "MAC-SBC Challenge"
+      }
+     ],
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Mon, November 2nd at 6:00 PM EST",
+       "shortDetail": "11/2 - 6:00 PM EST"
+      }
+     },
+     "broadcasts": [
+      {
+       "market": "national",
+       "names": [
+        "ESPN+"
+       ]
+      }
+     ],
+     "format": {
+      "regulation": {
+       "periods": 2
+      }
+     },
+     "startDate": "2026-11-02T23:00Z",
+     "broadcast": "ESPN+",
+     "odds": [
+      {
+       "provider": {
+        "id": "100",
+        "name": "DraftKings",
+        "priority": 1
+       },
+       "details": "GAST -3.5",
+       "overUnder": 158.5,
+       "spread": -3.5,
+       "awayTeamOdds": {
+        "favorite": false,
+        "underdog": true,
+        "team": {
+         "id": "189",
+         "uid": "s:40~l:41~t:189",
+         "abbreviation": "BGSU",
+         "name": "Falcons",
+         "displayName": "Bowling Green Falcons"
+        },
+        "favoriteAtOpen": false
+       },
+       "homeTeamOdds": {
+        "favorite": true,
+        "underdog": false,
+        "team": {
+         "id": "2247",
+         "uid": "s:40~l:41~t:2247",
+         "abbreviation": "GAST",
+         "name": "Panthers",
+         "displayName": "Georgia State Panthers"
+        },
+        "favoriteAtOpen": true
+       },
+       "moneyline": {
+        "displayName": "Moneyline",
+        "shortDisplayName": "ML",
+        "home": {
+         "close": {
+          "odds": "-155",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "home",
+            "desktop",
+            "bets",
+            "draftkings"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940945%3Foutcomes%3D0ML87037665_1",
+           "text": "Home Bet",
+           "shortText": "Home Bet",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401910994,
+             "betSide": "home",
+             "betType": "straight"
+            }
+           }
+          }
+         },
+         "open": {
+          "odds": "-185"
+         }
+        },
+        "away": {
+         "close": {
+          "odds": "+130",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "away",
+            "desktop",
+            "bets",
+            "draftkings"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940945%3Foutcomes%3D0ML87037665_3",
+           "text": "Away Bet",
+           "shortText": "Away Bet",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401910994,
+             "betSide": "away",
+             "betType": "straight"
+            }
+           }
+          }
+         },
+         "open": {
+          "odds": "+154"
+         }
+        }
+       },
+       "pointSpread": {
+        "displayName": "Spread",
+        "shortDisplayName": "Spread",
+        "home": {
+         "close": {
+          "line": "-3.5",
+          "odds": "-115",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "homeSpread",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940945%3Foutcomes%3D0HC87037665N350_1",
+           "text": "Home Point Spread",
+           "shortText": "Home Point Spread",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401910994,
+             "betSide": "none",
+             "betType": "straight",
+             "betDetails": "Spread:GAST-3.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "-3.5",
+          "odds": "-115"
+         }
+        },
+        "away": {
+         "close": {
+          "line": "+3.5",
+          "odds": "-105",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "awaySpread",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940945%3Foutcomes%3D0HC87037665P350_3",
+           "text": "Away Point Spread",
+           "shortText": "Away Point Spread",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401910994,
+             "betSide": "none",
+             "betType": "straight",
+             "betDetails": "Spread:BGSU+3.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "+3.5",
+          "odds": "-105"
+         }
+        }
+       },
+       "total": {
+        "displayName": "Total",
+        "shortDisplayName": "Total",
+        "over": {
+         "close": {
+          "line": "o158.5",
+          "odds": "-112",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "over",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940945%3Foutcomes%3D0OU87037665O15850_1",
+           "text": "Over Odds",
+           "shortText": "Over Odds",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401910994,
+             "betSide": "over",
+             "betType": "straight",
+             "betDetails": "Over:158.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "o156.5",
+          "odds": "-115"
+         }
+        },
+        "under": {
+         "close": {
+          "line": "u158.5",
+          "odds": "-108",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "under",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940945%3Foutcomes%3D0OU87037665U15850_3",
+           "text": "Under Odds",
+           "shortText": "Under Odds",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401910994,
+             "betSide": "under",
+             "betType": "straight",
+             "betDetails": "Under:158.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "u156.5",
+          "odds": "-105"
+         }
+        }
+       },
+       "link": {
+        "language": "en-US",
+        "rel": [
+         "game",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940945",
+        "text": "See More Odds",
+        "shortText": "Game",
+        "isExternal": true,
+        "isPremium": false,
+        "tracking": {
+         "campaign": "betting-integrations",
+         "tags": {
+          "league": "mens-college-basketball",
+          "sport": "basketball",
+          "gameId": 401910994,
+          "betSide": "none",
+          "betType": "straight"
+         }
+        }
+       },
+       "header": {
+        "text": "Game Odds"
+       },
+       "footer": {
+        "disclaimer": "GAMBLING PROBLEM? CALL 1-800-GAMBLER or 1-800-MY-RESET, (800) 327-5050 or visit gamblinghelplinema.org (MA). Call 877-8-HOPENY/text HOPENY (467369) (NY). Call 888-789-7777/visit ccpg.org (CT), or visit www.mdgamblinghelp.org (MD), 1-800-981-0023 (PR). 21+ and present in most states. (18+ DC/KY/NH/PR/WY). Void in ONT. Eligibility restrictions apply. Terms: draftkings.com/sportsbook. On behalf of Boot Hill Casino (KS). Pass-thru of per wager tax may apply in IL."
+       }
+      }
+     ]
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Mon, November 2nd at 6:00 PM EST",
+     "shortDetail": "11/2 - 6:00 PM EST"
+    }
+   }
+  },
+  {
+   "id": "401911002",
+   "uid": "s:40~l:41~e:401911002",
+   "date": "2026-11-03T00:00Z",
+   "name": "Miami (OH) RedHawks at James Madison Dukes",
+   "shortName": "M-OH @ JMU",
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "competitions": [
+    {
+     "id": "401911002",
+     "uid": "s:40~l:41~e:401911002~c:401911002",
+     "date": "2026-11-03T00:00Z",
+     "attendance": 0,
+     "type": {
+      "id": "1",
+      "abbreviation": "STD"
+     },
+     "timeValid": true,
+     "neutralSite": false,
+     "conferenceCompetition": false,
+     "playByPlayAvailable": false,
+     "recent": false,
+     "venue": {
+      "id": "7107",
+      "fullName": "Atlantic Union Bank Center",
+      "address": {
+       "city": "Harrisonburg",
+       "state": "VA"
+      },
+      "indoor": true
+     },
+     "competitors": [
+      {
+       "id": "256",
+       "uid": "s:40~l:41~t:256",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "team": {
+        "id": "256",
+        "uid": "s:40~l:41~t:256",
+        "location": "James Madison",
+        "name": "Dukes",
+        "abbreviation": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison",
+        "color": "450084",
+        "alternateColor": "cbb677",
+        "isActive": true,
+        "venue": {
+         "id": "7107"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/256.png",
+        "conferenceId": "27"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      },
+      {
+       "id": "193",
+       "uid": "s:40~l:41~t:193",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "team": {
+        "id": "193",
+        "uid": "s:40~l:41~t:193",
+        "location": "Miami (OH)",
+        "name": "RedHawks",
+        "abbreviation": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami OH",
+        "color": "c41230",
+        "alternateColor": "ffffff",
+        "isActive": true,
+        "venue": {
+         "id": "2134"
+        },
+        "logoDark": "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/193.png",
+        "conferenceId": "14"
+       },
+       "score": "0",
+       "curatedRank": {
+        "current": 99
+       },
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Season",
+         "type": "total",
+         "summary": "0-0"
+        },
+        {
+         "name": "Home",
+         "abbreviation": "Home",
+         "type": "home",
+         "summary": "0-0"
+        },
+        {
+         "name": "Road",
+         "abbreviation": "AWAY",
+         "type": "road",
+         "summary": "0-0"
+        },
+        {
+         "name": "vs. Conf.",
+         "abbreviation": "VS CONF",
+         "type": "vsconf",
+         "summary": "0-0"
+        }
+       ]
+      }
+     ],
+     "notes": [
+      {
+       "type": "event",
+       "headline": "MAC-SBC Challenge"
+      }
+     ],
+     "status": {
+      "clock": 0.0,
+      "displayClock": "0:00",
+      "period": 0,
+      "type": {
+       "id": "1",
+       "name": "STATUS_SCHEDULED",
+       "state": "pre",
+       "completed": false,
+       "description": "Scheduled",
+       "detail": "Mon, November 2nd at 7:00 PM EST",
+       "shortDetail": "11/2 - 7:00 PM EST"
+      }
+     },
+     "broadcasts": [
+      {
+       "market": "national",
+       "names": [
+        "ESPN+"
+       ]
+      }
+     ],
+     "format": {
+      "regulation": {
+       "periods": 2
+      }
+     },
+     "startDate": "2026-11-03T00:00Z",
+     "broadcast": "ESPN+",
+     "odds": [
+      {
+       "provider": {
+        "id": "100",
+        "name": "DraftKings",
+        "priority": 1
+       },
+       "details": "JMU -1.5",
+       "overUnder": 157.5,
+       "spread": -1.5,
+       "awayTeamOdds": {
+        "favorite": false,
+        "underdog": true,
+        "team": {
+         "id": "193",
+         "uid": "s:40~l:41~t:193",
+         "abbreviation": "M-OH",
+         "name": "RedHawks",
+         "displayName": "Miami (OH) RedHawks"
+        },
+        "favoriteAtOpen": true
+       },
+       "homeTeamOdds": {
+        "favorite": true,
+        "underdog": false,
+        "team": {
+         "id": "256",
+         "uid": "s:40~l:41~t:256",
+         "abbreviation": "JMU",
+         "name": "Dukes",
+         "displayName": "James Madison Dukes"
+        },
+        "favoriteAtOpen": false
+       },
+       "moneyline": {
+        "displayName": "Moneyline",
+        "shortDisplayName": "ML",
+        "home": {
+         "close": {
+          "odds": "-110",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "home",
+            "desktop",
+            "bets",
+            "draftkings"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940974%3Foutcomes%3D0ML87037796_1",
+           "text": "Home Bet",
+           "shortText": "Home Bet",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911002,
+             "betSide": "home",
+             "betType": "straight"
+            }
+           }
+          }
+         },
+         "open": {
+          "odds": "-105"
+         }
+        },
+        "away": {
+         "close": {
+          "odds": "-110",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "away",
+            "desktop",
+            "bets",
+            "draftkings"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940974%3Foutcomes%3D0ML87037796_3",
+           "text": "Away Bet",
+           "shortText": "Away Bet",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911002,
+             "betSide": "away",
+             "betType": "straight"
+            }
+           }
+          }
+         },
+         "open": {
+          "odds": "-115"
+         }
+        }
+       },
+       "pointSpread": {
+        "displayName": "Spread",
+        "shortDisplayName": "Spread",
+        "home": {
+         "close": {
+          "line": "-1.5",
+          "odds": "+110",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "homeSpread",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940974%3Foutcomes%3D0HC87037796N150_1",
+           "text": "Home Point Spread",
+           "shortText": "Home Point Spread",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911002,
+             "betSide": "none",
+             "betType": "straight",
+             "betDetails": "Spread:JMU-1.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "+1.5",
+          "odds": "-125"
+         }
+        },
+        "away": {
+         "close": {
+          "line": "+1.5",
+          "odds": "-130",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "awaySpread",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940974%3Foutcomes%3D0HC87037796P150_3",
+           "text": "Away Point Spread",
+           "shortText": "Away Point Spread",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911002,
+             "betSide": "none",
+             "betType": "straight",
+             "betDetails": "Spread:M-OH+1.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "-1.5",
+          "odds": "+105"
+         }
+        }
+       },
+       "total": {
+        "displayName": "Total",
+        "shortDisplayName": "Total",
+        "over": {
+         "close": {
+          "line": "o157.5",
+          "odds": "-105",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "over",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940974%3Foutcomes%3D0OU87037796O15750_1",
+           "text": "Over Odds",
+           "shortText": "Over Odds",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911002,
+             "betSide": "over",
+             "betType": "straight",
+             "betDetails": "Over:157.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "o155.5",
+          "odds": "-105"
+         }
+        },
+        "under": {
+         "close": {
+          "line": "u157.5",
+          "odds": "-115",
+          "link": {
+           "language": "en-US",
+           "rel": [
+            "under",
+            "desktop",
+            "bets"
+           ],
+           "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940974%3Foutcomes%3D0OU87037796U15750_3",
+           "text": "Under Odds",
+           "shortText": "Under Odds",
+           "isExternal": true,
+           "isPremium": false,
+           "tracking": {
+            "campaign": "betting-integrations",
+            "tags": {
+             "league": "mens-college-basketball",
+             "sport": "basketball",
+             "gameId": 401911002,
+             "betSide": "under",
+             "betType": "straight",
+             "betDetails": "Under:157.5"
+            }
+           }
+          }
+         },
+         "open": {
+          "line": "u155.5",
+          "odds": "-115"
+         }
+        }
+       },
+       "link": {
+        "language": "en-US",
+        "rel": [
+         "game",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://sportsbook.draftkings.com/gateway?s=__s__&wpcid=__wpcid__&wpsrc=413&wpcn=ESPN&wpscn=Widget&wpcrn=BetSlipDeepLink&wpscid=__wpscid__&wpcrid=xx&preurl=https%3A%2F%2Fsportsbook.draftkings.com%2Fevent%2F34940974",
+        "text": "See More Odds",
+        "shortText": "Game",
+        "isExternal": true,
+        "isPremium": false,
+        "tracking": {
+         "campaign": "betting-integrations",
+         "tags": {
+          "league": "mens-college-basketball",
+          "sport": "basketball",
+          "gameId": 401911002,
+          "betSide": "none",
+          "betType": "straight"
+         }
+        }
+       },
+       "header": {
+        "text": "Game Odds"
+       },
+       "footer": {
+        "disclaimer": "GAMBLING PROBLEM? CALL 1-800-GAMBLER or 1-800-MY-RESET, (800) 327-5050 or visit gamblinghelplinema.org (MA). Call 877-8-HOPENY/text HOPENY (467369) (NY). Call 888-789-7777/visit ccpg.org (CT), or visit www.mdgamblinghelp.org (MD), 1-800-981-0023 (PR). 21+ and present in most states. (18+ DC/KY/NH/PR/WY). Void in ONT. Eligibility restrictions apply. Terms: draftkings.com/sportsbook. On behalf of Boot Hill Casino (KS). Pass-thru of per wager tax may apply in IL."
+       }
+      }
+     ]
+    }
+   ],
+   "status": {
+    "clock": 0.0,
+    "displayClock": "0:00",
+    "period": 0,
+    "type": {
+     "id": "1",
+     "name": "STATUS_SCHEDULED",
+     "state": "pre",
+     "completed": false,
+     "description": "Scheduled",
+     "detail": "Mon, November 2nd at 7:00 PM EST",
+     "shortDetail": "11/2 - 7:00 PM EST"
+    }
+   }
+  }
+ ]
+}

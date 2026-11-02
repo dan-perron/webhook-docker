@@ -38,10 +38,12 @@ describe('name scoring', () => {
     expect(nameScore('Michigan', minn)).toBeLessThan(0.5);
   });
 
-  it('"Michigan" partially matches Michigan State but needs both teams', () => {
+  it('"Michigan" is only a candidate for Michigan State', () => {
     const msu = ['Michigan State Spartans', 'Michigan State', 'MSU'];
-    expect(nameScore('Michigan', msu)).toBe(0.9);
-    // Only one event has both Michigan and Minnesota.
+    // "State" makes it another school: below the confidence bar.
+    expect(nameScore('Michigan', msu)).toBe(0.8);
+    expect(nameScore('Michigan St', msu)).toBe(1);
+    // Michigan @ Minnesota is the one confident event.
     const r = matchEvent(['Michigan', 'Minnesota'], cfbEvents);
     expect(r.status).toBe('matched');
     if (r.status === 'matched')
