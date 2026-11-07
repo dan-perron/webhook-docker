@@ -38,8 +38,9 @@ yarn lint:check && yarn format:check
 ## MCP
 
 Stateless HTTP at `POST /health/mcp`, `Authorization: Bearer
-<HEALTH_APP_TOKEN>`, reached only through mcp-gateway (`MCP_BACKENDS`
-`health=http://health:3007/health/mcp`). Tool names are `health_`-prefixed
+<HEALTH_APP_TOKEN>`; the stack sets it to the gateway's own `MCP_APP_TOKEN`
+(no separate secret, since only the gateway can reach it). Reached only
+through mcp-gateway (`MCP_BACKENDS` `health=http://health:3007/health/mcp`). Tool names are `health_`-prefixed
 so they can't clash with other apps'.
 
 ## Deploy (signs)

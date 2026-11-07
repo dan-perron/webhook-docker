@@ -109,8 +109,9 @@ services:
       - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/?authSource=admin
       - MONGODB_DATABASE=health
       - BASE_PATH=/health
-      # Bearer token for /health/mcp (mcp-gateway only; no published port).
-      - HEALTH_APP_TOKEN=${HEALTH_APP_TOKEN}
+      # Bearer token for /health/mcp: the gateway's own MCP_APP_TOKEN (only the
+      # gateway calls it; no published port).
+      - HEALTH_APP_TOKEN=${MCP_APP_TOKEN}
       - TZ=America/Chicago
     restart: unless-stopped
   mcp-gateway:
@@ -129,7 +130,7 @@ services:
       - MCP_TOKEN_BETS=${BET_APP_TOKEN}
       - MCP_TOKEN_RECIPES=${RECIPES_APP_TOKEN}
       - MCP_TOKEN_TRAINING=${TRAINING_APP_TOKEN}
-      - MCP_TOKEN_HEALTH=${HEALTH_APP_TOKEN}
+      - MCP_TOKEN_HEALTH=${MCP_APP_TOKEN}
     ports:
       - 3005:3005
     restart: unless-stopped
