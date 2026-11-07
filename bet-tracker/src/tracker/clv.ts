@@ -3,7 +3,7 @@ import { valueBet } from '../domain/value.js';
 import { isMarginSport } from '../models/prior.js';
 import type { Outcome } from '../models/types.js';
 import { sidesSwapped, type EventOdds } from '../odds/consensus.js';
-import { decimalToAmerican } from '../odds/math.js';
+import { americanToDecimal, decimalToAmerican } from '../odds/math.js';
 import type { OddsMarket, Quota } from '../odds/oddsApi.js';
 
 // Closing line value: the market's de-vigged P(win) just before the game, next
@@ -28,13 +28,58 @@ export interface LegClose {
   /** The closing line, from the selection's side. */
   line: number | null;
   source: CloseSource;
+  /** When the odds were read (historical: the snapshot's own timestamp). */
   snapshotAt: string;
+  /**
+   * De-vigged consensus P(win | no push) at `line`: the fair price the
+   * placed price is measured against. Absent on closes from before it.
+   */
+  fair?: number | null;
+  /**
+   * The bet's own book at close, as offered (vig in), on the leg's own line;
+   * null when that book didn't list it.
+   */
+  book?: { key: string; price: number } | null;
+  /** 'snapshot' = pregame call; 'historical' = Odds API historical odds. */
+  via?: 'snapshot' | 'historical';
 }
 
 export const unavailableClose = (
   source: CloseSource,
   at: string
 ): LegClose => ({ p: null, price: null, line: null, source, snapshotAt: at });
+
+/**
+ * Odds API bookmaker key for a book as entered ("FanDuel", "fanduel",
+ * "Caesars"); null for books the API doesn't carry (Circa, Kalshi).
+ */
+export function bookKeyFor(book: string): string | null {
+  const k = book.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const keys: Record<string, string> = {
+    fanduel: 'fanduel',
+    fd: 'fanduel',
+    draftkings: 'draftkings',
+    dk: 'draftkings',
+    betmgm: 'betmgm',
+    mgm: 'betmgm',
+    caesars: 'williamhill_us',
+    williamhill: 'williamhill_us',
+    betrivers: 'betrivers',
+    espnbet: 'espnbet',
+    thescorebet: 'espnbet',
+    fanatics: 'fanatics',
+    hardrock: 'hardrockbet',
+    hardrockbet: 'hardrockbet',
+    ballybet: 'ballybet',
+    bovada: 'bovada',
+    betonline: 'betonlineag',
+    mybookie: 'mybookieag',
+    lowvig: 'lowvig',
+    betus: 'betus',
+    fliff: 'fliff',
+  };
+  return keys[k] ?? null;
+}
 
 export const parseClose = (l: LegRow): LegClose | null =>
   l.closeJson ? (JSON.parse(l.closeJson) as LegClose) : null;
@@ -118,8 +163,10 @@ export function closeFromOdds(
   e: Pick<EventRow, 'homeName' | 'sport'>,
   odds: EventOdds,
   at: string,
-  interpolate: (leg: LegRow, odds: EventOdds) => Outcome
+  interpolate: (leg: LegRow, odds: EventOdds) => Outcome,
+  opts: { bookKey?: string | null; via?: LegClose['via'] } = {}
 ): LegClose {
+  const via = opts.via ?? 'snapshot';
   const market = closeMarket(leg);
   const none = unavailableClose('unsupported', at);
   if (!market) return none;
@@ -150,22 +197,29 @@ export function closeFromOdds(
           : leg.line;
   if (point === undefined) return none;
 
-  const fair = lines.find((m) => m.point === point)?.consensus[name];
+  const exact = lines.find((m) => m.point === point);
+  const fair = exact?.consensus[name];
   if (fair != null) {
     if (!(fair > 0 && fair < 1)) return none;
+    const own = opts.bookKey
+      ? exact!.books.find((b) => b.book === opts.bookKey)?.prices[name]
+      : undefined;
     return {
       p: fair * (1 - (leg.pPushPlacement ?? 0)),
       price: decimalToAmerican(1 / fair),
       line: leg.line,
       source: 'exact',
       snapshotAt: at,
+      fair,
+      book: own != null ? { key: opts.bookKey!, price: own } : null,
+      via,
     };
   }
   // Off the closing line. Lines are sorted most-offered first.
   const main = lines[0];
   if (market === 'h2h' || main?.point == null || !isMarginSport(e.sport))
     return none;
-  const { win } = interpolate(leg, odds);
+  const { win, push } = interpolate(leg, odds);
   if (!(win > 0 && win < 1)) return none;
   return {
     p: win,
@@ -173,6 +227,53 @@ export function closeFromOdds(
     line: market === 'spreads' ? fromHome(main.point) : main.point,
     source: 'interpolated',
     snapshotAt: at,
+    fair: push < 1 ? win / (1 - push) : null,
+    // No book listed this line (else it would be exact).
+    book: null,
+    via,
+  };
+}
+
+/**
+ * The close's fair P(win | no push). Closes from before `fair` was stored:
+ * exact = p / (1 - P(push) at placement), interpolated = p.
+ */
+export function closeFair(l: LegRow, c: LegClose | null): number | null {
+  if (c?.p == null) return null;
+  if (c.fair !== undefined) return c.fair;
+  const push = c.source === 'exact' ? (l.pPushPlacement ?? 0) : 0;
+  return push < 1 ? c.p / (1 - push) : null;
+}
+
+/**
+ * Price CLV: the leg's placed price at the de-vigged closing fair, i.e. its
+ * EV per unit staked at the close, ignoring pushes (both sides are
+ * conditional on no push): fair x decimal(placed) - 1. Positive = beat the
+ * close. Parlay legs use their own leg price.
+ */
+export function legPriceClv(l: LegRow): number | null {
+  const fair = closeFair(l, parseClose(l));
+  return fair == null ? null : fair * americanToDecimal(l.priceAmerican) - 1;
+}
+
+/**
+ * Price movement around placement, as decimal-odds ratios (positive = the
+ * price Dan got was better): recToPlaced = placed / recommended - 1,
+ * placedToClose = placed / the book's own closing price - 1.
+ */
+export function legPriceMove(l: LegRow): {
+  recToPlaced: number | null;
+  placedToClose: number | null;
+} {
+  const placed = americanToDecimal(l.priceAmerican);
+  const bookClose = parseClose(l)?.book?.price;
+  return {
+    recToPlaced:
+      l.recommendedPrice != null
+        ? placed / americanToDecimal(l.recommendedPrice) - 1
+        : null,
+    placedToClose:
+      bookClose != null ? placed / americanToDecimal(bookClose) - 1 : null,
   };
 }
 

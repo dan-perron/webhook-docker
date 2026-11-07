@@ -125,6 +125,8 @@ export const bets = sqliteTable('bets', {
   notes: text('notes'),
   // recommended (Claude's +EV pick) | own (Dan's one-off); null = untagged.
   origin: text('origin', { enum: BET_ORIGINS }),
+  // When Claude recommended it (ISO; null = not recommended, or unknown).
+  recommendedAt: text('recommended_at'),
   status: text('status', { enum: BET_STATUSES }).notNull().default('open'),
   settledAt: text('settled_at'),
   // Same-game groups priced from one game model: JSON
@@ -170,6 +172,9 @@ export const legs = sqliteTable(
     // Spread from the selection's perspective (+5.5 / -21.5) or total line.
     line: real('line'),
     priceAmerican: integer('price_american').notNull(),
+    // The price when recommended (American; null = none recorded), to split
+    // rec -> placed movement from placed -> close.
+    recommendedPrice: integer('recommended_price'),
     status: text('status', { enum: BET_STATUSES }).notNull().default('open'),
     priorSource: text('prior_source', { enum: PRIOR_SOURCES }),
     // JSON prior inputs (home win prob, spread, total, ...) used by models.

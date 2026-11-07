@@ -11,8 +11,10 @@ import {
 } from '../db/bets.js';
 import type { Db } from '../db/client.js';
 import { betInputSchema } from '../domain/betInput.js';
+import { TIMING_BUCKETS } from '../domain/timing.js';
 import {
   BET_ORIGINS,
+  BET_SPORTS,
   BET_STATUSES,
   BOOST_KINDS,
   ORIGIN_FILTERS,
@@ -156,7 +158,7 @@ export function createMcpServer(s: Services): McpServer {
     'add_bet',
     {
       title: 'Add a bet',
-      description: `Create a tracked bet (single or parlay) from structured input and match each leg to a live event (or, for series markets, a playoff series) by sport, date (America/Chicago) and fuzzy team/fighter names. Legs with exactly one confident match are linked; others come back with candidates to confirm via confirm_match (never guess). Returns the bet with current model P(win)/value/EV. ${UNITS} stake/statedPayout in dollars; price/boostedPrice/leg price in American odds; boostPct in percent. Sports: nfl, ncaaf, mlb, nhl, nba, wnba, ncaab (men's college basketball, all of Division I; no player props yet), soccer, mma. Markets: moneyline (NHL includes OT/shootout; NBA and NCAAB include OT), moneyline3way (soccer), spread (incl. MLB run line and NHL puck line), total, player_prop, series_winner and series_spread (playoff series; mlb, nba, nhl, wnba). player_prop legs: participants are the two teams, prop {type, player, team: the player's team, one of participants}. Prop types: nfl anytime_td (selection yes, no line); nba points, rebounds, assists, threes, pra (points+rebounds+assists); mlb home_runs, total_bases, hits (batters), pitcher_strikeouts, pitcher_outs (outs recorded) — all over/under with a line (e.g. selection {kind: over}, line 24.5); to hit a HR = home_runs with selection yes and no line (or over 0.5). Player props are valued from their entered price de-vigged with an assumed hold (anytime TD: 8% up to +200, 15% above; over/unders and to hit a HR: 7% up to +200, 12% above), move live with the box score, and settle from ESPN's final box score (anytime TD: rushing/receiving/return TDs count, passing TDs don't); if the player has no box score line (or did not play), the leg stays open to settle by hand with settle_bet (void if the book voided it). Series legs: selection {kind: team, team}; series_spread takes line = games won minus lost from the backed team's side (Brewers -2.5 = win the series by 3+ games, i.e. 4-0 or 4-1; +1.5 = win, or lose 3-4); eventDate = the date of any game in the series. They link to the series (ESPN season + both teams), are valued by simulating the remaining games from the current series state with per-game win probabilities (each game's own ESPN line, else a strength from the latest line or the entered price, adjusted for home/away; a game in progress uses ESPN's live win probability), and settle when the series ends. Set placedLive for bets placed during the game. Pregame, each game leg's P(win) is matched to the market's fair price for that exact line when one is known (ESPN/Odds API, else the entered price de-vigged); that adjustment fades as the game plays. Set origin on every new bet: ${ORIGIN} ${PROVENANCE}`,
+      description: `Create a tracked bet (single or parlay) from structured input and match each leg to a live event (or, for series markets, a playoff series) by sport, date (America/Chicago) and fuzzy team/fighter names. Legs with exactly one confident match are linked; others come back with candidates to confirm via confirm_match (never guess). Returns the bet with current model P(win)/value/EV. ${UNITS} stake/statedPayout in dollars; price/boostedPrice/leg price in American odds; boostPct in percent. Sports: nfl, ncaaf, mlb, nhl, nba, wnba, ncaab (men's college basketball, all of Division I; no player props yet), soccer, mma. Markets: moneyline (NHL includes OT/shootout; NBA and NCAAB include OT), moneyline3way (soccer), spread (incl. MLB run line and NHL puck line), total, player_prop, series_winner and series_spread (playoff series; mlb, nba, nhl, wnba). player_prop legs: participants are the two teams, prop {type, player, team: the player's team, one of participants}. Prop types: nfl anytime_td (selection yes, no line); nba points, rebounds, assists, threes, pra (points+rebounds+assists); mlb home_runs, total_bases, hits (batters), pitcher_strikeouts, pitcher_outs (outs recorded) — all over/under with a line (e.g. selection {kind: over}, line 24.5); to hit a HR = home_runs with selection yes and no line (or over 0.5). Player props are valued from their entered price de-vigged with an assumed hold (anytime TD: 8% up to +200, 15% above; over/unders and to hit a HR: 7% up to +200, 12% above), move live with the box score, and settle from ESPN's final box score (anytime TD: rushing/receiving/return TDs count, passing TDs don't); if the player has no box score line (or did not play), the leg stays open to settle by hand with settle_bet (void if the book voided it). Series legs: selection {kind: team, team}; series_spread takes line = games won minus lost from the backed team's side (Brewers -2.5 = win the series by 3+ games, i.e. 4-0 or 4-1; +1.5 = win, or lose 3-4); eventDate = the date of any game in the series. They link to the series (ESPN season + both teams), are valued by simulating the remaining games from the current series state with per-game win probabilities (each game's own ESPN line, else a strength from the latest line or the entered price, adjusted for home/away; a game in progress uses ESPN's live win probability), and settle when the series ends. Set placedLive for bets placed during the game. Pregame, each game leg's P(win) is matched to the market's fair price for that exact line when one is known (ESPN/Odds API, else the entered price de-vigged); that adjustment fades as the game plays. Set origin on every new bet: ${ORIGIN} For a bet you recommended, also set recommendedAt (when you recommended it) and each leg's recommendedPrice (the price you quoted), so price movement before placement can be split from movement after. ${PROVENANCE}`,
       inputSchema: betInputSchema,
     },
     async (input) => {
@@ -229,7 +231,7 @@ export function createMcpServer(s: Services): McpServer {
     'list_bets',
     {
       title: 'List bets',
-      description: `Bets with stake, prices, payout, origin and current model P(win), value (expected return) and EV now (value - stake), plus EV at placement (from the pregame prior, or the de-vigged entered price for live bets), and once games near their start the closing line: per leg close {p, price, line, source: exact | interpolated | unsupported | missed | live, snapshotAt}, clv (close.p - pWinAtPlacement) and clvPct; per bet atClose {pWin, value, ev, source} and clv (pWin at close / at placement - 1). Null = not resolved yet, or a bet from before CLV. Legs include live score/situation (series legs: the series score and next game; props: the stat so far). ${UNITS} ${ORIGIN} ${PROVENANCE}`,
+      description: `Bets with stake, prices, payout, origin and current model P(win), value (expected return) and EV now (value - stake), plus EV at placement (from the pregame prior, or the de-vigged entered price for live bets), and once games near their start the closing line: per leg close {p, price, line, source: exact | interpolated | unsupported | missed | live, snapshotAt}, clv (close.p - pWinAtPlacement) and clvPct, priceClv (placed price at the de-vigged closing fair: fair x decimal price - 1), close.fair and close.book {key, price} (the bet's own book at close, vig in), recommendedPrice, priceMove {recToPlaced, placedToClose}, hoursBeforeStart and timing (>12h | 2-12h | <2h); per bet recommendedAt, timing {placedAt, placedAtSource: entered | created (no placedAt: when it was entered, if before the game), hoursBeforeStart (to the first leg), bucket}, atClose {pWin, value, ev, source} and clv (pWin at close / at placement - 1). Null = not resolved yet, or a bet from before CLV. Legs include live score/situation (series legs: the series score and next game; props: the stat so far). ${UNITS} ${ORIGIN} ${PROVENANCE}`,
       inputSchema: {
         status: z.enum(BET_STATUSES).optional().describe('Default: all'),
         origin: z
@@ -284,6 +286,10 @@ export function createMcpServer(s: Services): McpServer {
               .nullable()
               .describe('recommended | own; null = untagged'),
             settledAt: z.iso.datetime({ offset: true }).nullable(),
+            recommendedAt: z.iso
+              .datetime({ offset: true })
+              .nullable()
+              .describe('When Claude recommended it; null clears'),
           })
           .partial(),
       },
@@ -295,7 +301,7 @@ export function createMcpServer(s: Services): McpServer {
         if (!b) return fail(`Bet ${id} not found`);
         // Placement values depend on prices, boost and placed time: rebuild
         // (notes and origin don't move any number).
-        const { notes: _n, origin: _o, ...priced } = rest;
+        const { notes: _n, origin: _o, recommendedAt: _r, ...priced } = rest;
         if (Object.keys(priced).length) s.tracker.recomputeBet(id);
         // After the recompute, which would re-derive it.
         if (settledAt !== undefined) updateBet(s.db, id, { settledAt });
@@ -310,7 +316,7 @@ export function createMcpServer(s: Services): McpServer {
     'update_leg',
     {
       title: 'Update a leg',
-      description: `Fix one leg of a bet: its price (American odds, as placed), line (from the selection's side, e.g. -1.5; a prop or series spread line) and/or selection (kind team/over/under/draw/yes, and team for team and series picks; must be one of the leg's two participants; a player prop keeps its prop type, player and team). Re-validated like add_bet. Then the whole bet is recomputed: prior from its own prices, P(win) at placement and now, same-game joints, and settlement if the game is final. ${UNITS}`,
+      description: `Fix one leg of a bet: its price (American odds, as placed), line (from the selection's side, e.g. -1.5; a prop or series spread line) and/or selection (kind team/over/under/draw/yes, and team for team and series picks; must be one of the leg's two participants; a player prop keeps its prop type, player and team). Re-validated like add_bet. Then the whole bet is recomputed: prior from its own prices, P(win) at placement and now, same-game joints, and settlement if the game is final. recommendedPrice (this leg's price when Claude recommended it) and recommendedAt (the bet's recommendation time) only record the recommendation: no recompute. ${UNITS}`,
       inputSchema: {
         legId: z.number().int(),
         fields: z
@@ -321,14 +327,32 @@ export function createMcpServer(s: Services): McpServer {
               kind: z.enum(SELECTION_KINDS),
               team: z.string().optional(),
             }),
+            recommendedPrice: z
+              .number()
+              .int()
+              .nullable()
+              .describe(
+                'The price (American) when Claude recommended this leg; null clears'
+              ),
+            recommendedAt: z.iso
+              .datetime({ offset: true })
+              .nullable()
+              .describe(
+                "When Claude recommended the bet (sets the bet's recommendedAt; null clears)"
+              ),
           })
           .partial(),
       },
     },
     async ({ legId, fields }) => {
       try {
-        const leg = updateLeg(s.db, legId, fields);
-        s.tracker.recomputeBet(leg.betId);
+        const { recommendedAt, ...legFields } = fields;
+        const leg = updateLeg(s.db, legId, legFields);
+        if (recommendedAt !== undefined)
+          updateBet(s.db, leg.betId, { recommendedAt });
+        // Recommendation fields alone don't move any number.
+        const { recommendedPrice: _rp, ...priced } = legFields;
+        if (Object.keys(priced).length) s.tracker.recomputeBet(leg.betId);
         return json(betViewById(s.db, getBet(s.db, leg.betId)!));
       } catch (e) {
         return fail((e as Error).message);
@@ -399,7 +423,7 @@ export function createMcpServer(s: Services): McpServer {
     'portfolio',
     {
       title: 'Portfolio',
-      description: `Totals for open bets (staked, current value, EV now) and settled bets (staked, returned, profit); byOrigin breaks them down by origin (recommended / own / untagged): stake, profit/loss, ROI, and for settled bets EV at placement next to the realized profit (expectedRoi vs roi, realizedVsExpected), and closing line value: clvCount (bets with CLV), avgClv (stake-weighted), clvLegCount, pctBeatClose (share of legs with clv > 0), evAtClose with evAtPlacementWithClv and profitWithClv over the same bets; plus an exposure grid for every event carrying two or more open bets: expected P&L per outcome for each bet and net. Moneyline singles are exact; parlays weight by their other legs' current model P(win). origin filters everything to one origin. ${UNITS} ${ORIGIN} ${PROVENANCE}`,
+      description: `Totals for open bets (staked, current value, EV now) and settled bets (staked, returned, profit); byOrigin breaks them down by origin (recommended / own / untagged): stake, profit/loss, ROI, and for settled bets EV at placement next to the realized profit (expectedRoi vs roi, realizedVsExpected), and closing line value: clvCount (bets with CLV), avgClv (stake-weighted), clvLegCount, pctBeatClose (share of legs with clv > 0), evAtClose with evAtPlacementWithClv and profitWithClv over the same bets (these CLVs are close vs P(win) at placement); byTiming (hours from placement to the leg's start: >12h, 2-12h, <2h, unknown) and bySport break down leg price CLV, the placed price at the de-vigged closing fair (fair x decimal price - 1, so > 0 beat the close; parlay legs at their own leg price; each leg weighs its bet's stake split over its legs): legCount, clvCount, avgClv, pctBeatClose, and where legs have a recommendedPrice, priceMove {count, recToPlaced, closeCount, placedToClose} (decimal-odds ratios, positive = better for Dan: placed vs recommended, placed vs the book's own closing price); plus an exposure grid for every event carrying two or more open bets: expected P&L per outcome for each bet and net. Moneyline singles are exact; parlays weight by their other legs' current model P(win). origin filters everything to one origin. ${UNITS} ${ORIGIN} ${PROVENANCE}`,
       inputSchema: {
         origin: z
           .enum(ORIGIN_FILTERS)
@@ -407,11 +431,26 @@ export function createMcpServer(s: Services): McpServer {
           .describe(
             'recommended | own | untagged (no origin yet). Default: all'
           ),
+        sport: z
+          .enum(BET_SPORTS)
+          .optional()
+          .describe(
+            'Only bets with a leg in this sport; byTiming/bySport count only those legs'
+          ),
+        timing: z
+          .enum(TIMING_BUCKETS)
+          .optional()
+          .describe(
+            'Only bets with a leg placed this long before its start (>12h | 2-12h | <2h); byTiming/bySport count only those legs'
+          ),
       },
       annotations: { readOnlyHint: true },
     },
-    async ({ origin }) =>
-      json({ ...portfolio(s.db, origin), oddsApiQuota: s.odds.quota() })
+    async ({ origin, sport, timing }) =>
+      json({
+        ...portfolio(s.db, { origin, sport, timing }),
+        oddsApiQuota: s.odds.quota(),
+      })
   );
 
   // --- Scores: games followed for their score (not bets) --------------------

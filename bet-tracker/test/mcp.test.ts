@@ -193,6 +193,48 @@ describe('MCP tools', () => {
     expect(data.bet.payout).toBeCloseTo(34.08, 2);
   });
 
+  it('add_bet/update_leg take recommendedAt and recommendedPrice; portfolio filters', async () => {
+    const { data } = await call<{ bet: BetView }>('add_bet', {
+      book: 'FanDuel',
+      stake: 20,
+      price: -142,
+      origin: 'recommended',
+      recommendedAt: '2026-10-03T09:00:00-05:00',
+      legs: [
+        {
+          sport: 'nfl',
+          eventDate: '2026-10-04',
+          participants: ['Chicago Bears', 'New York Jets'],
+          market: 'moneyline',
+          selection: { kind: 'team', team: 'Chicago Bears' },
+          price: -142,
+          recommendedPrice: -135,
+        },
+      ],
+    });
+    expect(data.bet.recommendedAt).toBe('2026-10-03T14:00:00.000Z');
+    expect(data.bet.legs[0]!.recommendedPrice).toBe(-135);
+    // -142 (1.704225) vs -135 (1.740741): 1.704225 / 1.740741 - 1 = -.020977
+    expect(data.bet.legs[0]!.priceMove.recToPlaced).toBeCloseTo(-0.021, 4);
+    const legId = data.bet.legs[0]!.id;
+    const upd = await call<BetView>('update_leg', {
+      legId,
+      fields: { recommendedPrice: -140, recommendedAt: null },
+    });
+    expect(upd.data.legs[0]!.recommendedPrice).toBe(-140);
+    expect(upd.data.recommendedAt).toBeNull();
+
+    const p = await call<Portfolio>('portfolio', {
+      sport: 'nfl',
+      timing: '<2h',
+    });
+    expect(p.isError).toBe(false);
+    expect(p.data).toMatchObject({ sport: 'nfl', timing: '<2h' });
+    expect(Array.isArray(p.data.byTiming)).toBe(true);
+    expect(Array.isArray(p.data.bySport)).toBe(true);
+    expect((await call('portfolio', { timing: '1h' })).isError).toBe(true);
+  });
+
   it('add_bet reports legs it could not match instead of guessing', async () => {
     const { data } = await call<{
       matching: { needsAttention: { status: string }[] };

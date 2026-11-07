@@ -58,15 +58,18 @@ const config = {
     // earliest start in each window of open legs (tracker/clv.ts).
     clv: {
       enabled: process.env.CLV_SNAPSHOTS !== 'false',
-      // Minutes before the window's earliest start to fetch (retry fits before
-      // the 2-minute mark).
-      leadMinutes: 3,
+      // Minutes before the window's earliest start to fetch (the retry fits
+      // before the 4-minute mark). Historical odds are read as of this too.
+      leadMinutes: 5,
       // Legs starting this many minutes after the earliest share its snapshot.
       windowMinutes: 15,
       retrySeconds: 60,
       // Below this many requests left, stop until the monthly reset; the rest
       // stay available to check_odds.
       quotaFloor: 40,
+      // Historical odds (paid Odds API plans, 10x a live call) for games that
+      // started before their snapshot; off = those legs are missed.
+      historical: process.env.CLV_HISTORICAL === 'true',
     },
   },
   polling: {

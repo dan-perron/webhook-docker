@@ -17,13 +17,24 @@ import {
   type BetStatus,
   type OriginFilter,
   type Side,
+  type Sport,
 } from '../domain/types.js';
 import type { GameState, SeriesState } from '../gamestate/types.js';
 import type { Prior } from '../models/prior.js';
 import { PROP_SPECS } from '../models/props.js';
 import {
+  hoursBeforeStart,
+  placedTime,
+  timingBucket,
+  TIMING_BUCKETS,
+  type PlacedTime,
+  type TimingBucket,
+} from '../domain/timing.js';
+import {
   betClose,
   legClv,
+  legPriceClv,
+  legPriceMove,
   parseClose,
   type CloseSource,
   type LegClose,
@@ -229,6 +240,21 @@ export interface LegView {
   clv: number | null;
   /** close.p / pWinAtPlacement - 1. */
   clvPct: number | null;
+  /**
+   * The placed price at the de-vigged closing fair: fair x decimal(price) -
+   * 1 (EV per unit at the close, pushes aside). > 0 = beat the close.
+   */
+  priceClv: number | null;
+  /** The leg's price when recommended (American), if recorded. */
+  recommendedPrice: number | null;
+  /**
+   * Decimal-odds ratios, positive = better for Dan: placed / recommended - 1
+   * and placed / the book's own closing price - 1.
+   */
+  priceMove: { recToPlaced: number | null; placedToClose: number | null };
+  /** Hours from placement to this leg's game start, and its bucket. */
+  hoursBeforeStart: number | null;
+  timing: TimingBucket | null;
   /** How pWinAtPlacement was derived (prior source, lines as of, anchor). */
   placement?: Record<string, unknown> | null;
   model: string | null;
@@ -244,7 +270,8 @@ function legView(
   l: LegRow,
   e: EventRow | undefined,
   full: boolean,
-  s?: SeriesRow
+  s: SeriesRow | undefined,
+  placedAt: string | null
 ): LegView {
   const candidates =
     l.matchStatus === 'needs_confirmation' && l.matchCandidatesJson
@@ -270,6 +297,8 @@ function legView(
       : undefined;
   const close = parseClose(l);
   const clv = legClv(l);
+  const move = legPriceMove(l);
+  const hours = hoursBeforeStart(placedAt, e?.startTime);
   return {
     id: l.id,
     sport: l.sport,
@@ -294,6 +323,14 @@ function legView(
     close: close && { ...close, p: prob(close.p) },
     clv: prob(clv?.clv),
     clvPct: prob(clv?.clvPct),
+    priceClv: prob(legPriceClv(l)),
+    recommendedPrice: l.recommendedPrice,
+    priceMove: {
+      recToPlaced: prob(move.recToPlaced),
+      placedToClose: prob(move.placedToClose),
+    },
+    hoursBeforeStart: hours == null ? null : Math.round(hours * 100) / 100,
+    timing: timingBucket(hours),
     model: l.model,
     ...(full
       ? {
@@ -369,6 +406,18 @@ export interface BetView {
   notes: string | null;
   /** recommended (Claude's +EV pick) | own (Dan's one-off) | null = untagged. */
   origin: BetOrigin | null;
+  /** When Claude recommended it (ISO), if recorded. */
+  recommendedAt: string | null;
+  /**
+   * placedAt (or, without one, when it was entered here if before the
+   * game), hours from then to the first leg's start, and that bucket.
+   */
+  timing: {
+    placedAt: PlacedTime['at'];
+    placedAtSource: PlacedTime['source'];
+    hoursBeforeStart: number | null;
+    bucket: TimingBucket | null;
+  };
   now: ValueView;
   atPlacement: ValueView | null;
   /** Null until every leg's close is resolved (and on bets older than CLV). */
@@ -457,6 +506,12 @@ export function betView(
     payout.cents,
     bet.stakeCents
   );
+  const starts = legs
+    .map((l) => (l.eventId ? evs.get(l.eventId)?.startTime : undefined))
+    .filter((t): t is string => !!t)
+    .sort();
+  const placed = placedTime(bet, starts[0] ?? null);
+  const hours = hoursBeforeStart(placed.at, starts[0]);
   return {
     id: bet.id,
     book: bet.book,
@@ -484,6 +539,13 @@ export function betView(
     tokenInfo: bet.tokenInfo,
     notes: bet.notes,
     origin: bet.origin,
+    recommendedAt: bet.recommendedAt,
+    timing: {
+      placedAt: placed.at,
+      placedAtSource: placed.source,
+      hoursBeforeStart: hours == null ? null : Math.round(hours * 100) / 100,
+      bucket: timingBucket(hours),
+    },
     now: valueView(
       manual
         ? {
@@ -513,7 +575,8 @@ export function betView(
         l,
         l.eventId ? evs.get(l.eventId) : undefined,
         full,
-        l.seriesId ? srs.get(l.seriesId) : undefined
+        l.seriesId ? srs.get(l.seriesId) : undefined,
+        placed.at
       )
     ),
   };
@@ -601,13 +664,99 @@ export interface OriginBreakdown {
   profitWithClv: number;
 }
 
+/**
+ * Price CLV over a group of legs (one timing bucket or one sport). A leg
+ * weighs its bet's stake split evenly over the bet's legs, so a parlay
+ * counts once in total, not once per leg.
+ */
+export interface ClvGroup {
+  /** The bucket (>12h | 2-12h | <2h | unknown) or sport. */
+  key: string;
+  legCount: number;
+  /** Legs with a price CLV (a priced close). */
+  clvCount: number;
+  /** Weighted mean leg priceClv (null with none). */
+  avgClv: number | null;
+  /** Share of those legs with priceClv > 0. */
+  pctBeatClose: number | null;
+  /**
+   * Legs with a recommendedPrice: weighted mean recToPlaced over them
+   * (count), and placedToClose over those whose book has a close
+   * (closeCount). Null when no leg here has one.
+   */
+  priceMove: {
+    count: number;
+    recToPlaced: number | null;
+    closeCount: number;
+    placedToClose: number | null;
+  } | null;
+}
+
+export interface PortfolioFilter {
+  origin?: OriginFilter;
+  /** Bets with a leg in this sport; breakdowns count only those legs. */
+  sport?: Sport;
+  /** Bets with a leg in this bucket; breakdowns count only those legs. */
+  timing?: TimingBucket;
+}
+
 export interface Portfolio {
   /** The origin filter applied, if any. */
   origin?: OriginFilter;
+  sport?: Sport;
+  timing?: TimingBucket;
   open: { count: number; staked: number; value: number; ev: number };
   settled: { count: number; staked: number; returned: number; profit: number };
   byOrigin: OriginBreakdown[];
+  /** Leg price CLV by hours from placement to the leg's start. */
+  byTiming: ClvGroup[];
+  bySport: ClvGroup[];
   exposure: Exposure[];
+}
+
+const round4 = (x: number) => Math.round(x * 10000) / 10000;
+
+/** Weighted mean of (value, weight) pairs; null when there are none. */
+function weightedMean(xs: { v: number; w: number }[]): number | null {
+  const w = xs.reduce((a, x) => a + x.w, 0);
+  return xs.length && w > 0
+    ? round4(xs.reduce((a, x) => a + x.v * x.w, 0) / w)
+    : null;
+}
+
+export function clvGroup(
+  key: string,
+  legs: { leg: LegView; weight: number }[]
+): ClvGroup {
+  const priced = legs.filter((x) => x.leg.priceClv != null);
+  const rec = legs.filter((x) => x.leg.recommendedPrice != null);
+  const recClose = rec.filter((x) => x.leg.priceMove.placedToClose != null);
+  return {
+    key,
+    legCount: legs.length,
+    clvCount: priced.length,
+    avgClv: weightedMean(
+      priced.map((x) => ({ v: x.leg.priceClv!, w: x.weight }))
+    ),
+    pctBeatClose: priced.length
+      ? round4(priced.filter((x) => x.leg.priceClv! > 0).length / priced.length)
+      : null,
+    priceMove: rec.length
+      ? {
+          count: rec.length,
+          recToPlaced: weightedMean(
+            rec.map((x) => ({ v: x.leg.priceMove.recToPlaced!, w: x.weight }))
+          ),
+          closeCount: recClose.length,
+          placedToClose: weightedMean(
+            recClose.map((x) => ({
+              v: x.leg.priceMove.placedToClose!,
+              w: x.weight,
+            }))
+          ),
+        }
+      : null,
+  };
 }
 
 function exposureFor(e: EventRow, bets: BetWithLegs[]): Exposure {
@@ -672,9 +821,21 @@ function exposureFor(e: EventRow, bets: BetWithLegs[]): Exposure {
   };
 }
 
-export function portfolio(db: Db, origin?: OriginFilter): Portfolio {
-  const all = listBets(db, undefined, origin);
-  const views = new Map(betViews(db, undefined, origin).map((v) => [v.id, v]));
+export function portfolio(
+  db: Db,
+  filter: OriginFilter | PortfolioFilter = {}
+): Portfolio {
+  const f = typeof filter === 'string' ? { origin: filter } : filter;
+  const { origin, sport, timing } = f;
+  const legMatches = (l: LegView) =>
+    (!sport || l.sport === sport) && (!timing || l.timing === timing);
+  const allViews = betViews(db, undefined, origin).filter(
+    (v) => (!sport && !timing) || v.legs.some(legMatches)
+  );
+  const views = new Map(allViews.map((v) => [v.id, v]));
+  const all = listBets(db, undefined, origin).filter((b) =>
+    views.has(b.bet.id)
+  );
   const open = all.filter((b) => b.bet.status === 'open');
   const settled = all.filter((b) => b.bet.status !== 'open');
 
@@ -763,8 +924,25 @@ export function portfolio(db: Db, origin?: OriginFilter): Portfolio {
       ];
     }
   );
+  const legs = allViews.flatMap((v) =>
+    v.legs
+      .filter(legMatches)
+      .map((leg) => ({ leg, weight: v.stake / v.legs.length }))
+  );
+  const byTiming = [...TIMING_BUCKETS, 'unknown' as const].flatMap((b) => {
+    const xs = legs.filter((x) => (x.leg.timing ?? 'unknown') === b);
+    return xs.length ? [clvGroup(b, xs)] : [];
+  });
+  const bySport = [...new Set(legs.map((x) => x.leg.sport))].sort().map((sp) =>
+    clvGroup(
+      sp,
+      legs.filter((x) => x.leg.sport === sp)
+    )
+  );
   return {
     ...(origin ? { origin } : {}),
+    ...(sport ? { sport } : {}),
+    ...(timing ? { timing } : {}),
     open: {
       count: open.length,
       staked: sum(open.map((b) => b.bet.stakeCents / 100)),
@@ -778,6 +956,8 @@ export function portfolio(db: Db, origin?: OriginFilter): Portfolio {
       profit: sum(settled.map((b) => views.get(b.bet.id)!.now.ev)),
     },
     byOrigin,
+    byTiming,
+    bySport,
     exposure: evs.map((e) => exposureFor(e, byEvent.get(e.id)!)),
   };
 }

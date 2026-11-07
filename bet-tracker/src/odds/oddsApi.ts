@@ -153,6 +153,33 @@ export type OddsFetch = (url: string) => Promise<{
 
 const QUOTA_KEY = 'odds_api_quota';
 
+/** Historical odds cost 10x a live call (per market per region). */
+export const HISTORICAL_COST_FACTOR = 10;
+
+/** The plan has no historical odds (the free plan): a 401/403 from it. */
+export class HistoricalUnavailableError extends Error {
+  constructor(status: number, code: string | null) {
+    super(
+      `Odds API historical odds unavailable on this plan (HTTP ${status}${code ? ` ${code}` : ''})`
+    );
+  }
+}
+
+export interface HistoricalRequest {
+  sportKey: string;
+  markets: OddsMarket[];
+  /** ISO: the API returns the closest snapshot at or before it. */
+  date: string;
+}
+
+export interface HistoricalResult {
+  events: OddsEvent[];
+  /** The snapshot's own time. */
+  timestamp: string;
+  cost: number;
+  quota: Quota;
+}
+
 export class OddsApiClient {
   private cache = new Map<string, { at: number; events: OddsEvent[] }>();
 
@@ -211,17 +238,7 @@ export class OddsApiClient {
     const url = `${this.opts.baseUrl}/sports/${req.sportKey}/odds?${params}`;
     const res = await (this.opts.fetch ?? (fetch as unknown as OddsFetch))(url);
     // Quota headers come back on errors too.
-    const num = (h: string) => {
-      const v = res.headers.get(h);
-      return v == null || v === '' ? null : Number(v);
-    };
-    const quota: Quota = {
-      remaining: num('x-requests-remaining'),
-      used: num('x-requests-used'),
-      last: num('x-requests-last'),
-      updatedAt: new Date(now).toISOString(),
-    };
-    if (quota.remaining != null || quota.used != null) this.saveQuota(quota);
+    const quota = this.readQuota(res, now);
     if (!res.ok) {
       // Never echo the URL: it carries the key.
       throw new Error(`Odds API ${req.sportKey} -> HTTP ${res.status}`);
@@ -234,6 +251,73 @@ export class OddsApiClient {
       cached: false,
       quota,
     };
+  }
+
+  costOfHistorical(markets: number): number {
+    return (
+      HISTORICAL_COST_FACTOR *
+      requestCost(markets, this.opts.regions.split(',').length)
+    );
+  }
+
+  /**
+   * Odds as of a past time (paid plans only). Throws
+   * HistoricalUnavailableError when the plan doesn't include them.
+   */
+  async getHistoricalOdds(req: HistoricalRequest): Promise<HistoricalResult> {
+    if (!this.configured) throw new Error('ODDS_API_KEY is not set');
+    const now = (this.opts.now ?? Date.now)();
+    const date = new Date(req.date).toISOString().replace(/\.\d{3}Z$/, 'Z');
+    const params = new URLSearchParams({
+      regions: this.opts.regions,
+      markets: req.markets.join(','),
+      oddsFormat: 'american',
+      dateFormat: 'iso',
+      date,
+      apiKey: this.opts.apiKey,
+    });
+    const url = `${this.opts.baseUrl}/historical/sports/${req.sportKey}/odds?${params}`;
+    const res = await (this.opts.fetch ?? (fetch as unknown as OddsFetch))(url);
+    const quota = this.readQuota(res, now);
+    if (res.status === 401 || res.status === 403) {
+      let code: string | null = null;
+      try {
+        code =
+          ((await res.json()) as { error_code?: string }).error_code ?? null;
+      } catch {
+        // No body.
+      }
+      throw new HistoricalUnavailableError(res.status, code);
+    }
+    if (!res.ok)
+      throw new Error(
+        `Odds API historical ${req.sportKey} -> HTTP ${res.status}`
+      );
+    const body = (await res.json()) as {
+      timestamp: string;
+      data: OddsEvent[];
+    };
+    return {
+      events: body.data ?? [],
+      timestamp: body.timestamp,
+      cost: quota.last ?? this.costOfHistorical(req.markets.length),
+      quota,
+    };
+  }
+
+  private readQuota(res: Awaited<ReturnType<OddsFetch>>, now: number): Quota {
+    const num = (h: string) => {
+      const v = res.headers.get(h);
+      return v == null || v === '' ? null : Number(v);
+    };
+    const quota: Quota = {
+      remaining: num('x-requests-remaining'),
+      used: num('x-requests-used'),
+      last: num('x-requests-last'),
+      updatedAt: new Date(now).toISOString(),
+    };
+    if (quota.remaining != null || quota.used != null) this.saveQuota(quota);
+    return quota;
   }
 
   private saveQuota(q: Quota) {

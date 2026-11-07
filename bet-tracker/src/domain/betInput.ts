@@ -56,6 +56,8 @@ export const legInputSchema = z
      */
     line: z.number().nullish(),
     price: american,
+    /** The leg's price when Claude recommended it (American; optional). */
+    recommendedPrice: american.nullish(),
   })
   .superRefine((leg, ctx) => {
     const { kind, team } = leg.selection;
@@ -158,6 +160,8 @@ export const betInputSchema = z
     notes: z.string().min(1).optional(),
     /** recommended = Claude recommended it as +EV; own = Dan's one-off. */
     origin: z.enum(BET_ORIGINS).optional(),
+    /** When Claude recommended it (ISO 8601 with offset). */
+    recommendedAt: z.iso.datetime({ offset: true }).optional(),
     legs: z.array(legInputSchema).min(1),
   })
   .superRefine((bet, ctx) => {
