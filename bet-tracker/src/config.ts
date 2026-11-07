@@ -34,6 +34,7 @@ export const appConfig = {
       windowMinutes: config.get<number>('oddsApi.clv.windowMinutes'),
       retrySeconds: config.get<number>('oddsApi.clv.retrySeconds'),
       quotaFloor: config.get<number>('oddsApi.clv.quotaFloor'),
+      historical: config.get<boolean>('oddsApi.clv.historical'),
     },
   },
   polling: {

@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import { and, desc, eq, inArray, isNull, lte, ne, or } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull, lte, ne, or, sql } from 'drizzle-orm';
 import type { Db, Tx } from '../db/client.js';
 import {
   bets,
@@ -25,12 +25,14 @@ import type {
 } from '../gamestate/types.js';
 import { matchLegs } from '../matching/service.js';
 import {
+  bookKeyFor,
   closeFromOdds,
   closeMarket,
   closeWindows,
   quotaBelowFloor,
   unavailableClose,
   type CloseCandidate,
+  type CloseWindow,
   type LegClose,
 } from './clv.js';
 import { linesAsOf, recordLines } from './lines.js';
@@ -41,8 +43,10 @@ import {
   type EventOdds,
 } from '../odds/consensus.js';
 import {
+  HistoricalUnavailableError,
   sportKey,
   type OddsApiClient,
+  type OddsEvent,
   type OddsMarket,
 } from '../odds/oddsApi.js';
 import type { JointOutcome } from '../domain/value.js';
@@ -106,7 +110,36 @@ export interface TrackerOptions {
     windowMinutes: number;
     retrySeconds: number;
     quotaFloor: number;
+    /**
+     * Use Odds API historical odds (paid plans; 10x a live call) for a game
+     * that started before its snapshot. Off = those legs are `missed`.
+     */
+    historical?: boolean;
   };
+}
+
+/** A leg waiting for its close, with its event and bet. */
+interface CloseItem {
+  leg: LegRow;
+  e: EventRow;
+  bet: BetRow;
+}
+
+export interface CloseBackfillReport {
+  /** Settled legs with no close, or only a `missed` stamp. */
+  missingClose: number;
+  /** Of those, legs historical odds could price. */
+  eligible: number;
+  /** The rest, by reason. */
+  skipped: Record<string, number>;
+  windows: number;
+  /** Requests the windows cost (historical = 10 x markets x regions). */
+  estimatedCost: number;
+  /** null = not asked (dry run, or nothing to fetch). */
+  planAvailable: boolean | null;
+  filled: number;
+  spent: number;
+  errors: string[];
 }
 
 /** A polled game's state change (prev null on its first fetch). */
@@ -522,6 +555,9 @@ export class Tracker extends EventEmitter {
    * Resolve the close of open legs (any bet status: a dead parlay's later legs
    * still say whether the pick was sound). Legs with no close to fetch are
    * stamped right away; the rest share one snapshot per sport per window.
+   * A game that started before its snapshot (early, or while we were down)
+   * gets historical odds from just before its start when that is enabled,
+   * else `missed`; live odds are never recorded as a close.
    */
   private async closingSnapshots(result: TickResult) {
     const clv = this.opts.clv;
@@ -535,61 +571,28 @@ export class Tracker extends EventEmitter {
     if (!rows.length) return;
     const now = this.now();
     const at = iso(now);
-    const stamps: { leg: LegRow; close: LegClose }[] = [];
-    const stamp = (leg: LegRow, source: LegClose['source']) =>
-      stamps.push({ leg, close: unavailableClose(source, at) });
-    const candidates: CloseCandidate<{ leg: LegRow; e: EventRow }>[] = [];
-    for (const { leg, bet } of rows) {
-      const market = closeMarket(leg);
-      if (bet.placedLive) stamp(leg, 'live');
-      else if (!market) stamp(leg, 'unsupported');
-      else if (leg.matchStatus !== 'matched' || !leg.eventId) {
-        // Never matched: its day is over (36 h clears every US time zone).
-        const end = new Date(`${leg.eventDate}T00:00:00Z`).getTime();
-        if (now.getTime() > end + 36 * 3600_000) stamp(leg, 'missed');
-      } else {
-        const siblings = this.db
-          .select({ id: legs.id })
-          .from(legs)
-          .where(and(eq(legs.betId, bet.id), eq(legs.eventId, leg.eventId)))
-          .all();
-        const e = this.db
-          .select()
-          .from(events)
-          .where(eq(events.id, leg.eventId))
-          .get();
-        let key: string | null = null;
-        try {
-          key = e ? sportKey(e.sport, e.league) : null;
-        } catch {
-          // A sport or league the API doesn't cover.
-        }
-        const start = e ? new Date(e.startTime).getTime() : 0;
-        if (siblings.length > 1 || !e || !key) stamp(leg, 'unsupported');
-        else if (e.status !== 'pre' || now.getTime() >= start)
-          stamp(leg, 'missed');
-        else candidates.push({ key, start, market, item: { leg, e } });
-      }
+    const { stamps, candidates } = this.closeCandidates(rows, now);
+    const pending: CloseCandidate<CloseItem>[] = [];
+    const late: CloseCandidate<CloseItem>[] = [];
+    for (const c of candidates) {
+      if (c.item.e.status !== 'pre' || now.getTime() >= c.start) {
+        if (clv.historical) late.push(c);
+        else
+          stamps.push({
+            leg: c.item.leg,
+            close: unavailableClose('missed', at),
+          });
+      } else pending.push(c);
     }
     this.writeCloses(stamps, result);
 
-    for (const w of closeWindows(candidates, clv.windowMinutes * 60_000)) {
+    for (const w of closeWindows(pending, clv.windowMinutes * 60_000)) {
       if (now.getTime() < w.start - clv.leadMinutes * 60_000) continue;
       const id = `${w.key}|${w.start}`;
       const tried = this.clvTries.get(id);
       if (tried && now.getTime() < tried.at + clv.retrySeconds * 1000) continue;
       if (!clv.client.configured) continue;
-      const quota = clv.client.quota();
-      if (quotaBelowFloor(quota, clv.quotaFloor, now)) {
-        const month = at.slice(0, 7);
-        if (this.clvFloorLogged !== month) {
-          this.clvFloorLogged = month;
-          result.errors.push(
-            `clv: Odds API ${quota.remaining} left, below the floor of ${clv.quotaFloor}: no closing snapshots until the monthly reset`
-          );
-        }
-        continue;
-      }
+      if (this.clvQuotaHeld(clv, now, at, result)) continue;
       let found: Awaited<ReturnType<OddsApiClient['getOdds']>>;
       try {
         found = await clv.client.getOdds({
@@ -613,24 +616,310 @@ export class Tracker extends EventEmitter {
         continue;
       }
       this.clvTries.delete(id);
-      const closes = w.items.map(({ leg, e }) => {
-        const hit = findOddsEvent(found.events, e);
-        try {
-          return {
-            leg,
-            close: hit
-              ? closeFromOdds(leg, e, summarizeEvent(hit), at, (l, odds) =>
-                  this.interpolateClose(l, e, odds)
-                )
-              : unavailableClose('unsupported', at),
-          };
-        } catch (err) {
-          result.errors.push(`clv leg ${leg.id}: ${(err as Error).message}`);
-          return { leg, close: unavailableClose('unsupported', at) };
-        }
-      });
+      const { closes, started } = this.resolveCloses(
+        w.items,
+        found.events,
+        at,
+        now.getTime(),
+        'snapshot',
+        result
+      );
       this.writeCloses(closes, result);
+      // The API says these already began (early start): odds are live now.
+      for (const { item, commence } of started) {
+        if (clv.historical)
+          late.push({
+            key: w.key,
+            start: commence,
+            market: closeMarket(item.leg)!,
+            item,
+          });
+        else
+          this.writeCloses(
+            [{ leg: item.leg, close: unavailableClose('missed', at) }],
+            result
+          );
+      }
     }
+
+    // Started without a close: odds from just before the start, then done.
+    for (const w of closeWindows(late, clv.windowMinutes * 60_000)) {
+      const missed = () =>
+        this.writeCloses(
+          w.items.map(({ leg }) => ({
+            leg,
+            close: unavailableClose('missed', at),
+          })),
+          result
+        );
+      const cost = clv.client.costOfHistorical(w.markets.length);
+      if (
+        !clv.client.configured ||
+        this.clvQuotaHeld(clv, now, at, result, cost)
+      ) {
+        missed();
+        continue;
+      }
+      try {
+        const n = await this.historicalWindow(w, clv, result);
+        if (n < w.items.length) missed(); // the rest; filled legs are kept
+      } catch (err) {
+        result.errors.push(
+          `clv historical ${w.key}: ${(err as Error).message}`
+        );
+        missed();
+      }
+    }
+  }
+
+  /**
+   * True when a call costing `cost` would leave less than the floor (a live
+   * snapshot: when already below it). Below the floor is logged once a month.
+   */
+  private clvQuotaHeld(
+    clv: NonNullable<TrackerOptions['clv']>,
+    now: Date,
+    at: string,
+    result: TickResult,
+    cost = 1
+  ): boolean {
+    const quota = clv.client.quota();
+    if (quotaBelowFloor(quota, clv.quotaFloor, now)) {
+      const month = at.slice(0, 7);
+      if (this.clvFloorLogged !== month) {
+        this.clvFloorLogged = month;
+        result.errors.push(
+          `clv: Odds API ${quota.remaining} left, below the floor of ${clv.quotaFloor}: no closing snapshots until the monthly reset`
+        );
+      }
+      return true;
+    }
+    return quotaBelowFloor(
+      { ...quota, remaining: (quota.remaining ?? Infinity) - (cost - 1) },
+      clv.quotaFloor,
+      now
+    );
+  }
+
+  /**
+   * Sort legs still without a close: stamps for those with nothing to fetch
+   * (counted by reason in `skipped`), candidates (with their event and Odds
+   * API key) for the rest. Unmatched legs wait until their day is over.
+   */
+  private closeCandidates(
+    rows: { leg: LegRow; bet: BetRow }[],
+    now: Date
+  ): {
+    stamps: { leg: LegRow; close: LegClose }[];
+    candidates: CloseCandidate<CloseItem>[];
+    skipped: Record<string, number>;
+  } {
+    const at = iso(now);
+    const stamps: { leg: LegRow; close: LegClose }[] = [];
+    const skipped: Record<string, number> = {};
+    const stamp = (leg: LegRow, source: LegClose['source'], reason: string) => {
+      skipped[reason] = (skipped[reason] ?? 0) + 1;
+      stamps.push({ leg, close: unavailableClose(source, at) });
+    };
+    const candidates: CloseCandidate<CloseItem>[] = [];
+    for (const { leg, bet } of rows) {
+      const market = closeMarket(leg);
+      if (bet.placedLive) stamp(leg, 'live', 'live');
+      else if (!market) stamp(leg, 'unsupported', 'unsupported market');
+      else if (leg.matchStatus !== 'matched' || !leg.eventId) {
+        // Never matched: its day is over (36 h clears every US time zone).
+        const end = new Date(`${leg.eventDate}T00:00:00Z`).getTime();
+        if (now.getTime() > end + 36 * 3600_000)
+          stamp(leg, 'missed', 'unmatched');
+      } else {
+        const siblings = this.db
+          .select({ id: legs.id })
+          .from(legs)
+          .where(and(eq(legs.betId, bet.id), eq(legs.eventId, leg.eventId)))
+          .all();
+        const e = this.db
+          .select()
+          .from(events)
+          .where(eq(events.id, leg.eventId))
+          .get();
+        let key: string | null = null;
+        try {
+          key = e ? sportKey(e.sport, e.league) : null;
+        } catch {
+          // A sport or league the API doesn't cover.
+        }
+        if (siblings.length > 1) stamp(leg, 'unsupported', 'same-game');
+        else if (!e || !key) stamp(leg, 'unsupported', 'not on the Odds API');
+        else
+          candidates.push({
+            key,
+            start: new Date(e.startTime).getTime(),
+            market,
+            item: { leg, e, bet },
+          });
+      }
+    }
+    return { stamps, candidates, skipped };
+  }
+
+  /**
+   * Closes for a window's legs from one Odds API response read as of
+   * `asOf`. Events the API shows as already started at `asOf` are returned
+   * in `started` instead: their odds are live, not a close.
+   */
+  private resolveCloses(
+    items: CloseItem[],
+    oddsEvents: OddsEvent[],
+    at: string,
+    asOf: number,
+    via: NonNullable<LegClose['via']>,
+    result: TickResult
+  ): {
+    closes: { leg: LegRow; close: LegClose }[];
+    started: { item: CloseItem; commence: number }[];
+  } {
+    const closes: { leg: LegRow; close: LegClose }[] = [];
+    const started: { item: CloseItem; commence: number }[] = [];
+    for (const item of items) {
+      const { leg, e, bet } = item;
+      const hit = findOddsEvent(oddsEvents, e);
+      if (hit && Date.parse(hit.commence_time) <= asOf) {
+        started.push({ item, commence: Date.parse(hit.commence_time) });
+        continue;
+      }
+      try {
+        closes.push({
+          leg,
+          close: hit
+            ? closeFromOdds(
+                leg,
+                e,
+                summarizeEvent(hit),
+                at,
+                (l, odds) => this.interpolateClose(l, e, odds),
+                { bookKey: bookKeyFor(bet.book), via }
+              )
+            : unavailableClose(
+                via === 'historical' ? 'missed' : 'unsupported',
+                at
+              ),
+        });
+      } catch (err) {
+        result.errors.push(`clv leg ${leg.id}: ${(err as Error).message}`);
+        closes.push({ leg, close: unavailableClose('unsupported', at) });
+      }
+    }
+    return { closes, started };
+  }
+
+  /**
+   * One historical call for a window, as of `leadMinutes` before its
+   * earliest start. Writes the closes it finds (replacing `missed` stamps)
+   * and returns how many legs got a priced close.
+   */
+  private async historicalWindow(
+    w: CloseWindow<CloseItem>,
+    clv: NonNullable<TrackerOptions['clv']>,
+    result: TickResult
+  ): Promise<number> {
+    const date = w.start - clv.leadMinutes * 60_000;
+    const found = await clv.client.getHistoricalOdds({
+      sportKey: w.key,
+      markets: w.markets,
+      date: new Date(date).toISOString(),
+    });
+    const { closes } = this.resolveCloses(
+      w.items,
+      found.events,
+      new Date(found.timestamp ?? date).toISOString(),
+      // Compare with the snapshot's own time: a game it lists as started
+      // already has live odds.
+      Date.parse(found.timestamp ?? new Date(date).toISOString()),
+      'historical',
+      result
+    );
+    const priced = closes.filter((c) => c.close.p != null);
+    this.writeCloses(priced, result, { replaceMissed: true });
+    return priced.length;
+  }
+
+  /**
+   * Backfill closes for settled legs that have none (or only `missed`) from
+   * historical odds: one call per sport per window, as of `leadMinutes`
+   * before its earliest start. Paid Odds API plans only; on a plan without
+   * historical odds nothing is written and `planAvailable` is false.
+   * `dryRun` makes no calls and reports what it would cost.
+   */
+  async backfillCloses(
+    opts: { dryRun?: boolean; maxCost?: number } = {}
+  ): Promise<CloseBackfillReport> {
+    const clv = this.opts.clv;
+    if (!clv) throw new Error('CLV is not configured');
+    const rows = this.db
+      .select({ leg: legs, bet: bets })
+      .from(legs)
+      .innerJoin(bets, eq(bets.id, legs.betId))
+      .where(
+        and(
+          ne(legs.status, 'open'),
+          or(
+            isNull(legs.closeJson),
+            sql`json_extract(${legs.closeJson}, '$.source') = 'missed'`
+          )
+        )
+      )
+      .all();
+    const now = this.now();
+    const { candidates, skipped } = this.closeCandidates(rows, now);
+    const windows = closeWindows(candidates, clv.windowMinutes * 60_000);
+    const report: CloseBackfillReport = {
+      missingClose: rows.length,
+      eligible: candidates.length,
+      skipped,
+      windows: windows.length,
+      estimatedCost: windows.reduce(
+        (a, w) => a + clv.client.costOfHistorical(w.markets.length),
+        0
+      ),
+      planAvailable: null,
+      filled: 0,
+      spent: 0,
+      errors: [],
+    };
+    if (opts.dryRun || !windows.length) return report;
+    if (!clv.client.configured) throw new Error('ODDS_API_KEY is not set');
+    const result: TickResult = {
+      polled: [],
+      evaluatedEvents: [],
+      changedBets: [],
+      errors: report.errors,
+    };
+    for (const w of windows) {
+      const cost = clv.client.costOfHistorical(w.markets.length);
+      if (opts.maxCost != null && report.spent + cost > opts.maxCost) {
+        report.errors.push(`stopped at maxCost ${opts.maxCost}`);
+        break;
+      }
+      if (this.clvQuotaHeld(clv, now, iso(now), result, cost)) {
+        report.errors.push(`stopped: quota floor ${clv.quotaFloor}`);
+        break;
+      }
+      try {
+        report.filled += await this.historicalWindow(w, clv, result);
+        report.planAvailable = true;
+        report.spent += cost;
+      } catch (err) {
+        if (err instanceof HistoricalUnavailableError) {
+          report.planAvailable = false;
+          report.errors.push(err.message);
+          break;
+        }
+        report.errors.push(
+          `${w.key} ${iso(new Date(w.start))}: ${(err as Error).message}`
+        );
+      }
+    }
+    return report;
   }
 
   /** A leg off the closing line, from the model fitted to the closing lines. */
@@ -651,16 +940,32 @@ export class Tracker extends EventEmitter {
     })[0]!.outcome;
   }
 
+  /**
+   * Store closes, never over a stored one (another process, or an earlier
+   * tick, may have written it); `replaceMissed` lets a priced close replace a
+   * `missed` stamp (historical odds).
+   */
   private writeCloses(
     closes: { leg: LegRow; close: LegClose }[],
-    result: TickResult
+    result: TickResult,
+    opts: { replaceMissed?: boolean } = {}
   ) {
     if (!closes.length) return;
     this.db.transaction((tx) => {
       for (const { leg, close } of closes)
         tx.update(legs)
           .set({ closeJson: JSON.stringify(close) })
-          .where(eq(legs.id, leg.id))
+          .where(
+            and(
+              eq(legs.id, leg.id),
+              opts.replaceMissed
+                ? or(
+                    isNull(legs.closeJson),
+                    sql`json_extract(${legs.closeJson}, '$.source') = 'missed'`
+                  )
+                : isNull(legs.closeJson)
+            )
+          )
           .run();
     });
     result.changedBets.push(...new Set(closes.map((c) => c.leg.betId)));

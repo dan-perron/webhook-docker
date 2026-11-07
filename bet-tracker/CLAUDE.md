@@ -149,19 +149,40 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   `portfolio().byOrigin` has stake, P/L, ROI and EV at placement vs realized
   per origin.
 - Closing line value (`src/tracker/clv.ts`, `Tracker.closingSnapshots`):
-  `legs.close_json` is the market at close; `clv`, `atClose` and the portfolio
-  numbers are derived on read. One snapshot per sport per window (legs starting
-  within 15 min of the earliest) 3 min before its earliest start, requesting
-  only the markets its open legs need; a failure retries once after 60 s, then
-  `missed`. Same consensus as check_odds. Sources: `exact`; `interpolated` (off
-  the closing line, margin sports only, from the model fitted to the closing
-  lines); `unsupported` (props, series, same-game legs, anything the API lacks;
-  no call made when known up front); `missed`; `live`. Below 40 requests left
-  no snapshots run until the month changes (a reading from last month doesn't
-  count). `close.p` is unconditional P(win), the fair price x (1 - P(push) at
-  placement), to compare with `pWinPlacement`; `atClose.ev` refunds pushes like
-  `atPlacement`. No backfill: settled legs stay null. Off switch:
-  `CLV_SNAPSHOTS=false`.
+  `legs.close_json` is the market at close; `clv`, `priceClv`, `atClose` and
+  the portfolio numbers are derived on read. One snapshot per sport per window
+  (legs starting within 15 min of the earliest) 5 min before its earliest
+  start, requesting only the markets its open legs need; a failure retries
+  once after 60 s, then `missed`. Same consensus as check_odds. A close
+  stores `fair` (consensus P(win | no push) at the line), `book` (the bet's
+  own book's price on its line, vig in; `bookKeyFor` maps book names to Odds
+  API keys, null for Circa/Kalshi) and `via` (`snapshot` | `historical`).
+  Sources: `exact`; `interpolated` (off the closing line, margin sports only,
+  from the model fitted to the closing lines); `unsupported` (props, series,
+  same-game legs, anything the API lacks; no call made when known up front);
+  `missed`; `live`. Never closed at live odds: a game the API lists as begun
+  (early start), or one we saw start before its snapshot, reads historical
+  odds as of 5 min before its start when `CLV_HISTORICAL=true` (paid plans,
+  10x a live call), else `missed`. A stored close is never overwritten
+  (`writeCloses` only fills nulls; historical may replace `missed`). Below 40
+  requests left no snapshots run until the month changes (a reading from last
+  month doesn't count). `close.p` is unconditional P(win), the fair price x
+  (1 - P(push) at placement), to compare with `pWinPlacement`; `atClose.ev`
+  refunds pushes like `atPlacement`. Off switch: `CLV_SNAPSHOTS=false`.
+  Backfill settled legs (null or `missed`) from historical odds:
+  `node built/tracker/clvBackfillCli.js [--dry-run] [--max-cost N]`; on a plan
+  without them (401/403) nothing is written and the count is reported.
+- Price CLV and timing (`legPriceClv`, `legPriceMove`, `src/domain/timing.ts`):
+  `priceClv` = close fair x decimal(leg price) - 1 (pushes aside; parlay legs
+  at their own leg price). `bets.recommended_at` and `legs.recommended_price`
+  (add_bet, update_bet/update_leg) split movement into recToPlaced (placed /
+  recommended - 1) and placedToClose (placed / book close - 1). Hours before
+  start = event start - placed_at (no placed_at: created_at if before the
+  game); buckets >12h, 2-12h (both ends), <2h. `portfolio()` adds `byTiming`
+  and `bySport` (`ClvGroup`: leg price CLV, each leg weighted stake / legs in
+  its bet) and filters by origin, sport and timing (bets with a matching leg;
+  the breakdowns count only matching legs). byOrigin's `avgClv` is still
+  close vs placement P(win), not price CLV.
 
 ## MCP
 

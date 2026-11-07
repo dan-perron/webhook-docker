@@ -51,6 +51,9 @@ export function createBet(db: DbOrTx, input: BetInput): BetWithLegs {
         tokenInfo: parsed.tokenInfo ?? null,
         notes: parsed.notes ?? null,
         origin: parsed.origin ?? null,
+        recommendedAt: parsed.recommendedAt
+          ? new Date(parsed.recommendedAt).toISOString()
+          : null,
       })
       .returning()
       .get();
@@ -75,6 +78,7 @@ export function createBet(db: DbOrTx, input: BetInput): BetWithLegs {
           selectionTeam: leg.prop?.team ?? leg.selection.team ?? null,
           line: leg.line ?? null,
           priceAmerican: leg.price,
+          recommendedPrice: leg.recommendedPrice ?? null,
         })
         .returning()
         .get()
@@ -154,6 +158,8 @@ export interface BetUpdate {
   notes?: string | null;
   /** recommended | own; null = untagged. */
   origin?: BetOrigin | null;
+  /** When Claude recommended it (any ISO offset; null clears). */
+  recommendedAt?: string | null;
   /** Correct when a settled bet settled (any ISO offset; null clears). */
   settledAt?: string | null;
 }
@@ -180,6 +186,10 @@ export function updateBet(
   if (u.tokenInfo !== undefined) set.tokenInfo = u.tokenInfo;
   if (u.notes !== undefined) set.notes = u.notes;
   if (u.origin !== undefined) set.origin = u.origin;
+  if (u.recommendedAt !== undefined)
+    set.recommendedAt = u.recommendedAt
+      ? new Date(u.recommendedAt).toISOString()
+      : null;
   if (u.settledAt !== undefined) {
     const bet = db.select().from(bets).where(eq(bets.id, id)).get();
     if (bet?.status === 'open' && u.settledAt)
@@ -319,6 +329,8 @@ export interface LegUpdate {
   price?: number;
   line?: number | null;
   selection?: { kind: LegRow['selectionKind']; team?: string };
+  /** The price when recommended (American); null clears. */
+  recommendedPrice?: number | null;
 }
 
 /**
@@ -359,6 +371,10 @@ export function updateLeg(db: DbOrTx, legId: number, u: LegUpdate): LegRow {
       ? { line: u.line !== undefined ? u.line : leg.line }
       : {}),
     price: u.price ?? leg.priceAmerican,
+    recommendedPrice:
+      u.recommendedPrice !== undefined
+        ? u.recommendedPrice
+        : leg.recommendedPrice,
   });
   const newTeam = isProp ? leg.selectionTeam : (parsed.selection.team ?? null);
   const selectionChanged =
@@ -381,6 +397,7 @@ export function updateLeg(db: DbOrTx, legId: number, u: LegUpdate): LegRow {
       .update(legs)
       .set({
         priceAmerican: parsed.price,
+        recommendedPrice: parsed.recommendedPrice ?? null,
         line: parsed.line ?? null,
         selectionKind: parsed.selection.kind,
         selectionTeam: newTeam,

@@ -147,20 +147,21 @@ does the MCP `portfolio` tool.
 Set in the stack's `.env` (`webhook-docker/.env`, see `.env_template`) and
 mapped in `docker-compose.yml`:
 
-| Variable (container)                      | `.env` name            | Default                    | Purpose                                                             |
-| ----------------------------------------- | ---------------------- | -------------------------- | ------------------------------------------------------------------- |
-| `APP_TOKEN`                               | `BET_APP_TOKEN`        | required                   | Web login, bearer token for HTTP MCP, OAuth approval                |
-| `ODDS_API_KEY`                            | `ODDS_API_KEY`         | empty (odds off)           | The Odds API key; never logged or returned                          |
-| `PREGAME_SNAPSHOT`                        | `BET_PREGAME_SNAPSHOT` | `true`                     | One Odds API snapshot per game before start when ESPN has no lines  |
-| `CLV_SNAPSHOTS`                           | —                      | `true`                     | Closing-line snapshots for CLV (see CLAUDE.md); `false` turns off   |
-| `BASE_PATH`                               | `BET_BASE_PATH`        | `/bets`                    | Path the app is served under                                        |
-| `PUBLIC_ORIGIN`                           | `BET_PUBLIC_ORIGIN`    | `https://djperron.com`     | Absolute origin for OAuth metadata and Secure cookies               |
-| `DATABASE_PATH`                           | —                      | `/data/bet-tracker.sqlite` | SQLite file (named volume `bet-tracker-data`)                       |
-| `TZ`                                      | —                      | `America/Chicago`          | Local dates for matching; fallback for page times                   |
-| `OAUTH_EXTRA_REDIRECT_URIS`               | —                      | empty                      | Extra exact OAuth redirect URIs (comma-separated)                   |
-| `NFL_MARGIN_SIGMA` / `NCAAF_MARGIN_SIGMA` | —                      | 13.5 / 15                  | Default margin σ when a game has no moneyline + spread              |
-| `ATD_HOLD` / `ATD_HOLD_LONG`              | —                      | 0.08 / 0.15                | Assumed anytime TD hold, up to +200 / longer                        |
-| `PROP_HOLD` / `PROP_HOLD_LONG`            | —                      | 0.07 / 0.12                | Assumed over/under prop (and to hit a HR) hold, up to +200 / longer |
+| Variable (container)                      | `.env` name            | Default                    | Purpose                                                                       |
+| ----------------------------------------- | ---------------------- | -------------------------- | ----------------------------------------------------------------------------- |
+| `APP_TOKEN`                               | `BET_APP_TOKEN`        | required                   | Web login, bearer token for HTTP MCP, OAuth approval                          |
+| `ODDS_API_KEY`                            | `ODDS_API_KEY`         | empty (odds off)           | The Odds API key; never logged or returned                                    |
+| `PREGAME_SNAPSHOT`                        | `BET_PREGAME_SNAPSHOT` | `true`                     | One Odds API snapshot per game before start when ESPN has no lines            |
+| `CLV_SNAPSHOTS`                           | —                      | `true`                     | Closing-line snapshots for CLV (see CLAUDE.md); `false` turns off             |
+| `CLV_HISTORICAL`                          | —                      | `false`                    | Historical odds (paid Odds API plans) for games that start before their close |
+| `BASE_PATH`                               | `BET_BASE_PATH`        | `/bets`                    | Path the app is served under                                                  |
+| `PUBLIC_ORIGIN`                           | `BET_PUBLIC_ORIGIN`    | `https://djperron.com`     | Absolute origin for OAuth metadata and Secure cookies                         |
+| `DATABASE_PATH`                           | —                      | `/data/bet-tracker.sqlite` | SQLite file (named volume `bet-tracker-data`)                                 |
+| `TZ`                                      | —                      | `America/Chicago`          | Local dates for matching; fallback for page times                             |
+| `OAUTH_EXTRA_REDIRECT_URIS`               | —                      | empty                      | Extra exact OAuth redirect URIs (comma-separated)                             |
+| `NFL_MARGIN_SIGMA` / `NCAAF_MARGIN_SIGMA` | —                      | 13.5 / 15                  | Default margin σ when a game has no moneyline + spread                        |
+| `ATD_HOLD` / `ATD_HOLD_LONG`              | —                      | 0.08 / 0.15                | Assumed anytime TD hold, up to +200 / longer                                  |
+| `PROP_HOLD` / `PROP_HOLD_LONG`            | —                      | 0.07 / 0.12                | Assumed over/under prop (and to hit a HR) hold, up to +200 / longer           |
 
 Other tunables (polling, Odds API cost threshold, σ bounds) are in
 `config/default.cjs`. Generate a token with `openssl rand -base64 32`.
