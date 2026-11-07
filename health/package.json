@@ -1,0 +1,45 @@
+{
+  "name": "health",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Health log: recurring issues (flares), daily possible triggers and experiments; MCP for Claude",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "fix": "yarn lint:fix && yarn format:write",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p . --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "node built/server.js",
+    "dev": "yarn build && node built/server.js"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.5",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "config": "^5.0.1",
+    "hono": "^4.13.14",
+    "mongodb": "^7.7.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/config": "^4.4.0",
+    "@types/node": "^24",
+    "@typescript-eslint/eslint-plugin": "^6",
+    "@typescript-eslint/parser": "^6",
+    "eslint": "^8",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "mongodb-memory-server": "^11.3.0",
+    "prettier": "^3.9.9",
+    "typescript": "^5",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.5"
+  }
+}
