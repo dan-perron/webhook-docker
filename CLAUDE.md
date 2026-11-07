@@ -38,6 +38,7 @@ docker compose down
 - `recipes`: Node/TypeScript Hono app (port 3004) — plain directory, **not** a submodule. Family recipe box: per-person ratings, cook log, what-to-cook recommendations, schema.org URL import; MCP-first (see its CLAUDE.md). Mongo db `recipes`. Proxied at `/recipes`.
 - `mcp-gateway`: Node/TypeScript Hono app (port 3005) — plain directory. The single remote MCP connector (`https://djperron.com/mcp`, OAuth) that merges every app's MCP tools (`MCP_BACKENDS`); see its CLAUDE.md. Mongo db `mcp`. Proxied at `/mcp`.
 - `training`: Node/TypeScript Hono app (port 3006) — from the `./training` submodule (build context `./training/server`; the repo also holds the Android app, built on the laptop). Rehab/training routine with versioned prescriptions, A/B rotations, and logs; REST for the phone under `/training/api`, MCP via `mcp-gateway`. Mongo db `training`. Proxied at `/training`. See `training/CLAUDE.md`.
+- `health`: Node/TypeScript Hono app (port 3007, not published) — plain directory. Recurring issues (canker sores, ...) vs. possible triggers and experiments; MCP only, via `mcp-gateway` (`health_*` tools). Mongo db `health`. No Apache entry. See its CLAUDE.md.
 - `personal-assistant`: Node/TypeScript Slack bot (Socket Mode, no HTTP port) — plain directory, **not** a submodule.
 - `mongodb`: MongoDB 6.0 with persistent `mongodb-data` volume. **Not published to the host** — only reachable on this stack's network as hostname `mongodb`, which is why every app here deploys as a service in this stack.
 - `windows-rdp-automation`: Python RDP automation (currently commented out) — from the `./windows-rdp-automation` submodule.
@@ -52,7 +53,7 @@ Each app uses its own logical database on the shared MongoDB (`webhook-server`,
 - `training` — server + Android app in one repo, so it can be cloned and built on the laptop.
 
 **Plain directories** (committed to this repo, no separate remote): `personal-assistant`,
-`meeting-scheduler`, `bet-tracker`, `recipes`, `mcp-gateway`. These deploy with a plain `docker compose up -d --build <name>` —
+`meeting-scheduler`, `bet-tracker`, `recipes`, `mcp-gateway`, `health`. These deploy with a plain `docker compose up -d --build <name>` —
 no submodule bump. Prefer this for small apps; reach for a submodule only when the
 app genuinely needs its own repo and history.
 
