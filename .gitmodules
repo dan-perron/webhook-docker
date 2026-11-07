@@ -9,3 +9,6 @@
 	url = git@github.djperron.com:dan-perron/windows-rdp-automation.git
   branch = main
 
+[submodule "training"]
+	path = training
+	url = git@github.djperron.com:dan-perron/training
