@@ -100,6 +100,19 @@ services:
     ports:
       - 3006:3006
     restart: unless-stopped
+  health:
+    build:
+      context: ./health
+    container_name: health
+    image: "dan-perron/health"
+    environment:
+      - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/?authSource=admin
+      - MONGODB_DATABASE=health
+      - BASE_PATH=/health
+      # Bearer token for /health/mcp (mcp-gateway only; no published port).
+      - HEALTH_APP_TOKEN=${HEALTH_APP_TOKEN}
+      - TZ=America/Chicago
+    restart: unless-stopped
   mcp-gateway:
     build:
       context: ./mcp-gateway
@@ -112,10 +125,11 @@ services:
       - PUBLIC_ORIGIN=${MCP_PUBLIC_ORIGIN:-https://djperron.com}
       # name=url pairs on this stack's network; each backend's bearer token is
       # MCP_TOKEN_<NAME>.
-      - MCP_BACKENDS=bets=http://bet-tracker:3003/bets/mcp,recipes=http://recipes:3004/recipes/mcp,training=http://training:3006/training/mcp
+      - MCP_BACKENDS=bets=http://bet-tracker:3003/bets/mcp,recipes=http://recipes:3004/recipes/mcp,training=http://training:3006/training/mcp,health=http://health:3007/health/mcp
       - MCP_TOKEN_BETS=${BET_APP_TOKEN}
       - MCP_TOKEN_RECIPES=${RECIPES_APP_TOKEN}
       - MCP_TOKEN_TRAINING=${TRAINING_APP_TOKEN}
+      - MCP_TOKEN_HEALTH=${HEALTH_APP_TOKEN}
     ports:
       - 3005:3005
     restart: unless-stopped
