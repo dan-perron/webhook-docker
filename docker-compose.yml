@@ -94,9 +94,10 @@ services:
       - MONGODB_CONNSTRING=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb/?authSource=admin
       - MONGODB_DATABASE=training
       - BASE_PATH=/training
-      # Bearer token for /training/api (the phone) and /training/mcp (mcp-gateway).
-      - TRAINING_APP_TOKEN=${TRAINING_APP_TOKEN}
-      # Web UI login password: the gateway's MCP_APP_TOKEN, like recipes.
+      # One secret: the gateway's MCP_APP_TOKEN is the bearer token for
+      # /training/api (the phone) and /training/mcp (mcp-gateway), and the web
+      # login password.
+      - TRAINING_APP_TOKEN=${MCP_APP_TOKEN}
       - TRAINING_PASSWORD=${MCP_APP_TOKEN}
       # Set false only to test over plain http (e.g. http://signs:3006/training).
       - COOKIE_SECURE=${TRAINING_COOKIE_SECURE:-true}
@@ -133,7 +134,7 @@ services:
       - MCP_BACKENDS=bets=http://bet-tracker:3003/bets/mcp,recipes=http://recipes:3004/recipes/mcp,training=http://training:3006/training/mcp,health=http://health:3007/health/mcp
       - MCP_TOKEN_BETS=${BET_APP_TOKEN}
       - MCP_TOKEN_RECIPES=${RECIPES_APP_TOKEN}
-      - MCP_TOKEN_TRAINING=${TRAINING_APP_TOKEN}
+      - MCP_TOKEN_TRAINING=${MCP_APP_TOKEN}
       - MCP_TOKEN_HEALTH=${MCP_APP_TOKEN}
     ports:
       - 3005:3005
