@@ -96,6 +96,10 @@ services:
       - BASE_PATH=/training
       # Bearer token for /training/api (the phone) and /training/mcp (mcp-gateway).
       - TRAINING_APP_TOKEN=${TRAINING_APP_TOKEN}
+      # Web UI login password: the gateway's MCP_APP_TOKEN, like recipes.
+      - TRAINING_PASSWORD=${MCP_APP_TOKEN}
+      # Set false only to test over plain http (e.g. http://signs:3006/training).
+      - COOKIE_SECURE=${TRAINING_COOKIE_SECURE:-true}
       - TZ=America/Chicago
     ports:
       - 3006:3006
