@@ -133,7 +133,11 @@ function model(
           sigma: round(d.sigma),
           totalMean: round(d.totalMean),
           totalSd: round(d.totalSd),
-          ...(basketball ? {} : { possessionEp: round(d.possessionEp) }),
+          ...(basketball
+            ? state.status === 'pre'
+              ? {}
+              : { reversion: round(d.reversion) }
+            : { possessionEp: round(d.possessionEp) }),
           fractionRemaining: round(state.fractionRemaining, 3),
         },
       };

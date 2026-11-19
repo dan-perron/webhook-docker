@@ -56,12 +56,40 @@ export interface Prior {
   detail: string;
 }
 
+/**
+ * Live shape of the remaining margin (basketball), fitted on ESPN
+ * play-by-play by scripts/fit_live_margin.py. With f = share of regulation
+ * left, L = the home lead and μ = the pregame expected margin:
+ *   mean = L + μ f − a f^b · c tanh(L / c)       (leads partly come back)
+ *   sd   = σ_live(f) · f^k,  σ_live(f) = σ + (σ_game − σ) f
+ * σ_game (fitted to the moneyline) carries no live information, so it fades
+ * to the league σ as the game runs; at tip-off the model is the pregame fit.
+ * Without a shape (football) the rest of the game is a random walk:
+ * mean = L + μ f, sd = σ_game √f.
+ */
+export interface LiveMarginShape {
+  /** League σ of the final margin about the spread (points). */
+  sigma: number;
+  /** a: share of the lead expected to come back at f = 1. */
+  reversion: number;
+  /** b: how the reversion fades with f. */
+  reversionPower: number;
+  /** c (points): reversion saturates for leads well past this. */
+  reversionCap: number;
+  /** k: sd ∝ f^k (0.5 = random walk). */
+  sdPower: number;
+  /** Least share of regulation left the model uses (keeps a little spread). */
+  minFraction: number;
+}
+
 export interface MarginSigmas {
   /** League-default σ of the final margin (points). */
   marginSigma: number;
   totalSigma: number;
   /** Bounds for the per-game σ fitted to the moneyline and spread. */
   sigmaRange: readonly [number, number];
+  /** Live remaining-margin shape; absent = random walk (√f). */
+  live?: LiveMarginShape;
 }
 /** @deprecated name kept for imports; same shape for every margin sport. */
 export type FootballSigmas = MarginSigmas;

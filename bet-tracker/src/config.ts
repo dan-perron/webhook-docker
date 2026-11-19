@@ -28,6 +28,11 @@ export const appConfig = {
       'oddsApi.pregameSnapshotLeadMinutes'
     ),
     regions: config.get<string>('oddsApi.regions'),
+    liveMarket: {
+      enabled: config.get<boolean>('oddsApi.liveMarket.enabled'),
+      cacheSeconds: config.get<number>('oddsApi.liveMarket.cacheSeconds'),
+      quotaFloor: config.get<number>('oddsApi.liveMarket.quotaFloor'),
+    },
     clv: {
       enabled: config.get<boolean>('oddsApi.clv.enabled'),
       leadMinutes: config.get<number>('oddsApi.clv.leadMinutes'),

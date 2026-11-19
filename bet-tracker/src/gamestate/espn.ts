@@ -517,12 +517,16 @@ export function parseScoreboard(
           fractionRemaining =
             p > 3 ? 0 : Math.max(0, ((3 - p) * 1200 + (clock ?? 0)) / 3600);
         } else if (sport === 'wnba' || sport === 'nba') {
-          // Quarters: 10 minutes (WNBA), 12 (NBA).
+          // Quarters: 10 minutes (WNBA), 12 (NBA). Overtime is 5 minutes,
+          // measured on the regulation scale so the model keeps an OT
+          // period's spread (it used to read 0, i.e. game over).
           const q = sport === 'nba' ? 720 : 600;
           const p = period ?? 1;
           situation = { kind: 'basketball', period: p, clock: clock ?? 0 };
           fractionRemaining =
-            p > 4 ? 0 : Math.max(0, ((4 - p) * q + (clock ?? 0)) / (4 * q));
+            p > 4
+              ? Math.max(0, Math.min(300, clock ?? 0) / (4 * q))
+              : Math.max(0, ((4 - p) * q + (clock ?? 0)) / (4 * q));
         } else if (sport === 'ncaab') {
           // Two 20-minute halves; overtime is 5 minutes, measured on the same
           // 40-minute scale so the model keeps a full period's spread.

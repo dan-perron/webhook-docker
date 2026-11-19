@@ -8,8 +8,32 @@ export const PARAMS: ModelParams = {
     ncaaf: { marginSigma: 15, totalSigma: 14, sigmaRange: [11, 20] },
   },
   wnba: { marginSigma: 11.5, totalSigma: 15, sigmaRange: [8, 16] },
-  nba: { marginSigma: 13, totalSigma: 18, sigmaRange: [9, 17] },
-  ncaab: { marginSigma: 11, totalSigma: 15, sigmaRange: [8, 15] },
+  nba: {
+    marginSigma: 13,
+    totalSigma: 18,
+    sigmaRange: [9, 17],
+    live: {
+      sigma: 13.26,
+      reversion: 0.453,
+      reversionPower: 0.543,
+      reversionCap: 18.1,
+      sdPower: 0.41,
+      minFraction: 0.002,
+    },
+  },
+  ncaab: {
+    marginSigma: 11,
+    totalSigma: 15,
+    sigmaRange: [8, 15],
+    live: {
+      sigma: 11.48,
+      reversion: 0.356,
+      reversionPower: 0.519,
+      reversionCap: 15,
+      sdPower: 0.414,
+      minFraction: 0.002,
+    },
+  },
 };
 
 /** Build a GameState with sensible defaults for model tests. */
