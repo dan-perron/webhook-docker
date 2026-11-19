@@ -5,6 +5,7 @@ import type { Services } from './mcp/server.js';
 import { OddsApiClient } from './odds/oddsApi.js';
 import { NtfyNotifier } from './scores/ntfy.js';
 import { ScoreService } from './scores/service.js';
+import { LiveMarketCheck } from './tracker/liveMarket.js';
 import { Tracker } from './tracker/tracker.js';
 
 /** Wire the real providers, odds client and tracker around a database. */
@@ -36,6 +37,11 @@ export function createServices(db: Db): Services {
     tracker,
     scores,
     odds,
+    liveMarket: new LiveMarketCheck(
+      odds,
+      appConfig.models,
+      appConfig.oddsApi.liveMarket
+    ),
     confirmAboveCost: appConfig.oddsApi.confirmAboveCost,
   };
 }

@@ -82,8 +82,17 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
 - Parlay push/void recompute scales the remaining legs by the book's pricing
   factor (stated price / product of legs).
 - NBA is a margin sport like WNBA (`basketball_normal`: the football_normal
-  machinery without key numbers or possession; 12-minute quarters;
-  `models.nba` σ in config). NCAAB (men's college basketball) is the same
+  machinery without key numbers or possession; 12-minute quarters, OT on the
+  48-minute scale; `models.nba` σ in config). NBA and NCAAB live use a fitted
+  `LiveMarginShape` (`models.<sport>.live`; `src/models/prior.ts`), not the
+  √f random walk: leads partly come back (−a f^b · c tanh(L/c)), sd = σ f^k
+  with k ≈ 0.41, and the per-game moneyline σ fades to the league σ as the
+  game runs (it is unidentified near pick'em). Refit with
+  `scripts/fit_live_margin.py` (ESPN play-by-play + closing lines; NBA
+  2022-25 held out on 2025-26, NCAAB 2023-24 held out on 2024-25). WNBA
+  still uses the random walk. `get_bet` adds a debug `liveMarket` per live
+  leg (de-vigged live h2h vs our P(side wins), `src/tracker/liveMarket.ts`;
+  one cached h2h call per sport, `oddsApi.liveMarket`); never feeds pWin. NCAAB (men's college basketball) is the same
   model: two 20-minute halves, 5-minute OT measured on the 40-minute scale
   (fraction = OT clock / 2400), `models.ncaab` σ 11 (~68 possessions vs
   NBA ~100); scoreboard `groups=50&limit=500` (all of D-I; the default is

@@ -2,7 +2,12 @@ import type { Side } from '../domain/types.js';
 import type { JointOutcome } from '../domain/value.js';
 import type { FootballSituation, GameState } from '../gamestate/types.js';
 import nflKeyNumbers from './data/nfl-key-numbers.json' with { type: 'json' };
-import type { FootballSigmas, MarginSport, Prior } from './prior.js';
+import type {
+  FootballSigmas,
+  LiveMarginShape,
+  MarginSport,
+  Prior,
+} from './prior.js';
 import { leastSquares, logit, normalCdf } from './stats.js';
 import {
   beatLine,
@@ -11,12 +16,15 @@ import {
   type Outcome,
 } from './types.js';
 
-// Football (NFL/NCAAF). The final margin is an integer pmf:
+// Football (NFL/NCAAF), and basketball through the same machinery. The final
+// margin is an integer pmf:
 //   P(m) ∝ φ((m − mean) / sd) · w(|m|)
 //   mean = current margin + pregame expected margin x fraction remaining
 //          + possession value
 //   sd   = σ x sqrt(fraction remaining), σ fitted per game so the pregame
 //          model matches the de-vigged moneyline (else the league default)
+// Basketball live uses its fitted LiveMarginShape instead (prior.ts): leads
+// partly come back and the sd shrinks slower than sqrt(f).
 // w = NFL key-number weights fitted on historical results
 // (scripts/fit_key_numbers.py); NCAAF uses none. Live, the weights fade with
 // the fraction remaining. Totals ~ Normal discretized to integers. Spreads,
@@ -197,6 +205,25 @@ export interface FootballDistribution {
   totalSd: number;
   /** Possession value added to the margin (signed toward home). */
   possessionEp: number;
+  /** Basketball live: expected points of the lead that come back (toward home). */
+  reversion: number;
+}
+
+/**
+ * Mean shift and sd of the rest of the game under a fitted live shape
+ * (see LiveMarginShape). `lead` is home − away now.
+ */
+export function liveRemaining(
+  shape: LiveMarginShape,
+  lead: number,
+  f: number,
+  gameSigma: number
+): { reversion: number; sd: number } {
+  const c = shape.reversionCap;
+  const reversion =
+    -shape.reversion * f ** shape.reversionPower * c * Math.tanh(lead / c);
+  const sigma = shape.sigma + (gameSigma - shape.sigma) * f;
+  return { reversion, sd: sigma * f ** shape.sdPower };
 }
 
 /**
@@ -217,7 +244,14 @@ export function footballDistribution(
   sigmas: FootballSigmas
 ): FootballDistribution {
   const pre = state.status === 'pre';
-  const f = pre ? 1 : Math.max(MIN_FRACTION, state.fractionRemaining);
+  const shape = pre ? null : (sigmas.live ?? null);
+  // Basketball at 0:00 (end of regulation or of an OT, not yet final): the
+  // margin is what it is, and a tie goes to (another) overtime.
+  const f = pre
+    ? 1
+    : shape && state.fractionRemaining <= 0
+      ? 0
+      : Math.max(shape?.minFraction ?? MIN_FRACTION, state.fractionRemaining);
   const sit = state.situation?.kind === 'football' ? state.situation : null;
   const excess = sit?.possession ? driveEp(sit) - BASELINE_DRIVE_EP : 0;
   const signed =
@@ -227,12 +261,12 @@ export function footballDistribution(
         ? -excess
         : 0;
   const sigma = prior.marginSigma ?? sigmas.marginSigma;
+  const lead = state.home.score - state.away.score;
+  const live = shape ? liveRemaining(shape, lead, f, sigma) : null;
   const marginMean =
-    state.home.score -
-    state.away.score +
-    (prior.expectedMargin ?? 0) * f +
-    signed;
-  const marginSd = sigma * Math.sqrt(f);
+    lead + (prior.expectedMargin ?? 0) * f + signed + (live?.reversion ?? 0);
+  // A point mass at f = 0 (0.05 keeps the pmf finite; neighbors get ~e^-200).
+  const marginSd = live ? Math.max(0.05, live.sd) : sigma * Math.sqrt(f);
   // NFL pregame: m = 0 is a true tie (historical finals include OT). Live,
   // and always in NCAAF/NBA/WNBA (no ties), a regulation tie goes to overtime.
   const margin = marginPmf(
@@ -260,6 +294,7 @@ export function footballDistribution(
       excess,
     totalSd: sigmas.totalSigma * Math.sqrt(f),
     possessionEp: signed,
+    reversion: live?.reversion ?? 0,
   };
 }
 

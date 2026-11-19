@@ -54,6 +54,15 @@ const config = {
     // How long before scheduled start the pregame snapshot is taken (minutes).
     pregameSnapshotLeadMinutes: 20,
     regions: 'us',
+    // get_bet debug: the live market's de-vigged moneyline beside our model's
+    // P(win) on legs in progress. One h2h request per sport, only when a bet
+    // is viewed and that sport's cache is older than cacheSeconds; never
+    // below quotaFloor requests left. Never feeds pWin.
+    liveMarket: {
+      enabled: process.env.LIVE_MARKET_DEBUG !== 'false',
+      cacheSeconds: 300,
+      quotaFloor: 40,
+    },
     // Closing line value: one consensus snapshot per sport shortly before the
     // earliest start in each window of open legs (tracker/clv.ts).
     clv: {
@@ -111,11 +120,38 @@ const config = {
     },
     // WNBA final margin and total (points); σ fitted per game within the range.
     wnba: { marginSigma: 11.5, totalSigma: 15, sigmaRange: [8, 16] },
-    // NBA: same model, 48 minutes.
-    nba: { marginSigma: 13, totalSigma: 18, sigmaRange: [9, 17] },
+    // NBA: same model, 48 minutes. `live` is the fitted shape of the rest of
+    // the game (models/prior.ts LiveMarginShape; scripts/fit_live_margin.py,
+    // ESPN play-by-play 2022-23..2024-25, held out on 2025-26).
+    nba: {
+      marginSigma: 13,
+      totalSigma: 18,
+      sigmaRange: [9, 17],
+      live: {
+        sigma: 13.26,
+        reversion: 0.453,
+        reversionPower: 0.543,
+        reversionCap: 18.1,
+        sdPower: 0.41,
+        minFraction: 0.002,
+      },
+    },
     // Men's college basketball: two 20-minute halves, ~68 possessions a side
-    // (NBA ~100), so a tighter final margin and total.
-    ncaab: { marginSigma: 11, totalSigma: 15, sigmaRange: [8, 15] },
+    // (NBA ~100), so a tighter final margin and total. Live shape fitted on
+    // 2023-24, held out on 2024-25.
+    ncaab: {
+      marginSigma: 11,
+      totalSigma: 15,
+      sigmaRange: [8, 15],
+      live: {
+        sigma: 11.48,
+        reversion: 0.356,
+        reversionPower: 0.519,
+        reversionCap: 15,
+        sdPower: 0.414,
+        minFraction: 0.002,
+      },
+    },
   },
   props: {
     // Hold assumed when de-vigging an anytime TD price (no "no" side posted):

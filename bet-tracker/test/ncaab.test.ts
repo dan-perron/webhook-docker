@@ -131,13 +131,17 @@ describe('college name matching', () => {
 });
 
 describe('ncaab live model (basketball_normal, 40 minutes)', () => {
-  // Halftime, home up 38-30, home favored by 2 pregame (prior P 0.6),
-  // league σ 11. f = 1/2:
-  //   mean = 8 + 2 x 0.5 = 9, sd = 11 x sqrt(0.5) = 7.778
-  //   P(m >= 1) ≈ Φ((9 - 0.5) / 7.778) = Φ(1.0928) = 0.8628
-  //   P(m = 0) ≈ φ(9 / 7.778) / 7.778 = φ(1.1571) / 7.778 = 0.0263,
+  // Halftime, home up 38-30, home favored by 2 pregame (prior P 0.6), game
+  // σ 11 (league default), NCAAB live shape (σ 11.48, a 0.356, b 0.519,
+  // c 15, k 0.414). f = 1/2:
+  //   reversion = -0.356 x 0.5^0.519 x 15 tanh(8/15)
+  //             = -0.356 x 0.69786 x 15 x 0.48793 = -1.818
+  //   mean = 8 + 2 x 0.5 - 1.818 = 7.182
+  //   sd = (11.48 + (11 - 11.48) x 0.5) x 0.5^0.414 = 11.24 x 0.75055 = 8.436
+  //   P(m >= 1) ≈ Φ((7.182 - 0.5) / 8.436) = Φ(0.7921) = 0.7858
+  //   P(m = 0) ≈ φ(7.182 / 8.436) / 8.436 = φ(0.8513) / 8.436 = 0.0329,
   //   won in OT by home with 0.5 + (0.6 - 0.5) x 0.5 = 0.55
-  //   P(home ML) ≈ 0.8628 + 0.0263 x 0.55 = 0.8773
+  //   P(home ML) ≈ 0.7858 + 0.0329 x 0.55 = 0.8039
   const half = state('ncaab', {
     homeScore: 38,
     awayScore: 30,
@@ -159,24 +163,26 @@ describe('ncaab live model (basketball_normal, 40 minutes)', () => {
       { params: PARAMS }
     );
 
-  it('halftime: moneyline and spread from Normal(9, 7.78)', () => {
+  it('halftime: moneyline and spread from Normal(7.18, 8.44)', () => {
     const [ml, spread] = evalAt();
     expect(ml!.model).toBe('basketball_normal');
     expect(ml!.inputs).toMatchObject({
-      marginMean: 9,
-      marginSd: 7.78,
+      marginMean: 7.18,
+      marginSd: 8.44,
       sigma: 11,
+      reversion: -1.82,
       fractionRemaining: 0.5,
     });
-    const sd = 11 * Math.sqrt(0.5);
+    const mean = 7.182;
+    const sd = 8.436;
     const phi = (z: number) => Math.exp((-z * z) / 2) / Math.sqrt(2 * Math.PI);
     const hand =
-      normalCdf((9 - 0.5) / sd) + (phi(9 / sd) / sd) * (0.5 + 0.1 * 0.5);
-    expect(hand).toBeCloseTo(0.8773, 3);
+      normalCdf((mean - 0.5) / sd) + (phi(mean / sd) / sd) * (0.5 + 0.1 * 0.5);
+    expect(hand).toBeCloseTo(0.8039, 3);
     expect(ml!.outcome.win).toBeCloseTo(hand, 3);
     // Away +6.5 covers when home wins by 6 or less: P(m <= 6) ≈
-    // Φ((6.5 - 9) / 7.778) = Φ(-0.3214) = 0.374 (an OT game ends ±3: covers).
-    expect(spread!.outcome.win).toBeCloseTo(normalCdf((6.5 - 9) / sd), 2);
+    // Φ((6.5 - 7.182) / 8.436) = Φ(-0.0808) = 0.468 (an OT game ends ±3: covers).
+    expect(spread!.outcome.win).toBeCloseTo(normalCdf((6.5 - mean) / sd), 2);
     expect(spread!.outcome.push).toBe(0);
   });
 
@@ -198,6 +204,42 @@ describe('ncaab live model (basketball_normal, 40 minutes)', () => {
     // Pregame: mean 2, sd 11 -> P(home) ≈ Φ(1.5 / 11) + tie share ≈ 0.57
     expect(ml!.outcome.win).toBeGreaterThan(0.5);
     expect(ml!.outcome.win).toBeLessThan(0.65);
+  });
+});
+
+describe('ncaab sanity grid: trailing team in a pick-em game', () => {
+  // Empirical P(trailing team wins), ESPN play-by-play 2023-24 and 2024-25,
+  // |closing spread| <= 3, deficit ±1 (±2 at 15 and 20). The model must land
+  // within 0.06 of each (the random walk missed half/-10 by 0.11).
+  const p = prior({ homeWin: 0.5, awayWin: 0.5, expectedMargin: 0 });
+  const rows: [string, number, number, number, (number | null)[]][] = [
+    // name, f, period, clock, deficits 5 / 10 / 15 / 20
+    ['10:00 1st half', 0.75, 1, 600, [0.377, 0.27, 0.132, null]],
+    ['half', 0.5, 1, 0, [0.326, 0.225, 0.105, 0.046]],
+    ['10:00 2nd half', 0.25, 2, 600, [0.242, 0.124, 0.031, 0]],
+    ['5:00 left', 300 / 2400, 2, 300, [0.192, 0.042, 0.006, 0]],
+    ['1:00 left', 60 / 2400, 2, 60, [0.064, 0, 0.003, 0]],
+  ];
+  it.each(rows)('%s matches history', (_n, f, period, clock, want) => {
+    [5, 10, 15, 20].forEach((d, i) => {
+      if (want[i] == null) return; // 11 games: too few
+      const s = state('ncaab', {
+        homeScore: 60 - d,
+        awayScore: 60,
+        fractionRemaining: f,
+        period,
+        clockSeconds: clock,
+        situation: { kind: 'basketball', period, clock },
+      });
+      const [ev] = evaluateEvent(
+        'ncaab',
+        s,
+        p,
+        [{ market: 'moneyline', kind: 'team', side: 'home', line: null }],
+        { params: PARAMS }
+      );
+      expect(Math.abs(ev!.outcome.win - want[i]!)).toBeLessThan(0.06);
+    });
   });
 });
 

@@ -26,8 +26,14 @@ import { confirmLegMatch, matchLegs } from '../matching/service.js';
 import { filterEvents, oddsView, summarizeEvent } from '../odds/consensus.js';
 import { ODDS_MARKETS, sportKey, type OddsApiClient } from '../odds/oddsApi.js';
 import type { ScoreService } from '../scores/service.js';
+import type { LiveMarketCheck } from '../tracker/liveMarket.js';
 import type { Tracker } from '../tracker/tracker.js';
-import { betViewById, betViews, portfolio } from '../tracker/views.js';
+import {
+  betViewById,
+  betViews,
+  eventRow,
+  portfolio,
+} from '../tracker/views.js';
 
 export interface Services {
   db: Db;
@@ -35,6 +41,8 @@ export interface Services {
   tracker: Tracker;
   scores: ScoreService;
   odds: OddsApiClient;
+  /** get_bet's live-market debug field (absent = off). */
+  liveMarket?: LiveMarketCheck;
   /** check_odds calls costing more than this need confirm: true. */
   confirmAboveCost: number;
 }
@@ -250,13 +258,27 @@ export function createMcpServer(s: Services): McpServer {
     'get_bet',
     {
       title: 'Get a bet',
-      description: `Full detail for one bet: each leg's live state (score, clock/inning, situation; series legs: the series score and next game), model name and inputs (means/sds, run rates, minutes left...; props: the stat so far, minutes/plate appearances/pitches and the mean still to come; series: per-game win probabilities), the prior used (source: espn_lines | pregame_snapshot | entered_odds | neutral, or entered_price for player props, with its numbers), P(win) now and at placement, value and EV, and the closing line (close, clv, clvPct per leg; atClose, clv per bet; see list_bets). ${UNITS} ${PROVENANCE}`,
+      description: `Full detail for one bet: each leg's live state (score, clock/inning, situation; series legs: the series score and next game), model name and inputs (means/sds, run rates, minutes left...; props: the stat so far, minutes/plate appearances/pitches and the mean still to come; series: per-game win probabilities), the prior used (source: espn_lines | pregame_snapshot | entered_odds | neutral, or entered_price for player props, with its numbers), P(win) now and at placement, value and EV, and the closing line (close, clv, clvPct per leg; atClose, clv per bet; see list_bets). Debug, on open legs in progress (moneyline/spread): liveMarket = the live market's de-vigged moneyline for that side (marketWin, books, asOf) beside our model's P(side wins the game) (modelWin) and drift = marketWin - modelWin; for spotting model drift only, never used for pWin (one cached Odds API h2h request per sport when stale; null = no match or quota floor). ${UNITS} ${PROVENANCE}`,
       inputSchema: { id: z.number().int() },
       annotations: { readOnlyHint: true },
     },
     async ({ id }) => {
       const b = getBet(s.db, id);
-      return b ? json(betViewById(s.db, b)) : fail(`Bet ${id} not found`);
+      if (!b) return fail(`Bet ${id} not found`);
+      const view = betViewById(s.db, b);
+      if (!s.liveMarket) return json(view);
+      const market = await s.liveMarket.forLegs(
+        b.legs.map((leg) => ({
+          leg,
+          event: leg.eventId ? eventRow(s.db, leg.eventId) : undefined,
+        }))
+      );
+      return json({
+        ...view,
+        legs: view.legs.map((l) =>
+          market.has(l.id) ? { ...l, liveMarket: market.get(l.id) } : l
+        ),
+      });
     }
   );
 
