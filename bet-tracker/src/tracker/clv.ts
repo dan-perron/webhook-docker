@@ -40,8 +40,11 @@ export interface LegClose {
    * null when that book didn't list it.
    */
   book?: { key: string; price: number } | null;
-  /** 'snapshot' = pregame call; 'historical' = Odds API historical odds. */
-  via?: 'snapshot' | 'historical';
+  /**
+   * 'snapshot' = pregame call; 'historical' = Odds API historical odds;
+   * 'oddspapi' = OddsPapi historical odds (backfill).
+   */
+  via?: 'snapshot' | 'historical' | 'oddspapi';
 }
 
 export const unavailableClose = (

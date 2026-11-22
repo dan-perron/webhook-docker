@@ -3,6 +3,7 @@ import type { Db } from './db/client.js';
 import { createProviders } from './gamestate/registry.js';
 import type { Services } from './mcp/server.js';
 import { OddsApiClient } from './odds/oddsApi.js';
+import { OddsPapiClient } from './odds/oddsPapi.js';
 import { NtfyNotifier } from './scores/ntfy.js';
 import { ScoreService } from './scores/service.js';
 import { LiveMarketCheck } from './tracker/liveMarket.js';
@@ -21,7 +22,11 @@ export function createServices(db: Db): Services {
       enabled: appConfig.oddsApi.pregameSnapshot,
       leadMinutes: appConfig.oddsApi.pregameSnapshotLeadMinutes,
     },
-    clv: { client: odds, ...appConfig.oddsApi.clv },
+    clv: {
+      client: odds,
+      ...appConfig.oddsApi.clv,
+      papi: new OddsPapiClient(appConfig.oddsPapi),
+    },
   });
   const { alerts, ...scoreOpts } = appConfig.scores;
   const scores = new ScoreService(db, providers, tracker, {

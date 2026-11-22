@@ -187,6 +187,20 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   Backfill settled legs (null or `missed`) from historical odds:
   `node built/tracker/clvBackfillCli.js [--dry-run] [--max-cost N]`; on a plan
   without them (401/403) nothing is written and the count is reported.
+- OddsPapi (`src/odds/oddsPapi.ts`, `ODDSPAPI_KEY`): a second historical
+  source for that backfill, free on settled fixtures (free plan 250
+  requests/month; only the fixtures lookup counts, 1 per window). Fixture by
+  tournament (NBA 132, WNBA 486, NFL 31, MLB 109, NHL 234) or, for college,
+  sport + an NCAA (men's) tournament slug; names matched either way round.
+  Historical odds: 3 books per call, 5 s apart (US books, `oddsPapi.books`).
+  Each book's last price at or before start - 5 min (dropped if `active`
+  false), its main spread/total = the line priced closest to even, turned
+  into an Odds API event so closes use the same consensus (`via:
+  'oddspapi'`). Market ids: `src/odds/data/oddspapi-markets.json`, period
+  "result" (incl. OT / extra innings / shootout), regenerate with
+  `scripts/oddspapi_markets.py`. `--source auto` (default) = Odds API with
+  `CLV_HISTORICAL=true` (falls back to OddsPapi on a plan refusal), else
+  OddsPapi; `--legs 322,...` re-closes named settled legs over any close.
 - Price CLV and timing (`legPriceClv`, `legPriceMove`, `src/domain/timing.ts`):
   `priceClv` = close fair x decimal(leg price) - 1 (pushes aside; parlay legs
   at their own leg price). `bets.recommended_at` and `legs.recommended_price`

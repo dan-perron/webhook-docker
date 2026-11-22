@@ -82,6 +82,7 @@ import {
 } from '../models/series.js';
 import type { ModelSelection } from '../models/types.js';
 import { devigSingle } from '../odds/math.js';
+import type { OddsPapiClient } from '../odds/oddsPapi.js';
 
 export interface TrackerOptions {
   params: ModelParams;
@@ -115,8 +116,13 @@ export interface TrackerOptions {
      * that started before its snapshot. Off = those legs are `missed`.
      */
     historical?: boolean;
+    /** OddsPapi: free historical odds for settled games (backfill only). */
+    papi?: OddsPapiClient;
   };
 }
+
+/** Where backfilled closes come from. auto: see `backfillCloses`. */
+export type CloseBackfillSource = 'auto' | 'oddsapi' | 'oddspapi';
 
 /** A leg waiting for its close, with its event and bet. */
 interface CloseItem {
@@ -133,8 +139,13 @@ export interface CloseBackfillReport {
   /** The rest, by reason. */
   skipped: Record<string, number>;
   windows: number;
-  /** Requests the windows cost (historical = 10 x markets x regions). */
+  /**
+   * Requests the windows cost (Odds API historical = 10 x markets x regions;
+   * OddsPapi = 1 fixtures lookup per window, its historical odds are free).
+   */
   estimatedCost: number;
+  /** The source used (auto resolved). */
+  source: Exclude<CloseBackfillSource, 'auto'>;
   /** null = not asked (dry run, or nothing to fetch). */
   planAvailable: boolean | null;
   filled: number;
@@ -800,7 +811,7 @@ export class Tracker extends EventEmitter {
                 { bookKey: bookKeyFor(bet.book), via }
               )
             : unavailableClose(
-                via === 'historical' ? 'missed' : 'unsupported',
+                via === 'snapshot' ? 'unsupported' : 'missed',
                 at
               ),
         });
@@ -820,7 +831,8 @@ export class Tracker extends EventEmitter {
   private async historicalWindow(
     w: CloseWindow<CloseItem>,
     clv: NonNullable<TrackerOptions['clv']>,
-    result: TickResult
+    result: TickResult,
+    opts: { replace?: boolean } = {}
   ): Promise<number> {
     const date = w.start - clv.leadMinutes * 60_000;
     const found = await clv.client.getHistoricalOdds({
@@ -839,22 +851,75 @@ export class Tracker extends EventEmitter {
       result
     );
     const priced = closes.filter((c) => c.close.p != null);
-    this.writeCloses(priced, result, { replaceMissed: true });
+    this.writeCloses(priced, result, { replaceMissed: true, ...opts });
     return priced.length;
   }
 
   /**
-   * Backfill closes for settled legs that have none (or only `missed`) from
-   * historical odds: one call per sport per window, as of `leadMinutes`
-   * before its earliest start. Paid Odds API plans only; on a plan without
-   * historical odds nothing is written and `planAvailable` is false.
+   * The same from OddsPapi: its settled fixtures' historical odds as of
+   * `leadMinutes` before the window's earliest start (free; one fixtures
+   * lookup per window). Games it can't find stay as they are.
+   */
+  private async papiWindow(
+    w: CloseWindow<CloseItem>,
+    clv: NonNullable<TrackerOptions['clv']>,
+    papi: OddsPapiClient,
+    result: TickResult,
+    opts: { replace?: boolean } = {}
+  ): Promise<number> {
+    const asOf = w.start - clv.leadMinutes * 60_000;
+    const found = await papi.historicalWindow({
+      sportKey: w.key,
+      markets: w.markets,
+      events: w.items.map((i) => i.e),
+      asOf,
+    });
+    const at = new Date(asOf).toISOString();
+    const { closes } = this.resolveCloses(
+      w.items,
+      found.events,
+      at,
+      asOf,
+      'oddspapi',
+      result
+    );
+    for (const e of found.unmatched)
+      result.errors.push(
+        `oddspapi: no settled fixture for ${e.awayName} @ ${e.homeName} ${e.startTime}`
+      );
+    const priced = closes.filter((c) => c.close.p != null);
+    this.writeCloses(priced, result, { replaceMissed: true, ...opts });
+    return priced.length;
+  }
+
+  /**
+   * Backfill closes for settled legs that have none (or only `missed`), one
+   * call per sport per window, as of `leadMinutes` before its earliest
+   * start. Sources: the Odds API's historical odds (paid plans; on a plan
+   * without them nothing is written and `planAvailable` is false) or
+   * OddsPapi (free on settled games; 1 request per window). `auto` uses the
+   * Odds API when `historical` is on, else OddsPapi when configured; if the
+   * Odds API refuses for the plan, it moves on to OddsPapi. `legIds`
+   * re-closes just those settled legs, replacing whatever close they have.
    * `dryRun` makes no calls and reports what it would cost.
    */
   async backfillCloses(
-    opts: { dryRun?: boolean; maxCost?: number } = {}
+    opts: {
+      dryRun?: boolean;
+      maxCost?: number;
+      source?: CloseBackfillSource;
+      legIds?: number[];
+    } = {}
   ): Promise<CloseBackfillReport> {
     const clv = this.opts.clv;
     if (!clv) throw new Error('CLV is not configured');
+    const papi = clv.papi?.configured ? clv.papi : undefined;
+    const want = opts.source ?? 'auto';
+    if (want === 'oddspapi' && !papi)
+      throw new Error('ODDSPAPI_KEY is not set');
+    let source: CloseBackfillReport['source'] =
+      want !== 'auto' ? want : !clv.historical && papi ? 'oddspapi' : 'oddsapi';
+    const replace = !!opts.legIds?.length;
     const rows = this.db
       .select({ leg: legs, bet: bets })
       .from(legs)
@@ -862,32 +927,37 @@ export class Tracker extends EventEmitter {
       .where(
         and(
           ne(legs.status, 'open'),
-          or(
-            isNull(legs.closeJson),
-            sql`json_extract(${legs.closeJson}, '$.source') = 'missed'`
-          )
+          replace
+            ? inArray(legs.id, opts.legIds!)
+            : or(
+                isNull(legs.closeJson),
+                sql`json_extract(${legs.closeJson}, '$.source') = 'missed'`
+              )
         )
       )
       .all();
     const now = this.now();
     const { candidates, skipped } = this.closeCandidates(rows, now);
     const windows = closeWindows(candidates, clv.windowMinutes * 60_000);
+    const costOf = (w: CloseWindow<CloseItem>) =>
+      source === 'oddspapi'
+        ? papi!.costOfWindow()
+        : clv.client.costOfHistorical(w.markets.length);
     const report: CloseBackfillReport = {
       missingClose: rows.length,
       eligible: candidates.length,
       skipped,
       windows: windows.length,
-      estimatedCost: windows.reduce(
-        (a, w) => a + clv.client.costOfHistorical(w.markets.length),
-        0
-      ),
+      estimatedCost: windows.reduce((a, w) => a + costOf(w), 0),
+      source,
       planAvailable: null,
       filled: 0,
       spent: 0,
       errors: [],
     };
     if (opts.dryRun || !windows.length) return report;
-    if (!clv.client.configured) throw new Error('ODDS_API_KEY is not set');
+    if (source === 'oddsapi' && !clv.client.configured)
+      throw new Error('ODDS_API_KEY is not set');
     const result: TickResult = {
       polled: [],
       evaluatedEvents: [],
@@ -895,23 +965,48 @@ export class Tracker extends EventEmitter {
       errors: report.errors,
     };
     for (const w of windows) {
-      const cost = clv.client.costOfHistorical(w.markets.length);
+      if (source === 'oddspapi' && !papi!.covers(w.key)) {
+        report.errors.push(`oddspapi: ${w.key} not covered`);
+        continue;
+      }
+      const cost = costOf(w);
       if (opts.maxCost != null && report.spent + cost > opts.maxCost) {
         report.errors.push(`stopped at maxCost ${opts.maxCost}`);
         break;
       }
-      if (this.clvQuotaHeld(clv, now, iso(now), result, cost)) {
+      if (
+        source === 'oddsapi' &&
+        this.clvQuotaHeld(clv, now, iso(now), result, cost)
+      ) {
         report.errors.push(`stopped: quota floor ${clv.quotaFloor}`);
         break;
       }
       try {
-        report.filled += await this.historicalWindow(w, clv, result);
-        report.planAvailable = true;
+        report.filled +=
+          source === 'oddspapi'
+            ? await this.papiWindow(w, clv, papi!, result, { replace })
+            : await this.historicalWindow(w, clv, result, { replace });
+        if (source === 'oddsapi') report.planAvailable = true;
         report.spent += cost;
       } catch (err) {
         if (err instanceof HistoricalUnavailableError) {
           report.planAvailable = false;
           report.errors.push(err.message);
+          if (want === 'auto' && papi) {
+            // Free plan: carry on with OddsPapi, this window included.
+            source = report.source = 'oddspapi';
+            try {
+              report.filled += await this.papiWindow(w, clv, papi, result, {
+                replace,
+              });
+              report.spent += papi.costOfWindow();
+            } catch (e) {
+              report.errors.push(
+                `${w.key} ${iso(new Date(w.start))}: ${(e as Error).message}`
+              );
+            }
+            continue;
+          }
           break;
         }
         report.errors.push(
@@ -943,12 +1038,13 @@ export class Tracker extends EventEmitter {
   /**
    * Store closes, never over a stored one (another process, or an earlier
    * tick, may have written it); `replaceMissed` lets a priced close replace a
-   * `missed` stamp (historical odds).
+   * `missed` stamp (historical odds); `replace` overwrites any close (a
+   * re-close of named legs).
    */
   private writeCloses(
     closes: { leg: LegRow; close: LegClose }[],
     result: TickResult,
-    opts: { replaceMissed?: boolean } = {}
+    opts: { replaceMissed?: boolean; replace?: boolean } = {}
   ) {
     if (!closes.length) return;
     this.db.transaction((tx) => {
@@ -958,12 +1054,14 @@ export class Tracker extends EventEmitter {
           .where(
             and(
               eq(legs.id, leg.id),
-              opts.replaceMissed
-                ? or(
-                    isNull(legs.closeJson),
-                    sql`json_extract(${legs.closeJson}, '$.source') = 'missed'`
-                  )
-                : isNull(legs.closeJson)
+              opts.replace
+                ? undefined
+                : opts.replaceMissed
+                  ? or(
+                      isNull(legs.closeJson),
+                      sql`json_extract(${legs.closeJson}, '$.source') = 'missed'`
+                    )
+                  : isNull(legs.closeJson)
             )
           )
           .run();

@@ -54,6 +54,7 @@ services:
     environment:
       - APP_TOKEN=${BET_APP_TOKEN}
       - ODDS_API_KEY=${ODDS_API_KEY:-}
+      - ODDSPAPI_KEY=${ODDSPAPI_KEY:-}
       - BASE_PATH=${BET_BASE_PATH:-/bets}
       - PUBLIC_ORIGIN=${BET_PUBLIC_ORIGIN:-https://djperron.com}
       - PREGAME_SNAPSHOT=${BET_PREGAME_SNAPSHOT:-true}

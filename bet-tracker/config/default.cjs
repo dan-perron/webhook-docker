@@ -81,6 +81,23 @@ const config = {
       historical: process.env.CLV_HISTORICAL === 'true',
     },
   },
+  // OddsPapi (oddspapi.io): historical odds for backfilling closes, free on
+  // settled games (clvBackfillCli --source oddspapi). Empty key = off.
+  oddsPapi: {
+    // Never logged.
+    apiKey: process.env.ODDSPAPI_KEY || '',
+    baseUrl: 'https://api.oddspapi.io/v4',
+    // US books (OddsPapi slugs), like the Odds API's us region.
+    books: [
+      'draftkings',
+      'fanduel',
+      'betmgm',
+      'caesars',
+      'betrivers',
+      'espnbet',
+      'fanatics',
+    ],
+  },
   polling: {
     // Seconds between game-state polls for events with an open bet.
     liveSeconds: 30,

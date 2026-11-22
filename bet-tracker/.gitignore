@@ -3,7 +3,7 @@ node_modules
 *.log
 .DS_Store
 config/local*
-data/
+/data/
 *.sqlite
 *.sqlite-*
 .env
