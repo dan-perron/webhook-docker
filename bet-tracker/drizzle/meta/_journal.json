@@ -92,6 +92,13 @@
       "when": 1793762705253,
       "tag": "0012_timing",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1795381540113,
+      "tag": "0013_bonus_bet",
+      "breakpoints": true
     }
   ]
 }

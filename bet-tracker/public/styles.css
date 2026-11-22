@@ -1133,6 +1133,10 @@ summary:focus-visible {
   border-color: var(--accent);
   color: var(--accent);
 }
+.origin-badge.bonus-bet {
+  border-color: var(--warn);
+  color: var(--warn);
+}
 .origin-filters {
   display: flex;
   gap: 6px;

@@ -119,7 +119,10 @@ export const bets = sqliteTable('bets', {
   boostKind: text('boost_kind', { enum: BOOST_KINDS }),
   boostedPriceAmerican: integer('boosted_price_american'),
   // Total return (stake + profit) the book stated; preferred over price math.
+  // On a bonus bet: profit only (the stake isn't returned).
   statedPayoutCents: integer('stated_payout_cents'),
+  // Placed with a sportsbook bonus bet: no cash cost, stake not returned.
+  bonusBet: integer('bonus_bet', { mode: 'boolean' }).notNull().default(false),
   // Free text, e.g. "Touchdown Tally token used". Token payout is independent.
   tokenInfo: text('token_info'),
   notes: text('notes'),

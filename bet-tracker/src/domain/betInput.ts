@@ -154,8 +154,10 @@ export const betInputSchema = z
     boostPct: z.number().positive().optional(),
     boostKind: z.enum(BOOST_KINDS).optional(),
     boostedPrice: american.optional(),
-    /** Total payout (stake + profit) the book stated. */
+    /** Total payout (stake + profit) the book stated; bonus bet: profit only. */
     statedPayout: dollars.optional(),
+    /** Placed with a sportsbook bonus bet (stake not cash, not returned). */
+    bonusBet: z.boolean().default(false),
     tokenInfo: z.string().min(1).optional(),
     notes: z.string().min(1).optional(),
     /** recommended = Claude recommended it as +EV; own = Dan's one-off. */

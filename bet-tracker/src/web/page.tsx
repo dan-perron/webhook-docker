@@ -426,6 +426,9 @@ export function BetCard({
           <div class="label">{b.label}</div>
           <div class="sub">
             {b.book} <OriginBadge origin={b.origin} />
+            {b.bonusBet ? (
+              <span class="origin-badge bonus-bet">Bonus bet</span>
+            ) : null}
           </div>
         </div>
         <div class="pwin">
@@ -439,12 +442,16 @@ export function BetCard({
       </header>
       <div class={`ticket-money${b.atClose ? ' with-clv' : ''}`}>
         <div>
-          <span class="k">Stake</span>
+          <span class="k">{b.bonusBet ? 'Bonus stake' : 'Stake'}</span>
           <strong>{usd(b.stake)}</strong>
         </div>
         <div>
           <span class="k">
-            {b.status === 'open' ? 'Total return if won' : 'Returned'}
+            {b.status === 'open'
+              ? b.bonusBet
+                ? 'To pay if won'
+                : 'Total return if won'
+              : 'Returned'}
           </span>
           <strong>{usd(b.status === 'open' ? b.payout : b.now.value)}</strong>
         </div>
@@ -765,6 +772,15 @@ export function Content({ d }: { d: Dashboard }) {
             <span class={s.profit >= 0 ? 'pos' : 'neg'}>
               {signedUsd(s.profit)}
             </span>
+            {d.portfolio.bonusBetsUsed.settled.count ? (
+              <>
+                {' '}
+                · bonus bets used {usd(
+                  d.portfolio.bonusBetsUsed.settled.face
+                )}{' '}
+                face
+              </>
+            ) : null}
           </div>
           {d.portfolio.byOrigin.length ? (
             <div class="card">

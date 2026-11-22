@@ -57,7 +57,7 @@ export function settledByDay(
         (b.settledAt ?? '').localeCompare(a.settledAt ?? '')
       );
       // Sum in cents so totals match the per-bet amounts shown.
-      const staked = sorted.reduce((a, b) => a + cents(b.stake), 0);
+      const staked = sorted.reduce((a, b) => a + cents(b.cashStake), 0);
       const returned = sorted.reduce((a, b) => a + cents(b.now.value), 0);
       return {
         day,

@@ -166,8 +166,10 @@ export function GameCardView({
               </span>
               <span class="sub">
                 {b.status === 'open'
-                  ? `${usd(b.stake)} stake · ${usd(b.payout)} total return if won`
-                  : `${usd(b.stake)} staked · ${usd(b.now.value)} returned`}
+                  ? b.bonusBet
+                    ? `${usd(b.stake)} bonus bet · ${usd(b.payout)} to pay if won`
+                    : `${usd(b.stake)} stake · ${usd(b.payout)} total return if won`
+                  : `${usd(b.stake)} ${b.bonusBet ? 'bonus bet' : 'staked'} · ${usd(b.now.value)} returned`}
                 {b.legs.length > 1
                   ? ` · ${b.legs.length}-leg parlay · estimate for full ticket`
                   : ''}{' '}
