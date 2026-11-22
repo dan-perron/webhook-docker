@@ -9,7 +9,7 @@ import {
   type LegRow,
   type SeriesRow,
 } from '../db/schema.js';
-import { winPayout } from '../domain/payout.js';
+import { cashCostCents, refundCents, winPayout } from '../domain/payout.js';
 import {
   BET_ORIGINS,
   UNTAGGED,
@@ -367,10 +367,12 @@ export interface ValueView {
   source: 'model' | 'book_implied' | 'entered_price';
   pWin: number;
   pPush: number;
-  /** Expected return (dollars): P(win) x payout + push refunds. */
+  /** Expected cash return (dollars): P(win) x payout + push refunds. */
   value: number;
-  /** value - stake (dollars). */
+  /** value - cash cost (dollars; the stake, or 0 for a bonus bet). */
   ev: number;
+  /** Bonus bets only: value / face stake (what the bonus bet is worth). */
+  conversion?: number;
 }
 
 /** The bet at the market's closing prices, boost included. */
@@ -392,14 +394,21 @@ export interface BetView {
   status: BetStatus;
   settledAt: string | null;
   label: string;
+  /** Face stake (dollars); for a bonus bet, the bonus bet's face value. */
   stake: number;
+  /** Cash out of pocket: the stake, or 0 for a bonus bet. */
+  cashStake: number;
+  /** Placed with a sportsbook bonus bet (stake not cash, not returned). */
+  bonusBet: boolean;
+  /** A bonus bet that pushed/voided: the book may have returned the bonus bet. */
+  bonusBetMayBeReturned?: true;
   priceAmerican: number;
   boost: {
     pct: number;
     kind: string;
     boostedPriceAmerican: number | null;
   } | null;
-  /** Return if it wins (dollars, stake included). */
+  /** Cash return if it wins (dollars; stake included, bonus bet: profit only). */
   payout: number;
   payoutSource: string;
   tokenInfo: string | null;
@@ -433,19 +442,25 @@ export interface BetView {
   legs: LegView[];
 }
 
-function valueView(v: {
-  pWin: number;
-  pPush: number;
-  valueCents: number;
-  evCents: number;
-  pWinSource?: ValueView['source'];
-}): ValueView {
+function valueView(
+  v: {
+    pWin: number;
+    pPush: number;
+    valueCents: number;
+    evCents: number;
+    pWinSource?: ValueView['source'];
+  },
+  bet: Pick<BetRow, 'bonusBet' | 'stakeCents'>
+): ValueView {
   return {
     source: v.pWinSource ?? 'model',
     pWin: prob(v.pWin)!,
     pPush: prob(v.pPush)!,
     value: dollars(v.valueCents),
     ev: dollars(v.evCents),
+    ...(bet.bonusBet && bet.stakeCents > 0
+      ? { conversion: prob(v.valueCents / bet.stakeCents)! }
+      : {}),
   };
 }
 
@@ -479,15 +494,15 @@ function eventsById(db: Db, legRows: LegRow[]): Map<string, EventRow> {
   );
 }
 
-/** Value of a bet whose result is known (cents). */
+/** Cash value of a bet whose result is known (cents). */
 function settledValueCents(
   status: BetStatus,
   payoutCents: number,
-  stakeCents: number
+  refund: number
 ): number {
   if (status === 'won') return payoutCents;
   if (status === 'lost') return 0;
-  return stakeCents; // push / void refund
+  return refund; // push / void refund (none in cash for a bonus bet)
 }
 
 export function betView(
@@ -504,7 +519,7 @@ export function betView(
   const settledCents = settledValueCents(
     bet.status,
     payout.cents,
-    bet.stakeCents
+    refundCents(bet)
   );
   const starts = legs
     .map((l) => (l.eventId ? evs.get(l.eventId)?.startTime : undefined))
@@ -526,6 +541,11 @@ export function betView(
         ? selectionLabel(legs[0]!)
         : `${legs.length}-leg parlay`,
     stake: dollars(bet.stakeCents),
+    cashStake: dollars(cashCostCents(bet)),
+    bonusBet: bet.bonusBet,
+    ...(bet.bonusBet && (bet.status === 'push' || bet.status === 'void')
+      ? { bonusBetMayBeReturned: true }
+      : {}),
     priceAmerican: bet.priceAmerican,
     boost: bet.boostPct
       ? {
@@ -552,11 +572,12 @@ export function betView(
             pWin: bet.status === 'won' ? 1 : 0,
             pPush: bet.status === 'push' || bet.status === 'void' ? 1 : 0,
             valueCents: settledCents,
-            evCents: settledCents - bet.stakeCents,
+            evCents: settledCents - cashCostCents(bet),
           }
-        : v.now
+        : v.now,
+      bet
     ),
-    atPlacement: v.atPlacement ? valueView(v.atPlacement) : null,
+    atPlacement: v.atPlacement ? valueView(v.atPlacement, bet) : null,
     atClose: close.atClose && {
       pWin: prob(close.atClose.pWin),
       value:
@@ -630,7 +651,9 @@ export interface Exposure {
 export interface OriginBreakdown {
   origin: BetOrigin | typeof UNTAGGED;
   count: number;
+  /** Cash staked (bonus bets cost nothing; see bonusBetsUsed). */
   staked: number;
+  bonusBetsUsed: BonusBetsUsed;
   open: { count: number; staked: number; ev: number };
   settled: {
     count: number;
@@ -700,13 +723,48 @@ export interface PortfolioFilter {
   timing?: TimingBucket;
 }
 
+/**
+ * Bonus bets: no cash cost (left out of every `staked`), winnings counted as
+ * cash profit. Face = the bonus bets' stated value.
+ */
+export interface BonusBetsUsed {
+  count: number;
+  face: number;
+  open: { count: number; face: number; value: number };
+  settled: { count: number; face: number; profit: number };
+}
+
+function bonusBetsUsed(vs: BetView[]): BonusBetsUsed {
+  const sum = (xs: number[]) =>
+    Math.round(xs.reduce((a, b) => a + b, 0) * 100) / 100;
+  const bonus = vs.filter((v) => v.bonusBet);
+  const op = bonus.filter((v) => v.status === 'open');
+  const st = bonus.filter((v) => v.status !== 'open');
+  return {
+    count: bonus.length,
+    face: sum(bonus.map((v) => v.stake)),
+    open: {
+      count: op.length,
+      face: sum(op.map((v) => v.stake)),
+      value: sum(op.map((v) => v.now.value)),
+    },
+    settled: {
+      count: st.length,
+      face: sum(st.map((v) => v.stake)),
+      profit: sum(st.map((v) => v.now.ev)),
+    },
+  };
+}
+
 export interface Portfolio {
   /** The origin filter applied, if any. */
   origin?: OriginFilter;
   sport?: Sport;
   timing?: TimingBucket;
+  /** staked = cash only; bonus bets are in bonusBetsUsed. */
   open: { count: number; staked: number; value: number; ev: number };
   settled: { count: number; staked: number; returned: number; profit: number };
+  bonusBetsUsed: BonusBetsUsed;
   byOrigin: OriginBreakdown[];
   /** Leg price CLV by hours from placement to the leg's start. */
   byTiming: ClvGroup[];
@@ -789,7 +847,7 @@ function exposureFor(e: EventRow, bets: BetWithLegs[]): Exposure {
           p *= l.pWin ?? 0.5;
         }
       }
-      pnl[o.key] = dollars(p * payout - bet.stakeCents);
+      pnl[o.key] = dollars(p * payout - cashCostCents(bet));
     }
     return {
       betId: bet.id,
@@ -876,7 +934,7 @@ export function portfolio(
       const op = vs.filter((v) => v.status === 'open');
       const st = vs.filter((v) => v.status !== 'open');
       const placed = st.filter((v) => v.atPlacement);
-      const staked = sum(st.map((v) => v.stake));
+      const staked = sum(st.map((v) => v.cashStake));
       const profit = sum(st.map((v) => v.now.ev));
       const evAtPlacement = sum(placed.map((v) => v.atPlacement!.ev));
       const withClv = vs.filter((v) => v.clv != null);
@@ -886,10 +944,11 @@ export function portfolio(
         {
           origin: o,
           count: vs.length,
-          staked: sum(vs.map((v) => v.stake)),
+          staked: sum(vs.map((v) => v.cashStake)),
+          bonusBetsUsed: bonusBetsUsed(vs),
           open: {
             count: op.length,
-            staked: sum(op.map((v) => v.stake)),
+            staked: sum(op.map((v) => v.cashStake)),
             ev: sum(op.map((v) => v.now.ev)),
           },
           settled: {
@@ -899,7 +958,10 @@ export function portfolio(
             profit,
             roi: ratio(profit, staked),
             evAtPlacement,
-            expectedRoi: ratio(evAtPlacement, sum(placed.map((v) => v.stake))),
+            expectedRoi: ratio(
+              evAtPlacement,
+              sum(placed.map((v) => v.cashStake))
+            ),
             realizedVsExpected: sum([
               ...placed.map((v) => v.now.ev),
               -evAtPlacement,
@@ -945,16 +1007,17 @@ export function portfolio(
     ...(timing ? { timing } : {}),
     open: {
       count: open.length,
-      staked: sum(open.map((b) => b.bet.stakeCents / 100)),
+      staked: sum(open.map((b) => views.get(b.bet.id)!.cashStake)),
       value: sum(open.map((b) => views.get(b.bet.id)!.now.value)),
       ev: sum(open.map((b) => views.get(b.bet.id)!.now.ev)),
     },
     settled: {
       count: settled.length,
-      staked: sum(settled.map((b) => b.bet.stakeCents / 100)),
+      staked: sum(settled.map((b) => views.get(b.bet.id)!.cashStake)),
       returned: sum(settled.map((b) => views.get(b.bet.id)!.now.value)),
       profit: sum(settled.map((b) => views.get(b.bet.id)!.now.ev)),
     },
+    bonusBetsUsed: bonusBetsUsed(allViews),
     byOrigin,
     byTiming,
     bySport,

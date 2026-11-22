@@ -13,6 +13,7 @@ const bet = (
     id,
     status,
     stake,
+    cashStake: stake,
     settledAt,
     now: { source: 'model', pWin: 0, pPush: 0, value, ev: value - stake },
   }) as unknown as BetView;

@@ -48,6 +48,7 @@ export function createBet(db: DbOrTx, input: BetInput): BetWithLegs {
         boostedPriceAmerican: parsed.boostedPrice ?? null,
         statedPayoutCents:
           parsed.statedPayout != null ? toCents(parsed.statedPayout) : null,
+        bonusBet: parsed.bonusBet,
         tokenInfo: parsed.tokenInfo ?? null,
         notes: parsed.notes ?? null,
         origin: parsed.origin ?? null,
@@ -154,6 +155,7 @@ export interface BetUpdate {
   boostKind?: BetRow['boostKind'];
   boostedPrice?: number | null;
   statedPayout?: number | null;
+  bonusBet?: boolean;
   tokenInfo?: string | null;
   notes?: string | null;
   /** recommended | own; null = untagged. */
@@ -183,6 +185,7 @@ export function updateBet(
   if (u.statedPayout !== undefined)
     set.statedPayoutCents =
       u.statedPayout == null ? null : toCents(u.statedPayout);
+  if (u.bonusBet !== undefined) set.bonusBet = u.bonusBet;
   if (u.tokenInfo !== undefined) set.tokenInfo = u.tokenInfo;
   if (u.notes !== undefined) set.notes = u.notes;
   if (u.origin !== undefined) set.origin = u.origin;

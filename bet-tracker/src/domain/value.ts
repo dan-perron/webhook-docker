@@ -1,6 +1,11 @@
 import type { Outcome } from '../models/types.js';
 import { impliedProbability } from '../odds/math.js';
-import { winPayout, type PayoutBet } from './payout.js';
+import {
+  cashCostCents,
+  refundCents,
+  winPayout,
+  type PayoutBet,
+} from './payout.js';
 import type { BetStatus, LegStatus } from './types.js';
 
 // Bet-level value from leg probabilities. Legs on different events are
@@ -36,9 +41,9 @@ export interface BetValuation {
   pPush: number;
   /** Return if it wins from here, given legs already settled. */
   payoutCents: number;
-  /** Expected return now: wins x their payout + push refunds. */
+  /** Expected cash return now: wins x their payout + push refunds. */
   valueCents: number;
-  /** valueCents - stake. */
+  /** valueCents - cash cost (the stake; 0 for a bonus bet). */
   evCents: number;
   /** Event ids that appear in more than one leg. */
   sameGameEventIds: string[];
@@ -90,13 +95,13 @@ export function valueBet(
 
   if (status !== 'open') {
     const valueCents =
-      status === 'won' ? payoutNow : status === 'lost' ? 0 : bet.stakeCents;
+      status === 'won' ? payoutNow : status === 'lost' ? 0 : refundCents(bet);
     return {
       ...base,
       pWin: status === 'won' ? 1 : 0,
       pPush: status === 'push' || status === 'void' ? 1 : 0,
       valueCents,
-      evCents: valueCents - bet.stakeCents,
+      evCents: valueCents - cashCostCents(bet),
       pWinSource: 'model',
     };
   }
@@ -149,7 +154,7 @@ export function valueBet(
       const pay = payoutFor.get(key)!;
       if (pay < 0) {
         pPush += p;
-        value += p * bet.stakeCents;
+        value += p * refundCents(bet);
       } else {
         pWin += p;
         value += p * pay;
@@ -166,7 +171,7 @@ export function valueBet(
     pWin,
     pPush,
     valueCents: value,
-    evCents: value - bet.stakeCents,
+    evCents: value - cashCostCents(bet),
     pWinSource: 'model',
   };
 }
@@ -191,7 +196,7 @@ function bookImplied(
     pWin,
     pPush: 0,
     valueCents: value,
-    evCents: value - bet.stakeCents,
+    evCents: value - cashCostCents(bet),
     pWinSource: 'book_implied',
   };
 }

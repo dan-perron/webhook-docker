@@ -1,0 +1,1 @@
+ALTER TABLE `bets` ADD `bonus_bet` integer DEFAULT false NOT NULL;

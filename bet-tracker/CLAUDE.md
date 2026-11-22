@@ -157,6 +157,12 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   list_bets, portfolio and the web page filter by it (`untagged` = null);
   `portfolio().byOrigin` has stake, P/L, ROI and EV at placement vs realized
   per origin.
+- Bonus bets (`bets.bonus_bet`): the stake is the book's, not cash, and
+  isn't returned. `winPayout` = stake x (decimal - 1) (a stated payout is
+  taken as profit only, like DK's "To Pay"); `cashCostCents`/`refundCents`
+  are 0, so ev = value, a loss or push is $0. Views add `cashStake` (0) and
+  `now.conversion` (value / face stake); every `staked` total is cash only,
+  with face in `bonusBetsUsed` (portfolio and per origin).
 - Closing line value (`src/tracker/clv.ts`, `Tracker.closingSnapshots`):
   `legs.close_json` is the market at close; `clv`, `priceClv`, `atClose` and
   the portfolio numbers are derived on read. One snapshot per sport per window
