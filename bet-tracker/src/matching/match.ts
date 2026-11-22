@@ -12,8 +12,10 @@ const MAX_CANDIDATES = 5;
 const STOPWORDS = new Set(['the', 'fc', 'cf', 'sc', 'university', 'of']);
 
 /**
- * College names written out where ESPN uses the short form (after "St" is
- * expanded): the leading words are replaced on both sides of a comparison.
+ * One canonical spelling for names the providers write differently: college
+ * names written out where ESPN uses the short form (after "St" is expanded),
+ * and "LA" pro clubs. The leading words are replaced on both sides of a
+ * comparison.
  */
 const CANONICAL: ReadonlyArray<readonly [string, string]> = [
   ['ut san antonio', 'utsa'],
@@ -34,6 +36,17 @@ const CANONICAL: ReadonlyArray<readonly [string, string]> = [
   ['miami florida', 'miami'],
   ['miami fl', 'miami'],
   ['miami ohio', 'miami oh'],
+  // Pro clubs ESPN abbreviates where the Odds API writes "Los Angeles" (or
+  // the other way round). Listed per club so "La Salle" stays itself.
+  ['la clippers', 'los angeles clippers'],
+  ['la lakers', 'los angeles lakers'],
+  ['la rams', 'los angeles rams'],
+  ['la chargers', 'los angeles chargers'],
+  ['la kings', 'los angeles kings'],
+  ['la dodgers', 'los angeles dodgers'],
+  ['la angels', 'los angeles angels'],
+  ['la sparks', 'los angeles sparks'],
+  ['la galaxy', 'los angeles galaxy'],
 ];
 
 /**

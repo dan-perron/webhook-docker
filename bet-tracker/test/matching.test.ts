@@ -8,6 +8,7 @@ import {
   type EspnScoreboard,
 } from '../src/gamestate/espn.js';
 import { createProviders } from '../src/gamestate/registry.js';
+import { findOddsEvent } from '../src/odds/consensus.js';
 import {
   matchEvent,
   nameScore,
@@ -221,6 +222,35 @@ describe('teamAliases', () => {
     ]);
     expect(nameScore('White Sox', teamAliases('Chicago White Sox'))).toBe(1);
     expect(teamAliases('Portugal')).toEqual(['Portugal']);
+  });
+
+  it('"LA Clippers" (ESPN) is the Odds API\'s "Los Angeles Clippers"', () => {
+    expect(normalizeName('LA Clippers')).toBe('los angeles clippers');
+    expect(nameScore('LA Clippers', teamAliases('Los Angeles Clippers'))).toBe(
+      1
+    );
+    expect(nameScore('Los Angeles Clippers', ['LA Clippers'])).toBe(1);
+    // The close snapshot's lookup: ESPN's names against the API's.
+    const hit = findOddsEvent(
+      [
+        {
+          id: 'x',
+          sport_key: 'basketball_nba',
+          commence_time: '2026-11-22T01:10:00Z',
+          home_team: 'Dallas Mavericks',
+          away_team: 'Los Angeles Clippers',
+          bookmakers: [],
+        },
+      ],
+      {
+        homeName: 'Dallas Mavericks',
+        awayName: 'LA Clippers',
+        startTime: '2026-11-22T01:00:00.000Z',
+      }
+    );
+    expect(hit?.id).toBe('x');
+    // Only the listed clubs: La Salle is not Los Angeles.
+    expect(normalizeName('La Salle Explorers')).toBe('la salle explorers');
   });
 });
 
