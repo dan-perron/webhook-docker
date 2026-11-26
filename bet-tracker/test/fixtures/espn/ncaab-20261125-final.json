@@ -1,0 +1,113 @@
+{
+ "events": [
+  {
+   "id": "401909568",
+   "uid": "s:40~l:41~e:401909568",
+   "date": "2026-11-26T00:00Z",
+   "name": "Duke Blue Devils at UConn Huskies",
+   "shortName": "DUKE VS CONN",
+   "season": {
+    "year": 2027,
+    "type": 2,
+    "slug": "regular-season"
+   },
+   "status": {
+    "clock": 0,
+    "displayClock": "0:00",
+    "period": 2,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "Final",
+     "detail": "Final",
+     "shortDetail": "Final"
+    }
+   },
+   "competitions": [
+    {
+     "id": "401909568",
+     "date": "2026-11-26T00:00Z",
+     "startDate": "2026-11-26T00:00Z",
+     "neutralSite": true,
+     "venue": {
+      "fullName": "T-Mobile Arena"
+     },
+     "status": {
+      "clock": 0,
+      "displayClock": "0:00",
+      "period": 2,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "Final",
+       "detail": "Final",
+       "shortDetail": "Final"
+      }
+     },
+     "competitors": [
+      {
+       "id": "41",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "winner": false,
+       "score": "63",
+       "linescores": [
+        {
+         "value": 32,
+         "displayValue": "32",
+         "period": 1
+        },
+        {
+         "value": 31,
+         "displayValue": "31",
+         "period": 2
+        }
+       ],
+       "team": {
+        "id": "41",
+        "location": "UConn",
+        "name": "Huskies",
+        "abbreviation": "CONN",
+        "displayName": "UConn Huskies",
+        "shortDisplayName": "UConn"
+       }
+      },
+      {
+       "id": "150",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "winner": true,
+       "score": "77",
+       "linescores": [
+        {
+         "value": 38,
+         "displayValue": "38",
+         "period": 1
+        },
+        {
+         "value": 39,
+         "displayValue": "39",
+         "period": 2
+        }
+       ],
+       "team": {
+        "id": "150",
+        "location": "Duke",
+        "name": "Blue Devils",
+        "abbreviation": "DUKE",
+        "displayName": "Duke Blue Devils",
+        "shortDisplayName": "Duke"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

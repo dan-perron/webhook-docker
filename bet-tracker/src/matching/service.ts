@@ -6,6 +6,12 @@ import type { SeriesListing } from '../gamestate/espnSeries.js';
 import type { Providers } from '../gamestate/registry.js';
 import type { ProviderEvent } from '../gamestate/types.js';
 import { recordLines } from '../tracker/lines.js';
+import {
+  isSwapped,
+  reorientEvent,
+  sideOfTeam,
+  type Team,
+} from '../tracker/orientation.js';
 import { matchEvent, type Candidate } from './match.js';
 
 /**
@@ -39,13 +45,26 @@ const eventLabel = (e: ProviderEvent) =>
     ? `${e.home.name} v ${e.away.name}`
     : `${e.away.name} @ ${e.home.name}`;
 
-/** Insert or refresh an event row from a provider listing. */
+/**
+ * Insert or refresh an event row from a provider listing. A listing that
+ * swaps the stored home/away re-orients the event (and its legs) first.
+ */
 export function upsertEvent(db: DbOrTx, e: ProviderEvent): void {
   const now = new Date().toISOString();
+  const stored = db.select().from(events).where(eq(events.id, e.id)).get();
+  if (stored && isSwapped(stored, e.home, e.away)) {
+    const r = reorientEvent(db, e.id, e);
+    if (r) console.warn(`reoriented ${r.eventId}: ${r.from} -> ${r.to}`);
+  }
+  const tagged = e.pregameLines && {
+    ...e.pregameLines,
+    homeName: e.home.name,
+    awayName: e.away.name,
+  };
   const lines =
-    e.status === 'pre' && e.pregameLines
+    e.status === 'pre' && tagged
       ? {
-          providerLinesJson: JSON.stringify(e.pregameLines),
+          providerLinesJson: JSON.stringify(tagged),
           providerLinesAt: now,
         }
       : {};
@@ -78,8 +97,8 @@ export function upsertEvent(db: DbOrTx, e: ProviderEvent): void {
       },
     })
     .run();
-  if (e.status === 'pre' && e.pregameLines) {
-    recordLines(db, e.id, 'espn', e.pregameLines, now);
+  if (e.status === 'pre' && tagged) {
+    recordLines(db, e.id, 'espn', tagged, now);
   }
 }
 
@@ -109,12 +128,31 @@ const seriesLabel = (s: SeriesListing) =>
   `${s.away.name} v ${s.home.name}${s.title ? ` (${s.title})` : ''}`;
 
 /**
- * Home/away of the backed team (a player prop's: the player's team), given
- * which side each participant matched.
+ * Home/away of the backed team (a player prop's: the player's team): the
+ * team's name against the event's own home/away competitors, never the
+ * order the leg's participants were written in ("UConn @ Duke" promo text
+ * for a game ESPN lists as Duke @ UConn). Falls back to which side each
+ * participant matched when the name alone is not conclusive.
  */
-function selectionSide(leg: LegRow, sides: [Side, Side]): Side | null {
+export function selectionSide(
+  leg: Pick<
+    LegRow,
+    | 'selectionKind'
+    | 'market'
+    | 'selectionTeam'
+    | 'participantA'
+    | 'participantB'
+  >,
+  teams: { home: Team; away: Team } | null,
+  sides?: [Side, Side]
+): Side | null {
   if (leg.selectionKind !== 'team' && leg.market !== 'player_prop') return null;
   if (!leg.selectionTeam) return null;
+  const byName = teams
+    ? sideOfTeam(leg.selectionTeam, teams.home, teams.away)
+    : null;
+  if (byName) return byName;
+  if (!sides) return null;
   if (leg.selectionTeam === leg.participantA) return sides[0];
   if (leg.selectionTeam === leg.participantB) return sides[1];
   return null;
@@ -144,6 +182,20 @@ function outcome(leg: LegRow, stored: StoredCandidate[] = []): LegMatchOutcome {
   };
 }
 
+/** An event's home/away as stored, for deriving a leg's side. */
+export function storedTeams(
+  db: DbOrTx,
+  eventId: string
+): { home: Team; away: Team } | null {
+  const e = db.select().from(events).where(eq(events.id, eventId)).get();
+  return e
+    ? {
+        home: { name: e.homeName, abbr: e.homeAbbr },
+        away: { name: e.awayName, abbr: e.awayAbbr },
+      }
+    : null;
+}
+
 function applyMatch(db: DbOrTx, leg: LegRow, c: StoredCandidate): LegRow {
   if (c.series) {
     upsertSeries(db, c.series);
@@ -151,7 +203,7 @@ function applyMatch(db: DbOrTx, leg: LegRow, c: StoredCandidate): LegRow {
       .update(legs)
       .set({
         seriesId: c.series.id,
-        side: selectionSide(leg, c.sides),
+        side: selectionSide(leg, c.series, c.sides),
         matchStatus: 'matched',
         matchCandidatesJson: null,
         updatedAt: new Date().toISOString(),
@@ -165,7 +217,8 @@ function applyMatch(db: DbOrTx, leg: LegRow, c: StoredCandidate): LegRow {
     .update(legs)
     .set({
       eventId: c.eventId,
-      side: selectionSide(leg, c.sides),
+      // The event row as stored (upsertEvent may have re-oriented it).
+      side: selectionSide(leg, storedTeams(db, c.eventId), c.sides),
       matchStatus: 'matched',
       matchCandidatesJson: null,
       updatedAt: new Date().toISOString(),

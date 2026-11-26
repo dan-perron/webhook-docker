@@ -9,6 +9,8 @@ import {
 } from '../odds/consensus.js';
 import { sportKey, type OddsApiClient } from '../odds/oddsApi.js';
 import type { EventRow, LegRow } from '../db/schema.js';
+import { teamAliases } from '../matching/match.js';
+import { sideOfTeam } from './orientation.js';
 
 // Debug only: the live market's de-vigged moneyline beside our model's
 // P(side wins outright) for each open leg on a game in progress, so drift
@@ -91,7 +93,24 @@ export class LiveMarketCheck {
       home: o.home_team,
       away: o.away_team,
     });
-    const team = (leg.side === 'home') !== flip ? o.home_team : o.away_team;
+    // The backed team by name when it is known (so a wrong stored side shows
+    // up as drift against modelWin, which is for the stored side), else by
+    // the stored side.
+    const byName =
+      leg.selectionTeam &&
+      sideOfTeam(
+        leg.selectionTeam,
+        // The API has full names only: add nickname/place aliases.
+        { name: o.home_team, aliases: teamAliases(o.home_team) },
+        { name: o.away_team, aliases: teamAliases(o.away_team) }
+      );
+    const team = byName
+      ? byName === 'home'
+        ? o.home_team
+        : o.away_team
+      : (leg.side === 'home') !== flip
+        ? o.home_team
+        : o.away_team;
     const marketWin = h2h.consensus[team];
     if (marketWin == null) return null;
     const state = JSON.parse(e.stateJson!) as GameState;

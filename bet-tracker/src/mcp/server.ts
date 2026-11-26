@@ -30,6 +30,7 @@ import type { LiveMarketCheck } from '../tracker/liveMarket.js';
 import type { Tracker } from '../tracker/tracker.js';
 import {
   betViewById,
+  liveMarketWarning,
   betViews,
   eventRow,
   portfolio,
@@ -261,7 +262,7 @@ export function createMcpServer(s: Services): McpServer {
     'get_bet',
     {
       title: 'Get a bet',
-      description: `Full detail for one bet: each leg's live state (score, clock/inning, situation; series legs: the series score and next game), model name and inputs (means/sds, run rates, minutes left...; props: the stat so far, minutes/plate appearances/pitches and the mean still to come; series: per-game win probabilities), the prior used (source: espn_lines | pregame_snapshot | entered_odds | neutral, or entered_price for player props, with its numbers), P(win) now and at placement, value and EV, and the closing line (close, clv, clvPct per leg; atClose, clv per bet; see list_bets). Debug, on open legs in progress (moneyline/spread): liveMarket = the live market's de-vigged moneyline for that side (marketWin, books, asOf) beside our model's P(side wins the game) (modelWin) and drift = marketWin - modelWin; for spotting model drift only, never used for pWin (one cached Odds API h2h request per sport when stale; null = no match or quota floor). ${UNITS} ${PROVENANCE}`,
+      description: `Full detail for one bet: each leg's live state (score, clock/inning, situation; series legs: the series score and next game), model name and inputs (means/sds, run rates, minutes left...; props: the stat so far, minutes/plate appearances/pitches and the mean still to come; series: per-game win probabilities), the prior used (source: espn_lines | pregame_snapshot | entered_odds | neutral, or entered_price for player props, with its numbers), P(win) now and at placement, value and EV, and the closing line (close, clv, clvPct per leg; atClose, clv per bet; see list_bets). Debug, on open legs in progress (moneyline/spread): liveMarket = the live market's de-vigged moneyline for the backed team, found by name (marketWin, books, asOf) beside our model's P(side wins the game) (modelWin) and drift = marketWin - modelWin; for spotting model drift only, never used for pWin (one cached Odds API h2h request per sport when stale; null = no match or quota floor). A leg's warnings (absent when none; also on list_bets) flag a likely home/away side mismatch: in progress with ESPN's win probability for the backed team more than 0.5 from our P(win), or (get_bet only) the live market for the backed team more than 0.5 from modelWin, or the event's stored home/away disagreeing with its latest state. Tell Dan; recompute_bet re-derives the side. ${UNITS} ${PROVENANCE}`,
       inputSchema: { id: z.number().int() },
       annotations: { readOnlyHint: true },
     },
@@ -278,9 +279,16 @@ export function createMcpServer(s: Services): McpServer {
       );
       return json({
         ...view,
-        legs: view.legs.map((l) =>
-          market.has(l.id) ? { ...l, liveMarket: market.get(l.id) } : l
-        ),
+        legs: view.legs.map((l) => {
+          if (!market.has(l.id)) return l;
+          const m = market.get(l.id);
+          const w = m && liveMarketWarning(m);
+          return {
+            ...l,
+            liveMarket: m,
+            ...(w ? { warnings: [...(l.warnings ?? []), w] } : {}),
+          };
+        }),
       });
     }
   );
@@ -378,8 +386,11 @@ export function createMcpServer(s: Services): McpServer {
           updateBet(s.db, leg.betId, { recommendedAt });
         // Recommendation fields alone don't move any number.
         const { recommendedPrice: _rp, ...priced } = legFields;
-        if (Object.keys(priced).length) s.tracker.recomputeBet(leg.betId);
-        return json(betViewById(s.db, getBet(s.db, leg.betId)!));
+        const r = Object.keys(priced).length
+          ? s.tracker.recomputeBet(leg.betId)
+          : null;
+        const view = betViewById(s.db, getBet(s.db, leg.betId)!);
+        return json(r?.warnings ? { ...view, warnings: r.warnings } : view);
       } catch (e) {
         return fail((e as Error).message);
       }
@@ -391,13 +402,14 @@ export function createMcpServer(s: Services): McpServer {
     {
       title: 'Recompute a bet',
       description:
-        "Rebuild a bet's derived numbers from scratch: each leg's prior from the event's market lines plus this bet's own entered prices, P(win) and EV at placement (market lines as of the bet's placed time), market anchors, same-game joints, and settlement from final scores (the bet status is re-derived from its legs; a manual settle_bet result is replaced). Use after correcting data, or when a bet looks stale.",
+        "Rebuild a bet's derived numbers from scratch: each leg's prior from the event's market lines plus this bet's own entered prices, P(win) and EV at placement (market lines as of the bet's placed time), market anchors, same-game joints, and settlement from final scores (the bet status is re-derived from its legs). Each team leg's home/away side is re-derived from its event by team name first (an event ESPN has since swapped home/away for is re-oriented). A manual settle_bet result that disagrees with what the legs now say is kept, with a warning (settle_bet again to accept the legs' result). Use after correcting data, or when a bet looks stale.",
       inputSchema: { id: z.number().int() },
     },
     async ({ id }) => {
       if (!getBet(s.db, id)) return fail(`Bet ${id} not found`);
-      s.tracker.recomputeBet(id);
-      return json(betViewById(s.db, getBet(s.db, id)!));
+      const r = s.tracker.recomputeBet(id);
+      const view = betViewById(s.db, getBet(s.db, id)!);
+      return json(r.warnings ? { ...view, warnings: r.warnings } : view);
     }
   );
 

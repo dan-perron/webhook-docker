@@ -6,6 +6,7 @@ import { evaluateEvent } from '../src/models/evaluate.js';
 import type { ModelParams, Prior } from '../src/models/prior.js';
 import type { OddsApiClient, OddsEvent } from '../src/odds/oddsApi.js';
 import { LiveMarketCheck } from '../src/tracker/liveMarket.js';
+import { liveMarketWarning } from '../src/tracker/views.js';
 import { fixture } from './helpers/fixtures.js';
 import { PARAMS, prior, state } from './helpers/states.js';
 
@@ -320,5 +321,22 @@ describe('live market debug beside the model (get_bet)', () => {
     });
     expect((await off.forLegs([{ leg, event }])).size).toBe(0);
     expect(ok.calls).toHaveLength(0);
+  });
+
+  it('prices the backed team by name, so a wrong stored side shows as a mismatch', async () => {
+    const { client } = fakeClient(400);
+    const check = new LiveMarketCheck(client, PARAMS, opts);
+    // A Celtics pick stored as side home (Denver): the market is Boston's
+    // 1 - 0.19728 = 0.80272, the model Denver's 0.1581.
+    const wrong = { ...leg, selectionTeam: 'Celtics' } as LegRow;
+    const m = (await check.forLegs([{ leg: wrong, event }])).get(7)!;
+    expect(m.marketWin).toBeCloseTo(0.8027, 4);
+    expect(m.modelWin).toBeCloseTo(0.1581, 2);
+    expect(liveMarketWarning(m)).toMatch(/likely side mismatch/);
+    // The right side: no warning.
+    const right = { ...leg, selectionTeam: 'Nuggets' } as LegRow;
+    expect(
+      liveMarketWarning((await check.forLegs([{ leg: right, event }])).get(7)!)
+    ).toBeNull();
   });
 });
