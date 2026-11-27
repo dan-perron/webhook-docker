@@ -201,6 +201,23 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   `scripts/oddspapi_markets.py`. `--source auto` (default) = Odds API with
   `CLV_HISTORICAL=true` (falls back to OddsPapi on a plan refusal), else
   OddsPapi; `--legs 322,...` re-closes named settled legs over any close.
+- Odds providers (`src/odds/provider.ts`): The Odds API and OddsPapi behind
+  `OddsProvider.prepare(req) -> {cost, run()}`, normalized to `NormEvent` /
+  `NormPrice` (provider, book in Odds API keys, market, outcome home/away/
+  over/..., line from that outcome's side, american, decimal, `derived` when
+  we converted one, lastUpdated). OddsPapi prices are its own `price` and
+  `priceAmerican`; its fixtures have no home/away, so orientation is by name
+  against our ESPN event (`linkFixture`, stored in meta as
+  `oddspapi_fixture:<eventId>`), else participant1 is taken as home and
+  marked `homeAwayFrom: 'participant1'`. `merge.ts` merges providers by
+  names + start (3 h), flipping the less trusted orientation (ESPN > Odds
+  API > participant1); `fair` per outcome = Pinnacle no-vig. check_odds
+  `source: "oddsapi"` (default) keeps its old output exactly. Market lookups
+  (`papiLookups.ts`) are cached 24 h in meta and fall back to the checked-in
+  table. `papiHistory.ts` serves get_historical_odds (history prices are
+  decimal only; American is derived). None of this feeds pWin/value/ev.
+  Fixtures for `/v4/odds` and `/v4/markets` are hand-built (see
+  `test/fixtures/oddspapi/README.md`); tests never call the real API.
 - Price CLV and timing (`legPriceClv`, `legPriceMove`, `src/domain/timing.ts`):
   `priceClv` = close fair x decimal(leg price) - 1 (pushes aside; parlay legs
   at their own leg price). `bets.recommended_at` and `legs.recommended_price`

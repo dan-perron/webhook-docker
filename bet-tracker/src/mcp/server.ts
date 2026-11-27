@@ -24,7 +24,24 @@ import {
 import type { Providers } from '../gamestate/registry.js';
 import { confirmLegMatch, matchLegs } from '../matching/service.js';
 import { filterEvents, oddsView, summarizeEvent } from '../odds/consensus.js';
+import { mergeEvents, mergedView } from '../odds/merge.js';
 import { ODDS_MARKETS, sportKey, type OddsApiClient } from '../odds/oddsApi.js';
+import {
+  SPORTS as PAPI_SPORTS,
+  type OddsPapiClient,
+} from '../odds/oddsPapi.js';
+import { summarizeHistory } from '../odds/papiHistory.js';
+import type { PapiLookups } from '../odds/papiLookups.js';
+import {
+  findFixtureFor,
+  OddsApiProvider,
+  papiSlug,
+  quotaView,
+  type NormMarket,
+  type OddsPapiProvider,
+  type PreparedCall,
+  type ProviderResult,
+} from '../odds/provider.js';
 import type { ScoreService } from '../scores/service.js';
 import type { LiveMarketCheck } from '../tracker/liveMarket.js';
 import type { Tracker } from '../tracker/tracker.js';
@@ -45,7 +62,19 @@ export interface Services {
   liveMarket?: LiveMarketCheck;
   /** check_odds calls costing more than this need confirm: true. */
   confirmAboveCost: number;
+  /** OddsPapi (check_odds source oddspapi/both, get_historical_odds). */
+  papi?: {
+    client: OddsPapiClient;
+    provider: OddsPapiProvider;
+    lookups: PapiLookups;
+  };
 }
+
+/** Our sport -> Odds API sport key, for OddsPapi's coverage. */
+const PAPI_COVERED = Object.keys(PAPI_SPORTS);
+
+const SOURCES =
+  'source: "oddsapi" (default; The Odds API: US books, game lines, quota in its own requests) | "oddspapi" (OddsPapi: adds Pinnacle as the sharp reference and player props; nba, wnba, ncaab, nfl, ncaaf, mlb, nhl only) | "both" (merged by event/market/outcome, each price labelled with its provider; if OddsPapi fails you get the Odds API data plus a warning).';
 
 const UNITS =
   'Units: money in US dollars; prices in American odds (e.g. +150, -110); probabilities 0..1.';
@@ -78,7 +107,7 @@ export function createMcpServer(s: Services): McpServer {
   const server = new McpServer(
     { name: 'bet-tracker', version: '1.0.0' },
     {
-      instructions: `Tracks Dan's sportsbook bets with live, game-state-based win probabilities, and (Scores) live scores for games he follows without betting: watch_game / follow_team add them, scores shows the board. ${UNITS} ${PROVENANCE} Tag every bet you add with origin: 'recommended' when you recommended it as +EV, 'own' when it is Dan's one-off. Use check_odds for current market lines (costs Odds API quota). When add_bet returns legs needing confirmation, show Dan the candidates and call confirm_match with his choice; never pick one yourself.`,
+      instructions: `Tracks Dan's sportsbook bets with live, game-state-based win probabilities, and (Scores) live scores for games he follows without betting: watch_game / follow_team add them, scores shows the board. ${UNITS} ${PROVENANCE} Tag every bet you add with origin: 'recommended' when you recommended it as +EV, 'own' when it is Dan's one-off. Use check_odds for current market lines: source "oddsapi" (default, Odds API quota) for US books' game lines; "oddspapi" or "both" when you want Pinnacle as the sharp reference (fair = Pinnacle no-vig) or player props, filtered to one game (about 2 OddsPapi requests; its monthly allowance is small). Use get_historical_odds (OddsPapi, finished games, no monthly quota, 5 s per 3 books) to see a game's open, close and the price when a bet was placed. Odds are market data only, never inputs to pWin/value/ev. When add_bet returns legs needing confirmation, show Dan the candidates and call confirm_match with his choice; never pick one yourself.`,
     }
   );
 
@@ -86,7 +115,7 @@ export function createMcpServer(s: Services): McpServer {
     'check_odds',
     {
       title: 'Check current odds',
-      description: `Current lines from The Odds API for a sport, optionally filtered to teams/an event. Returns, per market, each outcome with its own point (spreads: e.g. Brewers -1.5 / Padres +1.5; totals: the line), every book's American price (from the API) and de-vigged fair probability (computed), the cross-book consensus and best price, and the market's average hold, and the Odds API quota remaining after the call. Each call costs markets x regions requests (60 s cache is free); calls costing more than the confirmation threshold return the cost and need confirm: true. ${UNITS}`,
+      description: `Current market lines for a sport, optionally filtered to teams/an event. Market data only: never an input to pWin/value/ev. ${SOURCES} source oddsapi returns, per market, each outcome with its own point (spreads: e.g. Brewers -1.5 / Padres +1.5; totals: the line), every book's American price (from the API) and de-vigged fair probability (computed), the cross-book consensus and best price, the market's average hold, and the Odds API quota remaining. Cost: markets x regions requests (60 s cache is free). source oddspapi/both returns per outcome: consensus (mean of the books' de-vigged probabilities), fair + fairAmerican (Pinnacle's no-vig price, when Pinnacle priced every side), best, and books [{provider, book, american, decimal, fair, lastUpdated}] (OddsPapi's American and decimal prices are the API's own; derived marks a converted one), plus warnings and each provider's quota. OddsPapi cost: 1 request for the fixtures list (cached 10 min) + 1 per game priced (all books in one call); a filter usually means 2, no filter up to 11 (the next day's games, at most 10). OddsPapi's monthly allowance is small (250 on the free plan): filter to the game you care about. Calls costing more than the confirmation threshold on either provider return the cost and need confirm: true. ${UNITS}`,
       inputSchema: {
         sport: z
           .string()
@@ -104,17 +133,25 @@ export function createMcpServer(s: Services): McpServer {
             'Filter, e.g. "Rams", "Rams @ Eagles", "Portugal v Norway"'
           ),
         markets: z
-          .array(z.enum(ODDS_MARKETS))
+          .array(z.enum([...ODDS_MARKETS, 'player_prop']))
           .optional()
           .describe(
-            'Default h2h, spreads, totals (3 requests). h2h = moneyline.'
+            'Default h2h, spreads, totals (Odds API: 3 requests). h2h = moneyline. player_prop: OddsPapi only (over/under and yes/no player markets, main line per player).'
           ),
+        player: z
+          .string()
+          .optional()
+          .describe('player_prop: keep only players whose name contains this'),
         books: z
           .array(z.string())
           .optional()
           .describe(
-            'Bookmaker keys, e.g. ["fanduel","draftkings"]. Default: all US books.'
+            'Bookmaker keys, e.g. ["fanduel","draftkings","pinnacle"]. Default: all US books (OddsPapi: the US books plus Pinnacle).'
           ),
+        source: z
+          .enum(['oddsapi', 'oddspapi', 'both'])
+          .optional()
+          .describe('Default oddsapi. See the description.'),
         confirm: z
           .boolean()
           .optional()
@@ -125,39 +162,201 @@ export function createMcpServer(s: Services): McpServer {
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
     async (a) => {
-      if (!s.odds.configured)
-        return fail('ODDS_API_KEY is not configured on the server.');
+      const source = a.source ?? 'oddsapi';
       let key: string;
       try {
         key = sportKey(a.sport, a.league);
       } catch (e) {
         return fail((e as Error).message);
       }
+      if (source === 'oddsapi') {
+        if (a.markets?.includes('player_prop'))
+          return fail(
+            'player_prop odds come from OddsPapi: call with source "oddspapi" or "both".'
+          );
+        return oddsApiOnly(key, a);
+      }
+      const markets = (a.markets ?? [...ODDS_MARKETS]) as NormMarket[];
+      const warnings: string[] = [];
       const req = {
         sportKey: key,
-        markets: a.markets ?? [...ODDS_MARKETS],
-        books: a.books,
+        markets,
+        ...(a.books ? { books: a.books } : {}),
+        ...(a.teams_or_event ? { filter: a.teams_or_event } : {}),
+        ...(a.player ? { player: a.player } : {}),
       };
-      const cost = s.odds.costOf(req);
-      if (cost > s.confirmAboveCost && !a.confirm) {
+      const papiProblem = !s.papi?.client.configured
+        ? 'ODDSPAPI_KEY is not configured on the server'
+        : !PAPI_COVERED.includes(key)
+          ? `OddsPapi does not cover ${key} (it covers ${PAPI_COVERED.join(', ')})`
+          : null;
+      if (source === 'oddspapi' && papiProblem) return fail(`${papiProblem}.`);
+      const useOddsApi = source === 'both' && s.odds.configured;
+      if (source === 'both' && !s.odds.configured)
+        warnings.push('oddsapi: ODDS_API_KEY is not configured');
+      const prepared: PreparedCall[] = [];
+      if (useOddsApi)
+        prepared.push(await new OddsApiProvider(s.odds).prepare(req));
+      if (papiProblem) warnings.push(`oddspapi: ${papiProblem}`);
+      else
+        try {
+          prepared.push(await s.papi!.provider.prepare(req));
+        } catch (e) {
+          if (source === 'oddspapi') return fail((e as Error).message);
+          warnings.push(
+            `oddspapi: ${(e as Error).message}; showing Odds API data only`
+          );
+        }
+      const over = prepared.filter((p) => p.cost > s.confirmAboveCost);
+      if (over.length && !a.confirm)
         return json({
           requiresConfirmation: true,
-          cost,
-          quota: s.odds.quota(),
-          message: `This call costs ${cost} Odds API requests. Call again with confirm: true to proceed.`,
+          cost: Object.fromEntries(prepared.map((p) => [p.provider, p.cost])),
+          message: `This call costs ${prepared.map((p) => `${p.cost} ${p.provider === 'oddsapi' ? 'Odds API' : 'OddsPapi'} requests`).join(' + ')}. Call again with confirm: true to proceed${a.teams_or_event ? '' : ', or filter with teams_or_event'}.`,
         });
+      const results: ProviderResult[] = [];
+      for (const p of prepared) {
+        try {
+          const r = await p.run();
+          results.push(r);
+          warnings.push(...r.warnings);
+        } catch (e) {
+          if (source === 'oddspapi' || p.provider === 'oddsapi')
+            return fail((e as Error).message);
+          warnings.push(
+            `oddspapi: ${(e as Error).message}; showing Odds API data only`
+          );
+        }
       }
+      const merged = mergeEvents(results.map((r) => r.events));
+      return json({
+        source,
+        sportKey: key,
+        cost: Object.fromEntries(results.map((r) => [r.provider, r.cost])),
+        quota: Object.fromEntries(results.map((r) => [r.provider, r.quota])),
+        ...(warnings.length ? { warnings } : {}),
+        eventCount: merged.length,
+        events: merged.slice(0, 10).map(mergedView),
+      });
+    }
+  );
+
+  /** check_odds with source oddsapi: exactly what it returned before. */
+  async function oddsApiOnly(
+    key: string,
+    a: {
+      markets?: string[];
+      books?: string[];
+      teams_or_event?: string;
+      confirm?: boolean;
+    }
+  ) {
+    if (!s.odds.configured)
+      return fail('ODDS_API_KEY is not configured on the server.');
+    const req = {
+      sportKey: key,
+      markets: (a.markets ?? [
+        ...ODDS_MARKETS,
+      ]) as (typeof ODDS_MARKETS)[number][],
+      books: a.books,
+    };
+    const cost = s.odds.costOf(req);
+    if (cost > s.confirmAboveCost && !a.confirm) {
+      return json({
+        requiresConfirmation: true,
+        cost,
+        quota: s.odds.quota(),
+        message: `This call costs ${cost} Odds API requests. Call again with confirm: true to proceed.`,
+      });
+    }
+    try {
+      const r = await s.odds.getOdds(req);
+      const matched = filterEvents(r.events, a.teams_or_event);
+      return json({
+        source: 'The Odds API',
+        sportKey: key,
+        cost: r.cost,
+        cached: r.cached,
+        quota: { remaining: r.quota.remaining, used: r.quota.used },
+        eventCount: matched.length,
+        events: matched.slice(0, 10).map((e) => oddsView(summarizeEvent(e))),
+      });
+    } catch (e) {
+      return fail((e as Error).message);
+    }
+  }
+
+  server.registerTool(
+    'get_historical_odds',
+    {
+      title: 'Historical odds (OddsPapi)',
+      description: `A finished game's price history from OddsPapi, per book, for one market: the open (first price), the close (last price at or before the start), each book's no-vig close (fairClose), and with legId the price when the bet was placed (atBet, from the bet's placedAt). For backtesting line timing (opening vs closing vs bet time) and CLV; market data only, never an input to pWin. Name the game by legId, eventId (ours, e.g. espn:nba:401910025) or OddsPapi fixtureId. Free-plan history covers settled games only (from January 2026; prices from about 75 days before start). Cost: no monthly quota for the history itself, but each call of up to 3 books takes 5 s (more books = more 5 s calls); finding the fixture for an eventId/legId costs 1 request the first time (then it is remembered), a fixtureId 1 request. Prices: decimal as recorded, American derived from it. Spreads/totals: each book's main line at the close unless line is given (spreads: the home side's line).`,
+      inputSchema: {
+        legId: z.number().int().optional(),
+        eventId: z.string().optional(),
+        fixtureId: z
+          .string()
+          .optional()
+          .describe('OddsPapi fixture id, e.g. id1100013273719724'),
+        market: z.enum(ODDS_MARKETS).optional().describe('Default h2h'),
+        line: z.number().optional(),
+        books: z
+          .array(z.string())
+          .optional()
+          .describe(
+            'Default ["pinnacle","draftkings","fanduel"] (one 5 s call). Odds API keys or OddsPapi slugs.'
+          ),
+        includeHistory: z
+          .boolean()
+          .optional()
+          .describe('Also return every price change (at most 200 per outcome)'),
+      },
+      annotations: { readOnlyHint: true, openWorldHint: true },
+    },
+    async (a) => {
+      const papi = s.papi;
+      if (!papi?.client.configured)
+        return fail('ODDSPAPI_KEY is not configured on the server.');
       try {
-        const r = await s.odds.getOdds(req);
-        const matched = filterEvents(r.events, a.teams_or_event);
+        const target = await findFixtureFor(s.db, papi.client, a);
+        const books = (
+          a.books?.length ? a.books : ['pinnacle', 'draftkings', 'fanduel']
+        ).map(papiSlug);
+        const { byId } = await papi.lookups.markets();
+        const hist = await papi.client.historical(
+          target.fixture.fixtureId,
+          books
+        );
+        const market = a.market ?? 'h2h';
+        const out = summarizeHistory(hist, byId, {
+          fixture: target.fixture,
+          homeIsFirst: target.homeIsFirst,
+          sportId: target.sportId,
+          market,
+          ...(a.line != null ? { line: a.line } : {}),
+          ...(target.betAt ? { betAt: target.betAt } : {}),
+          ...(a.includeHistory ? { includeHistory: true } : {}),
+        });
+        const missing = books
+          .map((b) => b)
+          .filter((b) => !hist.bookmakers?.[b]);
         return json({
-          source: 'The Odds API',
-          sportKey: key,
-          cost: r.cost,
-          cached: r.cached,
-          quota: { remaining: r.quota.remaining, used: r.quota.used },
-          eventCount: matched.length,
-          events: matched.slice(0, 10).map((e) => oddsView(summarizeEvent(e))),
+          fixtureId: target.fixture.fixtureId,
+          ...(target.eventId ? { eventId: target.eventId } : {}),
+          start: new Date(Date.parse(target.fixture.startTime)).toISOString(),
+          home: target.homeIsFirst
+            ? target.fixture.participant1Name
+            : target.fixture.participant2Name,
+          away: target.homeIsFirst
+            ? target.fixture.participant2Name
+            : target.fixture.participant1Name,
+          market,
+          ...(target.leg ? { leg: target.leg } : {}),
+          books: out,
+          ...(missing.length
+            ? { warnings: [`no history from ${missing.join(', ')}`] }
+            : {}),
+          quota: quotaView(await papi.client.usageNow()),
         });
       } catch (e) {
         return fail((e as Error).message);

@@ -151,6 +151,8 @@ mapped in `docker-compose.yml`:
 | ----------------------------------------- | ---------------------- | -------------------------- | ----------------------------------------------------------------------------- |
 | `APP_TOKEN`                               | `BET_APP_TOKEN`        | required                   | Web login, bearer token for HTTP MCP, OAuth approval                          |
 | `ODDS_API_KEY`                            | `ODDS_API_KEY`         | empty (odds off)           | The Odds API key; never logged or returned                                    |
+| `ODDSPAPI_KEY`                            | `ODDSPAPI_KEY`         | empty (OddsPapi off)       | OddsPapi key (check_odds source oddspapi/both, historical odds); never logged |
+| `ODDSPAPI_SHARP_BOOK`                     | `ODDSPAPI_SHARP_BOOK`  | `pinnacle`                 | Pinnacle's OddsPapi slug (e.g. `pinnacle+30` on some plans)                   |
 | `PREGAME_SNAPSHOT`                        | `BET_PREGAME_SNAPSHOT` | `true`                     | One Odds API snapshot per game before start when ESPN has no lines            |
 | `CLV_SNAPSHOTS`                           | —                      | `true`                     | Closing-line snapshots for CLV (see CLAUDE.md); `false` turns off             |
 | `CLV_HISTORICAL`                          | —                      | `false`                    | Historical odds (paid Odds API plans) for games that start before their close |
@@ -289,5 +291,30 @@ every browser; revoke connector tokens by deleting rows from `oauth_tokens`.
 - **Odds API quota** shows in Bets → Portfolio details and in `portfolio`; each
   `check_odds` costs markets × regions requests (cached 60 s), and calls over
   3 requests need `confirm: true`.
+- **OddsPapi** (oddspapi.io v4, `ODDSPAPI_KEY`) is the second odds source:
+  `check_odds` with `source: "oddspapi" | "both"` (default stays `oddsapi`)
+  adds Pinnacle (per-outcome `fair` = its no-vig price) and player props, and
+  `get_historical_odds` gives a finished game's open / close / at-bet prices.
+  Limits, from its docs (Nov 2026):
+  - Monthly quota: the free plan's `/v4/account` says 250 requests; it resets
+    00:00 UTC on the 1st. Every call counts (4xx/5xx and `RATE_LIMITED` 429s
+    too) except `/v4/account` and `/v4/historical-odds`. There are no usage
+    headers: usage is read from `/v4/account` and returned as `quota`.
+  - Per-endpoint cooldowns (per key): odds/fixture 0.5 s; account, sports,
+    tournaments, bookmakers, markets, participants, odds-by-tournaments 1 s;
+    fixtures 2 s; historical-odds 5 s (a 304 still uses the slot). The client
+    queues calls per endpoint and waits out the cooldown rather than retry.
+  - Historical odds: free-plan access is settled fixtures only, data from
+    January 2026, at most 3 books per call; ETags (`If-None-Match`) are sent
+    and a 304 reuses the stored body.
+  - Self-serve plans get Pinnacle as `pinnacle+30` (30 s delayed); set
+    `ODDSPAPI_SHARP_BOOK` if the plan lists it that way. Which books, sports
+    and props a key includes is in `/v4/account`.
+  - Costs here: `check_odds` with a team filter = fixtures list (1, cached 10
+    min) + 1 per game (all books in one call), so usually 2; no filter = up to
+    11 (needs `confirm`). Static lookups (markets, bookmakers, sports,
+    tournaments) are cached 24 h in the database, fetched only when needed.
+    `get_historical_odds` = 1 request the first time a game's fixture is
+    found (then remembered), otherwise none; 5 s per 3 books.
 - **Calibration** (Settings → Calibration) gets meaningful past roughly 10 settled legs
   per sport; that is the place to judge whether to tune the models.

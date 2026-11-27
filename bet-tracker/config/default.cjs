@@ -97,6 +97,9 @@ const config = {
       'espnbet',
       'fanatics',
     ],
+    // Pinnacle's slug: added to check_odds' default books as the sharp
+    // reference (no-vig fair); self-serve plans may list it as pinnacle+30.
+    sharpBook: process.env.ODDSPAPI_SHARP_BOOK || 'pinnacle',
   },
   polling: {
     // Seconds between game-state polls for events with an open bet.

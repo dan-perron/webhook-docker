@@ -46,6 +46,7 @@ export const appConfig = {
     apiKey: config.get<string>('oddsPapi.apiKey'),
     baseUrl: config.get<string>('oddsPapi.baseUrl'),
     books: config.get<string[]>('oddsPapi.books'),
+    sharpBook: config.get<string>('oddsPapi.sharpBook'),
   },
   polling: {
     liveSeconds: config.get<number>('polling.liveSeconds'),

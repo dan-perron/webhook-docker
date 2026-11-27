@@ -1,0 +1,446 @@
+{
+  "fixtureId": "id1100013273719724",
+  "participant1Name": "Dallas Mavericks",
+  "participant2Name": "LA Clippers",
+  "startTime": "2026-11-22T01:00:00.000Z",
+  "statusId": 0,
+  "sportId": 11,
+  "tournamentId": 132,
+  "tournamentSlug": "nba",
+  "updatedAt": "2026-11-21T22:40:00.000Z",
+  "bookmakerOdds": {
+    "draftkings": {
+      "bookmakerIsActive": true,
+      "suspended": false,
+      "markets": {
+        "111": {
+          "marketActive": true,
+          "outcomes": {
+            "111": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.524,
+                  "priceAmerican": "-191",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": true
+                }
+              }
+            },
+            "112": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 2.6,
+                  "priceAmerican": "160",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": true
+                }
+              }
+            }
+          }
+        },
+        "11438": {
+          "marketActive": true,
+          "outcomes": {
+            "11438": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.885,
+                  "priceAmerican": "-113",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": true
+                }
+              }
+            },
+            "11439": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.935,
+                  "priceAmerican": "-107",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": true
+                }
+              }
+            }
+          }
+        },
+        "11266": {
+          "marketActive": true,
+          "outcomes": {
+            "11266": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.926,
+                  "priceAmerican": "-108",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": true
+                }
+              }
+            },
+            "11267": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.893,
+                  "priceAmerican": "-112",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": true
+                }
+              }
+            }
+          }
+        },
+        "99999": {
+          "marketActive": true,
+          "outcomes": {
+            "99999": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.9,
+                  "priceAmerican": "-111",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            },
+            "99998": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.9,
+                  "priceAmerican": "-111",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            }
+          }
+        },
+        "111678": {
+          "marketActive": true,
+          "outcomes": {
+            "111678": {
+              "players": {
+                "80021": {
+                  "active": true,
+                  "price": 1.87,
+                  "priceAmerican": "-115",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": "Cooper Flagg",
+                  "mainLine": true
+                }
+              }
+            },
+            "111679": {
+              "players": {
+                "80021": {
+                  "active": true,
+                  "price": 1.95,
+                  "priceAmerican": "-105",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": "Cooper Flagg",
+                  "mainLine": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "fanduel": {
+      "bookmakerIsActive": true,
+      "suspended": false,
+      "markets": {
+        "111": {
+          "marketActive": true,
+          "outcomes": {
+            "111": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.49,
+                  "priceAmerican": "-204",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            },
+            "112": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 2.72,
+                  "priceAmerican": "172",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            }
+          }
+        },
+        "11434": {
+          "marketActive": true,
+          "outcomes": {
+            "11434": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.93,
+                  "priceAmerican": "-108",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            },
+            "11435": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.89,
+                  "priceAmerican": "-112",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            }
+          }
+        },
+        "11264": {
+          "marketActive": true,
+          "outcomes": {
+            "11264": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.88,
+                  "priceAmerican": "-114",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            },
+            "11265": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.93,
+                  "priceAmerican": "-108",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "caesars": {
+      "bookmakerIsActive": true,
+      "suspended": false,
+      "markets": {
+        "111": {
+          "marketActive": true,
+          "outcomes": {
+            "111": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.5,
+                  "priceAmerican": "-200",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            },
+            "112": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 2.65,
+                  "priceAmerican": "165",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "pinnacle": {
+      "bookmakerIsActive": true,
+      "suspended": false,
+      "markets": {
+        "111": {
+          "marketActive": true,
+          "outcomes": {
+            "111": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.52,
+                  "priceAmerican": "-193",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            },
+            "112": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 2.75,
+                  "priceAmerican": "175",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            }
+          }
+        },
+        "11438": {
+          "marketActive": true,
+          "outcomes": {
+            "11438": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.9,
+                  "priceAmerican": "-111",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            },
+            "11439": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.95,
+                  "priceAmerican": "-105",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            }
+          }
+        },
+        "11266": {
+          "marketActive": true,
+          "outcomes": {
+            "11266": {
+              "players": {
+                "0": {
+                  "active": false,
+                  "price": 1.93,
+                  "priceAmerican": "-108",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            },
+            "11267": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.9,
+                  "priceAmerican": "-111",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "betrivers": {
+      "bookmakerIsActive": false,
+      "suspended": false,
+      "markets": {
+        "111": {
+          "marketActive": true,
+          "outcomes": {
+            "111": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 1.4,
+                  "priceAmerican": "-250",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            },
+            "112": {
+              "players": {
+                "0": {
+                  "active": true,
+                  "price": 3.0,
+                  "priceAmerican": "200",
+                  "priceFractional": null,
+                  "changedAt": "2026-11-21T22:36:49.924Z",
+                  "playerName": null,
+                  "mainLine": null
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
