@@ -1,3 +1,4 @@
+import type { Sport } from '../domain/types.js';
 import { nameScore, teamAliases } from '../matching/match.js';
 import { decimalToAmerican } from './math.js';
 import markets from './data/oddspapi-markets.json' with { type: 'json' };
@@ -22,18 +23,25 @@ const MARKETS = markets as unknown as Record<string, Record<string, MarketDef>>;
  * Odds API sport key -> OddsPapi sport, and the tournament (pro leagues) or
  * a tournament-slug test (college: several NCAA tournaments).
  */
-const SPORTS: Record<
+export const SPORTS: Record<
   string,
-  { sportId: number; tournamentId?: number; slug?: (s: string) => boolean }
+  {
+    sport: Sport;
+    sportId: number;
+    tournamentId?: number;
+    slug?: (s: string) => boolean;
+  }
 > = {
-  basketball_nba: { sportId: 11, tournamentId: 132 },
-  basketball_wnba: { sportId: 11, tournamentId: 486 },
-  basketball_ncaab: { sportId: 11, slug: isMensNcaa },
-  americanfootball_nfl: { sportId: 14, tournamentId: 31 },
-  americanfootball_ncaaf: { sportId: 14, slug: isMensNcaa },
-  baseball_mlb: { sportId: 13, tournamentId: 109 },
-  icehockey_nhl: { sportId: 15, tournamentId: 234 },
+  basketball_nba: { sport: 'nba', sportId: 11, tournamentId: 132 },
+  basketball_wnba: { sport: 'wnba', sportId: 11, tournamentId: 486 },
+  basketball_ncaab: { sport: 'ncaab', sportId: 11, slug: isMensNcaa },
+  americanfootball_nfl: { sport: 'nfl', sportId: 14, tournamentId: 31 },
+  americanfootball_ncaaf: { sport: 'ncaaf', sportId: 14, slug: isMensNcaa },
+  baseball_mlb: { sport: 'mlb', sportId: 13, tournamentId: 109 },
+  icehockey_nhl: { sport: 'nhl', sportId: 15, tournamentId: 234 },
 };
+/** The OddsPapi sports we cover (basketball, baseball, football, hockey). */
+export const PAPI_SPORT_IDS = [11, 13, 14, 15];
 
 function isMensNcaa(slug: string): boolean {
   return slug.includes('ncaa') && !slug.includes('women');
@@ -53,13 +61,28 @@ export const ODDSPAPI_BOOKS: Record<string, string> = {
 };
 
 /** Historical odds take at most this many bookmakers per call. */
-const BOOKS_PER_CALL = 3;
-/** Minimum spacing between calls, per endpoint (the API's own limits). */
-const SPACING_MS: Record<string, number> = {
+export const BOOKS_PER_CALL = 3;
+/**
+ * Minimum spacing between calls, per endpoint (the API's own cooldowns). A
+ * call inside its cooldown is refused with a 429 that still counts against
+ * the quota, so calls wait their turn here rather than retry there.
+ */
+export const SPACING_MS: Record<string, number> = {
+  odds: 500,
+  fixture: 500,
+  'odds-by-tournaments': 1000,
+  sports: 1000,
+  tournaments: 1000,
+  bookmakers: 1000,
+  markets: 1000,
+  participants: 1000,
+  account: 1000,
   fixtures: 2000,
   'historical-odds': 5000,
-  account: 1000,
 };
+/** Endpoints that never count against the monthly quota. */
+const UNMETERED = new Set(['account', 'historical-odds']);
+const TIMEOUT_MS = 8000;
 
 export interface PapiFixture {
   fixtureId: string;
@@ -67,11 +90,53 @@ export interface PapiFixture {
   participant2Name: string;
   startTime: string;
   statusId: number;
+  sportId?: number;
   tournamentId?: number;
   tournamentSlug?: string;
+  updatedAt?: string;
 }
 
-interface PapiEntry {
+/** One price in /v4/odds: decimal `price` plus the API's own American. */
+export interface PapiOddsEntry {
+  active?: boolean;
+  price: number;
+  priceAmerican?: string | number | null;
+  priceFractional?: string | null;
+  changedAt?: string | null;
+  playerName?: string | null;
+  mainLine?: boolean | null;
+}
+
+/** /v4/odds: the fixture plus bookmakerOdds[slug].markets[id].outcomes[id]. */
+export interface PapiOddsFixture extends PapiFixture {
+  bookmakerOdds?: Record<
+    string,
+    {
+      bookmakerIsActive?: boolean;
+      suspended?: boolean;
+      markets?: Record<
+        string,
+        {
+          marketActive?: boolean;
+          outcomes?: Record<
+            string,
+            { players?: Record<string, PapiOddsEntry> }
+          >;
+        }
+      >;
+    }
+  >;
+}
+
+export interface PapiQuota {
+  used: number | null;
+  limit: number | null;
+  /** Metered requests this process has sent since the last account read. */
+  sentSinceRead: number;
+  updatedAt: string | null;
+}
+
+export interface PapiEntry {
   createdAt: string;
   price: number;
   active?: boolean;
@@ -99,7 +164,7 @@ export interface PapiEventRef {
 const FIXTURE_GAP_MS = 3 * 3600_000;
 
 /** ISO with any number of fractional digits (the API sends microseconds). */
-const parseTime = (s: string) =>
+export const parseTime = (s: string) =>
   Date.parse(s.replace(/(\.\d{3})\d+/, '$1').replace(/\+00:00$/, 'Z'));
 
 /** Our event's fixture: both names match (either way round), nearest start. */
@@ -275,6 +340,19 @@ export interface PapiWindowResult {
 
 export class OddsPapiClient {
   private last = new Map<string, number>();
+  /** One call at a time per endpoint, so cooldowns hold under concurrency. */
+  private queue = new Map<string, Promise<unknown>>();
+  /** ETag + body per historical-odds query (finished fixtures only). */
+  private etags = new Map<string, { etag: string; body: unknown }>();
+  private fixtureCache = new Map<string, { at: number; list: PapiFixture[] }>();
+  /** Metered requests sent by this process, ever (for per-call costs). */
+  meteredSent = 0;
+  private usage: PapiQuota = {
+    used: null,
+    limit: null,
+    sentSinceRead: 0,
+    updatedAt: null,
+  };
 
   constructor(
     private readonly opts: {
@@ -284,8 +362,13 @@ export class OddsPapiClient {
       fetch?: OddsFetch;
       now?: () => number;
       sleep?: (ms: number) => Promise<void>;
+      timeoutMs?: number;
     }
   ) {}
+
+  get books(): string[] {
+    return this.opts.books;
+  }
 
   get configured(): boolean {
     return this.opts.apiKey.length > 0;
@@ -304,7 +387,14 @@ export class OddsPapiClient {
     return (this.opts.now ?? Date.now)();
   }
 
-  private async get<T>(
+  private get<T>(endpoint: string, params: Record<string, string>): Promise<T> {
+    const prev = this.queue.get(endpoint) ?? Promise.resolve();
+    const run = prev.catch(() => {}).then(() => this.send<T>(endpoint, params));
+    this.queue.set(endpoint, run);
+    return run;
+  }
+
+  private async send<T>(
     endpoint: string,
     params: Record<string, string>
   ): Promise<T> {
@@ -312,6 +402,7 @@ export class OddsPapiClient {
     const sleep =
       this.opts.sleep ??
       ((ms: number) => new Promise<void>((r) => setTimeout(r, ms)));
+    const cacheKey = `${endpoint}?${new URLSearchParams(params)}`;
     for (let attempt = 0; ; attempt++) {
       const wait =
         (this.last.get(endpoint) ?? -Infinity) +
@@ -320,9 +411,33 @@ export class OddsPapiClient {
       if (wait > 0) await sleep(wait);
       this.last.set(endpoint, this.now());
       const q = new URLSearchParams({ ...params, apiKey: this.opts.apiKey });
-      const res = await (this.opts.fetch ?? (fetch as unknown as OddsFetch))(
-        `${this.opts.baseUrl}/${endpoint}?${q}`
-      );
+      const headers: Record<string, string> = {
+        'User-Agent': 'bet-tracker',
+        Accept: 'application/json',
+      };
+      const tagged = this.etags.get(cacheKey);
+      if (tagged) headers['If-None-Match'] = tagged.etag;
+      let res: Awaited<ReturnType<OddsFetch>>;
+      try {
+        res = await (this.opts.fetch ?? (fetch as unknown as OddsFetch))(
+          `${this.opts.baseUrl}/${endpoint}?${q}`,
+          {
+            headers,
+            signal: AbortSignal.timeout(this.opts.timeoutMs ?? TIMEOUT_MS),
+          }
+        );
+      } catch (e) {
+        // Never echo the URL: it carries the key.
+        const name = (e as Error).name;
+        throw new Error(
+          `OddsPapi ${endpoint} -> ${name === 'TimeoutError' || name === 'AbortError' ? 'timed out' : 'network error'}`
+        );
+      }
+      if (!UNMETERED.has(endpoint)) {
+        this.usage.sentSinceRead++;
+        this.meteredSent++;
+      }
+      if (res.status === 304 && tagged) return tagged.body as T;
       const body = (await res.json().catch(() => null)) as
         (T & { error?: { code?: string; retryMs?: number } }) | null;
       const code = body?.error?.code;
@@ -330,11 +445,12 @@ export class OddsPapiClient {
         await sleep((body?.error?.retryMs ?? 1000) + 100);
         continue;
       }
-      // Never echo the URL: it carries the key.
       if (!res.ok || code)
         throw new Error(
           `OddsPapi ${endpoint} -> HTTP ${res.status}${code ? ` ${code}` : ''}`
         );
+      const etag = res.headers.get('etag');
+      if (etag) this.etags.set(cacheKey, { etag, body });
       return body as T;
     }
   }
@@ -346,6 +462,76 @@ export class OddsPapiClient {
     }>('account', {});
     const s = a.subscriptions?.[0];
     return s ? { used: s.request_count, limit: s.request_limit } : null;
+  }
+
+  /**
+   * Monthly usage, re-read from /v4/account (unmetered: the API sends no
+   * usage headers) when this process has spent requests since the last read
+   * or the last read is over 10 minutes old. Never throws.
+   */
+  async usageNow(): Promise<PapiQuota> {
+    const stale =
+      !this.usage.updatedAt ||
+      this.now() - Date.parse(this.usage.updatedAt) > 10 * 60_000;
+    if (this.usage.sentSinceRead > 0 || stale) {
+      try {
+        const q = await this.quota();
+        this.usage = {
+          used: q?.used ?? null,
+          limit: q?.limit ?? null,
+          sentSinceRead: 0,
+          updatedAt: new Date(this.now()).toISOString(),
+        };
+      } catch {
+        // Keep the last known usage.
+      }
+    }
+    return { ...this.usage };
+  }
+
+  /**
+   * Upcoming and live fixtures for a sport: one /v4/fixtures call (1
+   * request), cached 10 minutes. Pro leagues: the tournament, the next 7
+   * days; college: the sport, the next 3 days, men's NCAA slugs.
+   */
+  async upcomingFixtures(sportKey: string): Promise<{
+    fixtures: PapiFixture[];
+    cached: boolean;
+  }> {
+    const hit = this.fixtureCache.get(sportKey);
+    if (hit && this.now() - hit.at < 10 * 60_000)
+      return { fixtures: hit.list, cached: true };
+    const s = SPORTS[sportKey];
+    const now = this.now();
+    const days = s?.tournamentId ? 7 : 3;
+    const list = await this.fixtures(
+      sportKey,
+      now - 6 * 3600_000,
+      now + days * 86400_000
+    );
+    this.fixtureCache.set(sportKey, { at: now, list });
+    return { fixtures: list, cached: false };
+  }
+
+  /** One fixture (1 request). */
+  async fixture(fixtureId: string): Promise<PapiFixture> {
+    return this.get<PapiFixture>('fixture', { fixtureId });
+  }
+
+  /** Current odds for one fixture, every book in one call (1 request). */
+  async odds(fixtureId: string, books: string[]): Promise<PapiOddsFixture> {
+    return this.get<PapiOddsFixture>('odds', {
+      fixtureId,
+      ...(books.length ? { bookmakers: books.join(',') } : {}),
+    });
+  }
+
+  /** A static lookup (sports, bookmakers, markets, tournaments): 1 request. */
+  async lookup<T>(
+    endpoint: 'sports' | 'bookmakers' | 'markets' | 'tournaments',
+    params: Record<string, string> = {}
+  ): Promise<T> {
+    return this.get<T>(endpoint, { language: 'en', ...params });
   }
 
   async fixtures(
@@ -373,13 +559,19 @@ export class OddsPapiClient {
     );
   }
 
-  /** Historical odds for one settled fixture, BOOKS_PER_CALL books a call. */
-  async historical(fixtureId: string): Promise<PapiHistorical> {
+  /**
+   * Historical odds for one settled fixture, BOOKS_PER_CALL books a call, 5 s
+   * apart (no quota; a repeat sends the ETag and reuses the body on a 304).
+   */
+  async historical(
+    fixtureId: string,
+    books: string[] = this.opts.books
+  ): Promise<PapiHistorical> {
     const merged: PapiHistorical = { fixtureId, bookmakers: {} };
-    for (let i = 0; i < this.opts.books.length; i += BOOKS_PER_CALL) {
+    for (let i = 0; i < books.length; i += BOOKS_PER_CALL) {
       const part = await this.get<PapiHistorical>('historical-odds', {
         fixtureId,
-        bookmakers: this.opts.books.slice(i, i + BOOKS_PER_CALL).join(','),
+        bookmakers: books.slice(i, i + BOOKS_PER_CALL).join(','),
       });
       Object.assign(merged.bookmakers, part.bookmakers ?? {});
     }

@@ -144,7 +144,10 @@ export interface OddsResult {
 }
 
 /** Minimal fetch surface so tests can inject recorded responses. */
-export type OddsFetch = (url: string) => Promise<{
+export type OddsFetch = (
+  url: string,
+  init?: { headers?: Record<string, string>; signal?: AbortSignal }
+) => Promise<{
   ok: boolean;
   status: number;
   headers: { get(name: string): string | null };
