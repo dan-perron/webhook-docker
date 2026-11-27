@@ -224,10 +224,15 @@ describe('endpoint and MCP tool', () => {
       headers: { cookie },
     });
     expect(bad.status).toBe(400);
-    // The page carries the chart and its scripts.
-    const html = await (await app.request('/', { headers: { cookie } })).text();
-    expect(html).toContain('id="perf-chart"');
-    expect(html).toContain('/static/vendor/chart.umd.min.js');
+    // History carries the chart and its scripts; the open-bets page doesn't.
+    const page = async (q: string) =>
+      (await app.request(`/${q}`, { headers: { cookie } })).text();
+    const history = await page('?tab=settled');
+    expect(history).toContain('id="perf-chart"');
+    expect(history).toContain('/static/vendor/chart.umd.min.js');
+    const bets = await page('');
+    expect(bets).not.toContain('id="perf-chart"');
+    expect(bets).not.toContain('chart.umd.min.js');
     const js = await app.request('/static/vendor/chart.umd.min.js');
     expect(js.status).toBe(200);
     expect(await js.text()).toMatch(/Chart/);

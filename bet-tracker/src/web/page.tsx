@@ -866,14 +866,17 @@ export function Layout({
       timeZone={d.timeZone}
       summary={<Summary d={d} />}
       content={<Content d={d} />}
-      chart={<PerformanceChart origin={d.origin} />}
+      chart={
+        d.tab === 'settled' ? <PerformanceChart origin={d.origin} /> : undefined
+      }
       wide
     />
   );
 }
 
 /**
- * "Cumulative profit vs. expected": drawn by public/perf.js from
+ * "Cumulative profit vs. expected" (History only; resolved bets: won, lost,
+ * push): drawn by public/perf.js from
  * /api/performance-series. Outside #content so live updates don't redraw it
  * from scratch (perf.js refetches after them instead).
  */
