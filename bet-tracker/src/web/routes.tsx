@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { Hono, type Context, type MiddlewareHandler } from 'hono';
 import { getCookie } from 'hono/cookie';
@@ -32,6 +35,9 @@ import {
 import { settledByDay, validTimeZone } from './daily.js';
 import { ORIGIN_FILTERS, type OriginFilter } from '../domain/types.js';
 import { betViews } from '../tracker/views.js';
+import { performanceSeries } from '../tracker/performance.js';
+import { TIMING_BUCKETS, type TimingBucket } from '../domain/timing.js';
+import { BET_SPORTS } from '../domain/types.js';
 import { calibrationReport } from '../tracker/calibration.js';
 import { SettingsContent, SettingsHeader } from './settings.js';
 import {
@@ -63,10 +69,29 @@ const originOf = (q: string | undefined): OriginFilter | undefined =>
     ? (q as OriginFilter)
     : undefined;
 
+let chartJsSource: string | undefined;
+const chartJs = () =>
+  (chartJsSource ??= readFileSync(
+    // The package's exports don't list the UMD file: it sits beside the
+    // CommonJS entry (dist/chart.cjs).
+    join(
+      dirname(createRequire(import.meta.url).resolve('chart.js')),
+      'chart.umd.min.js'
+    ),
+    'utf8'
+  ));
+
 export function webRoutes(s: Services, cfg: WebConfig): Hono {
   const r = new Hono();
   const viewerZone = (c: Context) =>
     validTimeZone(getCookie(c, TZ_COOKIE), cfg.timeZone);
+
+  // Chart.js, served from the package (no build step, no CDN).
+  r.get('/static/vendor/chart.umd.min.js', async (c) => {
+    c.header('Content-Type', 'text/javascript; charset=utf-8');
+    c.header('Cache-Control', 'public, max-age=86400');
+    return c.body(chartJs());
+  });
 
   // CSS/JS from ./public at <base>/static/*.
   r.use(
@@ -111,6 +136,32 @@ export function webRoutes(s: Services, cfg: WebConfig): Hono {
       originOf(c.req.query('origin'))
     );
     return c.html(<Layout d={d} />);
+  });
+
+  // The "Cumulative profit vs. expected" chart's data (same filters as the
+  // portfolio tool; days in the app's zone, America/Chicago).
+  r.get('/api/performance-series', requireSession, (c) => {
+    const q = (k: string) => c.req.query(k) || undefined;
+    const sport = q('sport');
+    const timing = q('timing');
+    if (sport && !(BET_SPORTS as readonly string[]).includes(sport))
+      return c.json({ error: `unknown sport ${sport}` }, 400);
+    if (timing && !(TIMING_BUCKETS as readonly string[]).includes(timing))
+      return c.json({ error: `unknown timing ${timing}` }, 400);
+    const origin = q('origin');
+    if (origin && !originOf(origin))
+      return c.json({ error: `unknown origin ${origin}` }, 400);
+    return c.json(
+      performanceSeries(
+        s.db,
+        {
+          ...(origin ? { origin: originOf(origin)! } : {}),
+          ...(sport ? { sport: sport as (typeof BET_SPORTS)[number] } : {}),
+          ...(timing ? { timing: timing as TimingBucket } : {}),
+        },
+        cfg.timeZone
+      )
+    );
   });
 
   r.get('/settings', requireSession, (c) =>

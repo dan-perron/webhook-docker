@@ -107,6 +107,7 @@ describe('MCP tools', () => {
       'get_historical_odds',
       'list_bets',
       'list_games',
+      'performance_series',
       'portfolio',
       'recompute_bet',
       'remove_bet',

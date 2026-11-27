@@ -1175,3 +1175,95 @@ summary:focus-visible {
 .origin-table td:first-child {
   text-align: left;
 }
+
+/* Profit vs. expected chart (public/perf.js). */
+.perf-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 8px 16px 0;
+}
+@media (min-width: 900px) {
+  body.wide .perf-wrap {
+    max-width: 1180px;
+  }
+}
+.perf {
+  margin-bottom: 0;
+}
+.perf-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.perf-head h2 {
+  margin: 0;
+}
+.perf-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.perf-controls select,
+.perf-units button {
+  font: inherit;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+}
+.perf-controls select {
+  /* 16px stops iOS zooming in on focus. */
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.perf-units {
+  display: inline-flex;
+}
+.perf-units button {
+  font-size: 14px;
+  padding: 4px 12px;
+  cursor: pointer;
+  color: var(--muted);
+}
+.perf-units button:first-child {
+  border-radius: 8px 0 0 8px;
+}
+.perf-units button:last-child {
+  border-radius: 0 8px 8px 0;
+  border-left: 0;
+}
+.perf-units button[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.perf-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 10px 0 4px;
+  font-size: 14px;
+}
+.perf-stat {
+  display: inline-flex;
+  gap: 6px;
+  align-items: baseline;
+}
+.perf-stat b {
+  font-variant-numeric: tabular-nums;
+}
+.perf-canvas {
+  position: relative;
+  height: 220px;
+}
+@media (min-width: 700px) {
+  .perf-canvas {
+    height: 280px;
+  }
+}
+.perf-empty {
+  margin: 8px 0 0;
+}

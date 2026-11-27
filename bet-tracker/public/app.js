@@ -178,6 +178,8 @@
     localize(document);
     freshen();
     setConn('live');
+    // perf.js refetches its series after a change.
+    document.dispatchEvent(new CustomEvent('bets:update'));
     if (focusedId)
       document.getElementById(focusedId)?.focus({ preventScroll: true });
   });

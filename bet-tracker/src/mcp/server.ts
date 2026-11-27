@@ -43,6 +43,7 @@ import {
   type ProviderResult,
 } from '../odds/provider.js';
 import type { ScoreService } from '../scores/service.js';
+import { performanceSeries } from '../tracker/performance.js';
 import type { LiveMarketCheck } from '../tracker/liveMarket.js';
 import type { Tracker } from '../tracker/tracker.js';
 import {
@@ -688,6 +689,37 @@ export function createMcpServer(s: Services): McpServer {
         ...portfolio(s.db, { origin, sport, timing }),
         oddsApiQuota: s.odds.quota(),
       })
+  );
+
+  server.registerTool(
+    'performance_series',
+    {
+      title: 'Cumulative profit vs. expected',
+      description: `The bets page's "Cumulative profit vs. expected" chart data, without list_bets: settled bets (won, lost, push; void and open left out) by settlement day (America/Chicago), each point the running totals at the end of that day: {date, actual (cumulative profit: returned - cash stake; a won bonus bet counts its full payout), expected (cumulative EV at placement, none = 0), betsSettled (that day)}. unitDollars = 10 (the chart's 1u). The last point's actual equals portfolio's settled.profit and its expected the sum of byOrigin settled.evAtPlacement (same filters) as long as no void bet carries EV at placement. Filters match portfolio. ${UNITS}`,
+      inputSchema: {
+        origin: z
+          .enum(ORIGIN_FILTERS)
+          .optional()
+          .describe('recommended | own | untagged. Default: all'),
+        sport: z
+          .enum(BET_SPORTS)
+          .optional()
+          .describe('Only bets with a leg in this sport'),
+        timing: z
+          .enum(TIMING_BUCKETS)
+          .optional()
+          .describe('Only bets with a leg placed this long before its start'),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    async ({ origin, sport, timing }) =>
+      json(
+        performanceSeries(s.db, {
+          ...(origin ? { origin } : {}),
+          ...(sport ? { sport } : {}),
+          ...(timing ? { timing } : {}),
+        })
+      )
   );
 
   // --- Scores: games followed for their score (not bets) --------------------
