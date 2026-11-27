@@ -4,6 +4,8 @@ import { createProviders } from './gamestate/registry.js';
 import type { Services } from './mcp/server.js';
 import { OddsApiClient } from './odds/oddsApi.js';
 import { OddsPapiClient } from './odds/oddsPapi.js';
+import { PapiLookups } from './odds/papiLookups.js';
+import { OddsPapiProvider } from './odds/provider.js';
 import { NtfyNotifier } from './scores/ntfy.js';
 import { ScoreService } from './scores/service.js';
 import { LiveMarketCheck } from './tracker/liveMarket.js';
@@ -13,6 +15,9 @@ import { Tracker } from './tracker/tracker.js';
 export function createServices(db: Db): Services {
   const providers = createProviders();
   const odds = new OddsApiClient(db, appConfig.oddsApi);
+  // One client, so the per-endpoint cooldowns hold across closes and tools.
+  const papiClient = new OddsPapiClient(appConfig.oddsPapi);
+  const papiLookups = new PapiLookups(db, papiClient);
   const tracker = new Tracker(db, providers, {
     params: appConfig.models,
     props: appConfig.props,
@@ -25,7 +30,7 @@ export function createServices(db: Db): Services {
     clv: {
       client: odds,
       ...appConfig.oddsApi.clv,
-      papi: new OddsPapiClient(appConfig.oddsPapi),
+      papi: papiClient,
     },
   });
   const { alerts, ...scoreOpts } = appConfig.scores;
@@ -48,5 +53,12 @@ export function createServices(db: Db): Services {
       appConfig.oddsApi.liveMarket
     ),
     confirmAboveCost: appConfig.oddsApi.confirmAboveCost,
+    papi: {
+      client: papiClient,
+      lookups: papiLookups,
+      provider: new OddsPapiProvider(db, papiClient, papiLookups, {
+        sharpBook: appConfig.oddsPapi.sharpBook,
+      }),
+    },
   };
 }

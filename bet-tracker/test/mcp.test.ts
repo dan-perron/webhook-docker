@@ -104,6 +104,7 @@ describe('MCP tools', () => {
       'confirm_match',
       'follow_team',
       'get_bet',
+      'get_historical_odds',
       'list_bets',
       'list_games',
       'portfolio',
