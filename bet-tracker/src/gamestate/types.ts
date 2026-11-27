@@ -144,6 +144,9 @@ export interface PregameLines {
   total: number | null;
   overPrice?: number | null;
   underPrice?: number | null;
+  /** The teams these lines were published with as home/away, if known. */
+  homeName?: string | null;
+  awayName?: string | null;
 }
 
 /** An event as listed by a provider, for matching legs and polling. */

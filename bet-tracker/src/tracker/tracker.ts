@@ -37,6 +37,13 @@ import {
 } from './clv.js';
 import { linesAsOf, recordLines } from './lines.js';
 import {
+  alignLines,
+  flipState,
+  reorientEvent,
+  sideOfTeam,
+  type Reoriented,
+} from './orientation.js';
+import {
   findOddsEvent,
   linesForEvent,
   summarizeEvent,
@@ -165,6 +172,10 @@ export interface TickResult {
   evaluatedEvents: string[];
   changedBets: number[];
   errors: string[];
+  /** Events whose home/away the provider swapped (stored data re-oriented). */
+  reoriented?: Reoriented[];
+  /** Things a caller should tell Dan (recompute_bet). */
+  warnings?: string[];
 }
 
 /** A same-game joint outcome as stored on the bet (legs by id). */
@@ -501,6 +512,15 @@ export class Tracker extends EventEmitter {
         result.errors.push(`lines ${e.id}: ${(err as Error).message}`);
         continue;
       }
+      // Stored in the event's orientation as it is now (the summary can be
+      // on the other side of a swap the scoreboard hasn't shown yet, and the
+      // row may have been re-oriented while this tick waited on the fetch).
+      const cur = this.db
+        .select()
+        .from(events)
+        .where(eq(events.id, e.id))
+        .get();
+      if (lines && cur) lines = alignLines(lines, cur);
       this.db
         .update(events)
         .set({
@@ -546,7 +566,11 @@ export class Tracker extends EventEmitter {
         });
         const hit = findOddsEvent(odds.events, e);
         if (hit) {
-          json = JSON.stringify(linesForEvent(e.homeName, summarizeEvent(hit)));
+          json = JSON.stringify({
+            ...linesForEvent(e.homeName, summarizeEvent(hit)),
+            homeName: e.homeName,
+            awayName: e.awayName,
+          });
         }
       } catch (err) {
         result.errors.push(`snapshot ${e.id}: ${(err as Error).message}`);
@@ -1115,6 +1139,22 @@ export class Tracker extends EventEmitter {
           result.errors.push(`${e.id}: missing from ${provider} response`);
           continue;
         }
+        // The scoreboard is the authority on home/away; a swap (neutral
+        // sites) re-orients the stored event, its lines and its legs. The
+        // row is read again: something may have re-oriented it while this
+        // tick waited on the fetch (reorientEvent checks once more itself).
+        const cur =
+          this.db.select().from(events).where(eq(events.id, e.id)).get() ?? e;
+        const before = cur.stateJson
+          ? (JSON.parse(cur.stateJson) as GameState)
+          : null;
+        const r = reorientEvent(this.db, e.id, s);
+        if (r) {
+          console.warn(
+            `reoriented ${r.eventId}: ${r.from} -> ${r.to} (legs ${r.legIds.join(', ') || 'none'})`
+          );
+          result.reoriented = [...(result.reoriented ?? []), r];
+        }
         this.db
           .update(events)
           .set({
@@ -1128,9 +1168,13 @@ export class Tracker extends EventEmitter {
           .where(eq(events.id, e.id))
           .run();
         result.polled.push(e.id);
+        // After a swap the previous state is flipped to the new orientation,
+        // so start/final alerts still fire and a lead isn't a lead change.
         const change: StateChange = {
-          event: e,
-          prev: e.stateJson ? (JSON.parse(e.stateJson) as GameState) : null,
+          event: r
+            ? this.db.select().from(events).where(eq(events.id, e.id)).get()!
+            : cur,
+          prev: before && r ? flipState(before) : before,
           next: s,
         };
         this.emit('state', change);
@@ -1342,6 +1386,22 @@ export class Tracker extends EventEmitter {
     };
     const bet = this.db.select().from(bets).where(eq(bets.id, betId)).get();
     if (!bet) throw new Error(`Bet ${betId} not found`);
+    // A settle_bet result that disagrees with the legs is Dan's call: keep
+    // it, and say so if the legs now come out differently.
+    const before = this.db
+      .select()
+      .from(legs)
+      .where(eq(legs.betId, betId))
+      .all();
+    const manual =
+      bet.status !== 'open' && bet.status !== betStatus(before)
+        ? { status: bet.status, settledAt: bet.settledAt }
+        : null;
+    const { notes: warnings, otherBets } = this.resyncSides(
+      betId,
+      before,
+      result
+    );
     const betLegs = this.db
       .select()
       .from(legs)
@@ -1419,7 +1479,15 @@ export class Tracker extends EventEmitter {
       .all();
     const status = betStatus(after);
     const now = this.db.select().from(bets).where(eq(bets.id, betId)).get()!;
-    if (now.status === 'open' && status !== 'open')
+    if (manual && status !== manual.status) {
+      warnings.push(
+        status === 'open'
+          ? `bet ${betId}: kept the manual result ${manual.status}; its games are not all final yet`
+          : `bet ${betId}: kept the manual result ${manual.status}; its legs now say ${status}` +
+              ` (settle_bet ${status} to accept that)`
+      );
+      this.db.update(bets).set(manual).where(eq(bets.id, betId)).run();
+    } else if (now.status === 'open' && status !== 'open')
       this.db
         .update(bets)
         .set({
@@ -1428,9 +1496,107 @@ export class Tracker extends EventEmitter {
         })
         .where(eq(bets.id, betId))
         .run();
+    // Other bets on an event this re-oriented: their sides flipped too.
+    for (const other of otherBets) {
+      const sub = this.recomputeBet(other);
+      warnings.push(
+        `bet ${other} recomputed too (shares a re-oriented event)`,
+        ...(sub.warnings ?? [])
+      );
+      result.changedBets.push(...sub.changedBets);
+    }
+    if (warnings.length) result.warnings = warnings;
     result.changedBets.push(betId);
     this.emit('change', result);
     return result;
+  }
+
+  /**
+   * Bring `ls`' sides in line with their events: an event whose latest
+   * state has home/away swapped against its row is re-oriented (all its legs
+   * flip), then each team leg's side is re-derived by name from the row. A
+   * corrected leg loses its close and calibration snapshots (they were for
+   * the other team). Returns what changed, for the caller to report.
+   */
+  private resyncSides(
+    betId: number,
+    ls: LegRow[],
+    result: TickResult
+  ): { notes: string[]; otherBets: number[] } {
+    const notes: string[] = [];
+    const otherBets = new Set<number>();
+    for (const id of new Set(ls.map((l) => l.eventId).filter(Boolean))) {
+      const e = this.db.select().from(events).where(eq(events.id, id!)).get();
+      const st = e?.stateJson ? (JSON.parse(e.stateJson) as GameState) : null;
+      const r = st ? reorientEvent(this.db, id!, st) : null;
+      if (r) {
+        result.reoriented = [...(result.reoriented ?? []), r];
+        // Every bet on the event had its sides flipped: re-settle them too.
+        if (r.legIds.length)
+          for (const o of this.db
+            .select({ betId: legs.betId })
+            .from(legs)
+            .where(inArray(legs.id, r.legIds))
+            .all())
+            if (o.betId !== betId) otherBets.add(o.betId);
+        // The swap was missed live, so in-game snapshots priced the other
+        // team: drop them before the re-settle stamps an outcome on them.
+        const dropped = r.legIds.length
+          ? this.db
+              .delete(predictionSnapshots)
+              .where(
+                and(
+                  inArray(predictionSnapshots.legId, r.legIds),
+                  eq(predictionSnapshots.gameStatus, 'in')
+                )
+              )
+              .run().changes
+          : 0;
+        notes.push(
+          `event ${r.eventId} re-oriented: ${r.from} -> ${r.to}` +
+            (dropped ? `; ${dropped} in-game snapshot(s) dropped` : '')
+        );
+      }
+    }
+    const fresh = this.db
+      .select()
+      .from(legs)
+      .where(
+        inArray(
+          legs.id,
+          ls.map((l) => l.id)
+        )
+      )
+      .all();
+    for (const l of fresh) {
+      if (!l.selectionTeam || (l.selectionKind !== 'team' && !isProp(l)))
+        continue;
+      const row = l.eventId
+        ? this.db.select().from(events).where(eq(events.id, l.eventId)).get()
+        : l.seriesId
+          ? this.db.select().from(series).where(eq(series.id, l.seriesId)).get()
+          : undefined;
+      if (!row) continue;
+      const side = sideOfTeam(
+        l.selectionTeam,
+        { name: row.homeName, abbr: row.homeAbbr },
+        { name: row.awayName, abbr: row.awayAbbr }
+      );
+      if (!side || side === l.side) continue;
+      this.db.transaction((tx) => {
+        tx.update(legs)
+          .set({ side, closeJson: null, updatedAt: iso(this.now()) })
+          .where(eq(legs.id, l.id))
+          .run();
+        tx.delete(predictionSnapshots)
+          .where(eq(predictionSnapshots.legId, l.id))
+          .run();
+      });
+      notes.push(
+        `leg ${l.id}: side ${l.side ?? 'none'} -> ${side} (${l.selectionTeam} is ${side} in ${row.awayName} @ ${row.homeName}); close and snapshots cleared`
+      );
+    }
+    return { notes, otherBets: [...otherBets] };
   }
 
   /** Re-evaluate every open leg on an event (any bet), settle, snapshot. */

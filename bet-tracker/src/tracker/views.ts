@@ -40,6 +40,7 @@ import {
   type LegClose,
 } from './clv.js';
 import { valueBetRow } from './valuation.js';
+import { sideOfTeam } from './orientation.js';
 
 // Read models for the MCP tools and the web page. Money in dollars, prices in
 // American odds, probabilities 0..1. "model" numbers come from our models;
@@ -264,7 +265,63 @@ export interface LegView {
   live: LiveView | null;
   /** Series markets: the series now. */
   series?: SeriesView | null;
+  /**
+   * Likely data problems, e.g. a home/away side mismatch (our P(win) far
+   * from ESPN's or the live market's for the same team). Absent when none.
+   */
+  warnings?: string[];
 }
+
+/** Disagreement (probability points) that flags a likely side mismatch. */
+export const SIDE_MISMATCH_GAP = 0.5;
+
+/**
+ * Sanity checks on a leg in progress: ESPN's own win probability for the
+ * leg's side far from our moneyline P(win), or the event row's home/away
+ * disagreeing with the latest state (a swap not yet re-oriented).
+ */
+export function legWarnings(l: LegRow, e: EventRow | undefined): string[] {
+  const out: string[] = [];
+  if (l.status !== 'open' || !e?.stateJson) return out;
+  const s = JSON.parse(e.stateJson) as GameState;
+  // Totals (no side) don't depend on home/away.
+  if (s.status !== 'in' || !l.side) return out;
+  if (s.home.name !== e.homeName || s.away.name !== e.awayName)
+    out.push(
+      `event home/away (${e.awayName} @ ${e.homeName}) differs from the latest state (${s.away.name} @ ${s.home.name}); side ${l.side} may be the wrong team`
+    );
+  // ESPN's number for the backed team, found by name: by `side` it would
+  // agree with a pWin computed for the same wrong side.
+  const pw = s.providerWinProb;
+  const team =
+    l.selectionTeam && (sideOfTeam(l.selectionTeam, s.home, s.away) ?? l.side);
+  if (
+    l.market === 'moneyline' &&
+    team &&
+    pw &&
+    l.pWin != null &&
+    Math.abs(pw[team] - l.pWin) > SIDE_MISMATCH_GAP
+  )
+    out.push(
+      `likely side mismatch: pWin ${l.pWin.toFixed(3)} vs ESPN ${pw[team].toFixed(3)} for ${l.selectionTeam} (${team} in the latest state; leg side ${l.side})`
+    );
+  return out;
+}
+
+/**
+ * The get_bet liveMarket check: the live market for the backed team (by
+ * name) vs our model's P(stored side wins) far apart.
+ */
+export function liveMarketWarning(m: {
+  marketWin: number;
+  modelWin: number;
+}): string | null {
+  return Math.abs(m.marketWin - m.modelWin) > SIDE_MISMATCH_GAP
+    ? `likely side mismatch: live market ${m.marketWin.toFixed(3)} for the backed team vs model ${m.modelWin.toFixed(3)} for the stored side`
+    : null;
+}
+
+const withWarnings = (w: string[]) => (w.length ? { warnings: w } : {});
 
 function legView(
   l: LegRow,
@@ -343,6 +400,7 @@ function legView(
       : {}),
     live: liveView(e),
     ...(l.seriesId ? { series: seriesView(s) } : {}),
+    ...withWarnings(legWarnings(l, e)),
   };
 }
 

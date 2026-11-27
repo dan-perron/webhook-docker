@@ -11,11 +11,14 @@ import {
   type OriginFilter,
 } from '../domain/types.js';
 import { betStatus } from '../domain/value.js';
+import { sideOfTeam } from '../tracker/orientation.js';
 import type { DbOrTx } from './client.js';
 import {
   bets,
+  events,
   legs,
   predictionSnapshots,
+  series,
   type BetRow,
   type LegRow,
 } from './schema.js';
@@ -336,6 +339,21 @@ export interface LegUpdate {
   recommendedPrice?: number | null;
 }
 
+/** The home/away teams of a leg's matched event or series, as stored. */
+function matchedTeams(db: DbOrTx, leg: LegRow) {
+  const row = leg.eventId
+    ? db.select().from(events).where(eq(events.id, leg.eventId)).get()
+    : leg.seriesId
+      ? db.select().from(series).where(eq(series.id, leg.seriesId)).get()
+      : undefined;
+  return row
+    ? {
+        home: { name: row.homeName, abbr: row.homeAbbr },
+        away: { name: row.awayName, abbr: row.awayAbbr },
+      }
+    : null;
+}
+
 /**
  * Edit a leg's price, line or selection, re-validated like a new leg. A
  * single bet's price follows its leg. Changing the selection or line drops
@@ -383,18 +401,25 @@ export function updateLeg(db: DbOrTx, legId: number, u: LegUpdate): LegRow {
   const selectionChanged =
     parsed.selection.kind !== leg.selectionKind ||
     newTeam !== leg.selectionTeam;
-  // Home/away of a new team pick: the other side when it switched teams;
-  // re-match when the side was never known.
+  // Home/away of a team pick: the team's name against the matched event's
+  // (or series') own home/away, re-derived on every edit so a wrong stored
+  // side is fixed by restating the selection; else the other side when it
+  // switched teams; re-match when the side can't be known.
   let side = leg.side;
   let matchStatus = leg.matchStatus;
-  if (isProp) side = leg.side;
-  else if (parsed.selection.kind !== 'team') side = null;
-  else if (newTeam !== leg.selectionTeam) {
+  const matched = matchedTeams(db, leg);
+  const byName =
+    matched && newTeam ? sideOfTeam(newTeam, matched.home, matched.away) : null;
+  if (parsed.selection.kind !== 'team' && !isProp) side = null;
+  else if (byName) side = byName;
+  else if (!isProp && newTeam !== leg.selectionTeam) {
     if (leg.side) side = leg.side === 'home' ? 'away' : 'home';
     else if (leg.eventId || leg.seriesId) matchStatus = 'unmatched';
   }
   const marketChanged =
-    selectionChanged || parsed.line !== (leg.line ?? undefined);
+    selectionChanged ||
+    side !== leg.side ||
+    parsed.line !== (leg.line ?? undefined);
   return db.transaction((tx) => {
     const updated = tx
       .update(legs)

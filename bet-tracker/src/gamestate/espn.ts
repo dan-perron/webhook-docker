@@ -641,6 +641,8 @@ function allBoardLeagues(
 /** The parts of a game summary lines and series read. */
 export interface EspnGameSummary {
   pickcenter?: EspnOdds[];
+  /** Home/away as of this summary (the pickcenter's orientation). */
+  header?: { competitions?: { competitors?: EspnCompetitor[] }[] };
   /** Play-by-play win probability; the last entry is the latest. */
   winprobability?: { homeWinPercentage?: number }[];
 }
@@ -872,7 +874,20 @@ export class EspnProvider implements GameStateProvider {
     competitionId: string
   ): Promise<PregameLines | null> {
     const summary = await this.fetchSummary(sport, league, competitionId);
-    return pregameLines(summary.pickcenter);
+    const lines = pregameLines(summary.pickcenter);
+    if (!lines) return null;
+    // Tag the orientation: ESPN can swap home/away (neutral sites) between
+    // fetches, and lines are stored by home/away.
+    const cs = summary.header?.competitions?.[0]?.competitors ?? [];
+    const home = cs.find((c) => c.homeAway === 'home');
+    const away = cs.find((c) => c.homeAway === 'away');
+    return home && away
+      ? {
+          ...lines,
+          homeName: competitor(home).name,
+          awayName: competitor(away).name,
+        }
+      : lines;
   }
 
   /** A game's summary: lines (pickcenter) and live win probability. */

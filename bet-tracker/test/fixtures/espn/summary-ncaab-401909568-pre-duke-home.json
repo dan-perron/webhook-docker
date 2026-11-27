@@ -1,0 +1,91 @@
+{
+ "header": {
+  "competitions": [
+   {
+    "id": "401909568",
+    "neutralSite": true,
+    "competitors": [
+     {
+      "id": "150",
+      "type": "team",
+      "order": 1,
+      "homeAway": "home",
+      "score": "0",
+      "team": {
+       "id": "150",
+       "location": "Duke",
+       "name": "Blue Devils",
+       "abbreviation": "DUKE",
+       "displayName": "Duke Blue Devils",
+       "shortDisplayName": "Duke"
+      }
+     },
+     {
+      "id": "41",
+      "type": "team",
+      "order": 0,
+      "homeAway": "away",
+      "score": "0",
+      "team": {
+       "id": "41",
+       "location": "UConn",
+       "name": "Huskies",
+       "abbreviation": "CONN",
+       "displayName": "UConn Huskies",
+       "shortDisplayName": "UConn"
+      }
+     }
+    ]
+   }
+  ]
+ },
+ "pickcenter": [
+  {
+   "provider": {
+    "name": "DraftKings"
+   },
+   "spread": 2.5,
+   "overUnder": 146.5,
+   "moneyline": {
+    "home": {
+     "close": {
+      "odds": "+120"
+     }
+    },
+    "away": {
+     "close": {
+      "odds": "-142"
+     }
+    }
+   },
+   "pointSpread": {
+    "home": {
+     "close": {
+      "line": "+2.5",
+      "odds": "-112"
+     }
+    },
+    "away": {
+     "close": {
+      "line": "-2.5",
+      "odds": "-108"
+     }
+    }
+   },
+   "total": {
+    "over": {
+     "close": {
+      "line": "o146.5",
+      "odds": "-108"
+     }
+    },
+    "under": {
+     "close": {
+      "line": "u146.5",
+      "odds": "-112"
+     }
+    }
+   }
+  }
+ ]
+}

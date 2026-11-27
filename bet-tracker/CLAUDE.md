@@ -34,9 +34,36 @@ Migrations in `drizzle/` are checked in and applied on startup by `openDb`.
   scoreboards (one call per sport/league/date). ESPN `yardLine` is measured
   from the home goal line; don't trust `possessionText` abbreviations.
 - Tests use trimmed real responses in `test/fixtures/`; never hit the network.
+  When the real response no longer exists (a state that was only live for a
+  moment, a listing ESPN has since changed), a fixture may be derived from a
+  real one by hand: say so, and list each edit, in the test's header comment
+  (e.g. `test/orientation.test.ts`: the -live and -pre-duke-home files).
   `bin/dev node scripts/live-smoke.mjs` (after a build) checks the real APIs.
 - Event matching never guesses: anything but exactly one confident event is
   stored as candidates on the leg and needs `confirmLegMatch`.
+- Home/away orientation (`src/tracker/orientation.ts`): a leg's `side` is
+  the selected team's name/abbr against the event's own home/away
+  (`sideOfTeam`; match, confirm, update_leg, recompute), never the order of
+  the participants or the label. ESPN can swap home/away on a listed event
+  (neutral sites; bet 195, UConn v Duke in Las Vegas, swapped before tip):
+  the scoreboard (listing in `upsertEvent`, state in `pollStates`) is the
+  authority, and `reorientEvent(db, id, providerHomeAway)` swaps the row's
+  names, its current lines, pregame snapshot and line history, a stored state
+  still in the old orientation (row and state always agree), every leg's side
+  and a watch's leader in one transaction. It re-checks the swap on the row
+  as it is then, so a caller holding an old row is a no-op (null). Stored lines carry `homeName`/`awayName` (ESPN summary
+  header, listing, Odds API snapshot); `alignLines` flips a line fetched in
+  the other orientation, and a reorient skips lines already tagged with the
+  new home. `recompute_bet` re-orients from the stored state, re-derives
+  sides (a corrected leg loses its close and snapshots; a re-orient drops the
+  event's in-game snapshots), recomputes the other bets on a re-oriented
+  event too, and keeps a `settle_bet` result that disagrees with the legs
+  (with a warning). Legs with a side in progress carry `warnings` (views
+  `legWarnings`): ESPN's win probability for the backed team (found by name)
+  > 0.5 from pWin, get_bet's live market for the backed team (by name) > 0.5
+  > from modelWin, or the row's home/away differing from the state.
+  > `node built/tracker/sideScanCli.js [--json] [--all]` lists (read-only)
+  > legs whose side or settled result disagrees with ESPN.
 - Models (`src/models/`) are pure `(state, prior, selection) -> {win, push}`.
   Every expected number in their tests is hand-derived (comments show the
   math); keep it that way. MLB tests use a seeded RNG.

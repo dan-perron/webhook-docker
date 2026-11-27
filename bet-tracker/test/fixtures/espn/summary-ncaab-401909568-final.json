@@ -1,0 +1,157 @@
+{
+ "header": {
+  "competitions": [
+   {
+    "id": "401909568",
+    "neutralSite": true,
+    "competitors": [
+     {
+      "id": "41",
+      "order": 0,
+      "homeAway": "home",
+      "winner": false,
+      "score": "63",
+      "linescores": [
+       {
+        "displayValue": "32"
+       },
+       {
+        "displayValue": "31"
+       }
+      ],
+      "team": {
+       "id": "41",
+       "location": "UConn",
+       "name": "Huskies",
+       "abbreviation": "CONN",
+       "displayName": "UConn Huskies"
+      }
+     },
+     {
+      "id": "150",
+      "order": 1,
+      "homeAway": "away",
+      "winner": true,
+      "score": "77",
+      "linescores": [
+       {
+        "displayValue": "38"
+       },
+       {
+        "displayValue": "39"
+       }
+      ],
+      "team": {
+       "id": "150",
+       "location": "Duke",
+       "name": "Blue Devils",
+       "abbreviation": "DUKE",
+       "displayName": "Duke Blue Devils"
+      }
+     }
+    ]
+   }
+  ]
+ },
+ "pickcenter": [
+  {
+   "provider": {
+    "id": "100",
+    "name": "DraftKings",
+    "priority": 1,
+    "logos": [
+     {
+      "href": "https://a.espncdn.com/i/betting/Draftkings_Light.svg",
+      "rel": [
+       "light"
+      ]
+     },
+     {
+      "href": "https://a.espncdn.com/i/betting/Draftkings_Dark.svg",
+      "rel": [
+       "dark"
+      ]
+     }
+    ]
+   },
+   "spread": -1.5,
+   "overUnder": 145.5,
+   "moneyline": {
+    "displayName": "Moneyline",
+    "shortDisplayName": "ML",
+    "home": {
+     "close": {
+      "odds": "-115"
+     },
+     "open": {
+      "odds": "-135"
+     }
+    },
+    "away": {
+     "close": {
+      "odds": "-105"
+     },
+     "open": {
+      "odds": "+114"
+     }
+    }
+   },
+   "pointSpread": {
+    "displayName": "Spread",
+    "shortDisplayName": "Spread",
+    "home": {
+     "close": {
+      "line": "-1.5",
+      "odds": "+102"
+     },
+     "open": {
+      "line": "+1.5",
+      "odds": "-115"
+     }
+    },
+    "away": {
+     "close": {
+      "line": "+1.5",
+      "odds": "-122"
+     },
+     "open": {
+      "line": "-1.5",
+      "odds": "-105"
+     }
+    }
+   },
+   "total": {
+    "displayName": "Total",
+    "shortDisplayName": "Total",
+    "over": {
+     "close": {
+      "line": "o145.5",
+      "odds": "-115"
+     },
+     "open": {
+      "line": "o152.5",
+      "odds": "-105"
+     }
+    },
+    "under": {
+     "close": {
+      "line": "u145.5",
+      "odds": "-105"
+     },
+     "open": {
+      "line": "u152.5",
+      "odds": "-115"
+     }
+    }
+   },
+   "homeTeamOdds": {
+    "moneyLine": -115,
+    "teamId": "41"
+   },
+   "awayTeamOdds": {
+    "moneyLine": -105,
+    "teamId": "150"
+   }
+  }
+ ]
+}

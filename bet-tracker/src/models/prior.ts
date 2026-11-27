@@ -146,6 +146,9 @@ export interface LinesInput {
   total: number | null;
   overPrice?: number | null;
   underPrice?: number | null;
+  /** The home/away teams these lines are oriented to, if recorded. */
+  homeName?: string | null;
+  awayName?: string | null;
 }
 
 /** A leg Dan entered on this event, used for the entered-odds prior. */
