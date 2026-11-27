@@ -1,0 +1,29 @@
+[
+  {
+    "fixtureId": "id1100013273719722",
+    "participant1Name": "New York Knicks",
+    "participant2Name": "Portland Trail Blazers",
+    "startTime": "2026-11-22T00:30:00.000Z",
+    "statusId": 2,
+    "tournamentId": 132,
+    "tournamentSlug": "nba"
+  },
+  {
+    "fixtureId": "id1100013273719724",
+    "participant1Name": "Dallas Mavericks",
+    "participant2Name": "LA Clippers",
+    "startTime": "2026-11-22T01:00:00.000Z",
+    "statusId": 2,
+    "tournamentId": 132,
+    "tournamentSlug": "nba"
+  },
+  {
+    "fixtureId": "id1100013273719726",
+    "participant1Name": "Minnesota Timberwolves",
+    "participant2Name": "Memphis Grizzlies",
+    "startTime": "2026-11-22T01:00:00.000Z",
+    "statusId": 2,
+    "tournamentId": 132,
+    "tournamentSlug": "nba"
+  }
+]

@@ -1,0 +1,615 @@
+{
+ "fixtureId": "id1100013273719724",
+ "bookmakers": {
+  "draftkings": {
+   "markets": {
+    "111": {
+     "outcomes": {
+      "111": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-21T19:26:14.213Z",
+          "price": 1.51,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-21T22:36:49.924Z",
+          "price": 1.524,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:10:45.337Z",
+          "price": 1.526,
+          "active": true
+         }
+        ]
+       }
+      },
+      "112": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-21T19:26:14.213Z",
+          "price": 2.64,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-21T22:36:49.924Z",
+          "price": 2.6,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:10:45.337Z",
+          "price": 2.4,
+          "active": true
+         }
+        ]
+       }
+      }
+     }
+    },
+    "11264": {
+     "outcomes": {
+      "11264": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:36:29.674Z",
+          "price": 1.84,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:37:21.429Z",
+          "price": 1.833,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:15:25.592Z",
+          "price": 2.45,
+          "active": true
+         }
+        ]
+       }
+      },
+      "11265": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-21T23:08:28.910Z",
+          "price": 1.952,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-21T23:18:59.262Z",
+          "price": 1.962,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:15:25.592Z",
+          "price": 1.513,
+          "active": true
+         }
+        ]
+       }
+      }
+     }
+    },
+    "11266": {
+     "outcomes": {
+      "11266": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-21T21:30:30.194Z",
+          "price": 1.926,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-21T21:36:43.070Z",
+          "price": 1.926,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:15:25.592Z",
+          "price": 2.6,
+          "active": true
+         }
+        ]
+       }
+      },
+      "11267": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-21T21:30:30.194Z",
+          "price": 1.893,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-21T21:36:43.070Z",
+          "price": 1.893,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:15:25.592Z",
+          "price": 1.465,
+          "active": true
+         }
+        ]
+       }
+      }
+     }
+    },
+    "11430": {
+     "outcomes": {
+      "11430": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:36:29.681Z",
+          "price": 2.15,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:37:21.445Z",
+          "price": 2.17,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:10:44.459Z",
+          "price": 2.15,
+          "active": true
+         }
+        ]
+       }
+      },
+      "11431": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:36:29.681Z",
+          "price": 1.699,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:37:21.445Z",
+          "price": 1.69,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:10:44.459Z",
+          "price": 1.667,
+          "active": true
+         }
+        ]
+       }
+      }
+     }
+    },
+    "11434": {
+     "outcomes": {
+      "11434": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-21T23:09:04.319Z",
+          "price": 2.02,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-21T23:15:20.182Z",
+          "price": 2.009,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:10:44.459Z",
+          "price": 2.0,
+          "active": true
+         }
+        ]
+       }
+      },
+      "11435": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:36:29.681Z",
+          "price": 1.8,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:37:21.445Z",
+          "price": 1.794,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:10:44.459Z",
+          "price": 1.769,
+          "active": true
+         }
+        ]
+       }
+      }
+     }
+    },
+    "11438": {
+     "outcomes": {
+      "11438": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:36:28.895Z",
+          "price": 1.893,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:37:21.515Z",
+          "price": 1.885,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:10:45.326Z",
+          "price": 1.87,
+          "active": true
+         }
+        ]
+       }
+      },
+      "11439": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:36:28.895Z",
+          "price": 1.926,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:37:21.515Z",
+          "price": 1.935,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T01:10:45.326Z",
+          "price": 1.87,
+          "active": true
+         }
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  "fanduel": {
+   "markets": {
+    "111": {
+     "outcomes": {
+      "111": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:48:16.980Z",
+          "price": 1.49,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:52:54.678Z",
+          "price": 1.49,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 1.49,
+          "active": false
+         }
+        ]
+       }
+      },
+      "112": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:48:16.980Z",
+          "price": 2.72,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:52:54.678Z",
+          "price": 2.72,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 2.72,
+          "active": false
+         }
+        ]
+       }
+      }
+     }
+    },
+    "11264": {
+     "outcomes": {
+      "11264": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:48:16.980Z",
+          "price": 1.88,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:51:04.102Z",
+          "price": 1.88,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 1.88,
+          "active": false
+         }
+        ]
+       }
+      },
+      "11265": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:48:16.980Z",
+          "price": 1.93,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:51:04.102Z",
+          "price": 1.93,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 1.93,
+          "active": false
+         }
+        ]
+       }
+      }
+     }
+    },
+    "11266": {
+     "outcomes": {
+      "11266": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:48:16.980Z",
+          "price": 1.96,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:52:54.678Z",
+          "price": 1.96,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 1.96,
+          "active": false
+         }
+        ]
+       }
+      },
+      "11267": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:48:16.980Z",
+          "price": 1.85,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:52:54.678Z",
+          "price": 1.85,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 1.85,
+          "active": false
+         }
+        ]
+       }
+      }
+     }
+    },
+    "11430": {
+     "outcomes": {
+      "11430": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-21T21:39:38.332Z",
+          "price": 2.04,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-21T22:37:04.276Z",
+          "price": 2.04,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 2.04,
+          "active": false
+         }
+        ]
+       }
+      },
+      "11431": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-21T21:39:38.332Z",
+          "price": 1.78,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-21T22:37:04.276Z",
+          "price": 1.78,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 1.78,
+          "active": false
+         }
+        ]
+       }
+      }
+     }
+    },
+    "11434": {
+     "outcomes": {
+      "11434": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-21T21:39:38.332Z",
+          "price": 1.93,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-21T21:44:00.544Z",
+          "price": 1.93,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 1.93,
+          "active": false
+         }
+        ]
+       }
+      },
+      "11435": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-21T21:39:38.332Z",
+          "price": 1.89,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-21T21:44:00.544Z",
+          "price": 1.89,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 1.89,
+          "active": false
+         }
+        ]
+       }
+      }
+     }
+    },
+    "11438": {
+     "outcomes": {
+      "11438": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:48:16.980Z",
+          "price": 1.83,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:51:04.102Z",
+          "price": 1.83,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 1.83,
+          "active": false
+         }
+        ]
+       }
+      },
+      "11439": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:48:16.980Z",
+          "price": 1.98,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:51:04.102Z",
+          "price": 1.98,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:55:00.352Z",
+          "price": 1.98,
+          "active": false
+         }
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  "pinnacle": {
+   "markets": {
+    "111": {
+     "outcomes": {
+      "111": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:33:15.109Z",
+          "price": 1.526,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:53:13.926Z",
+          "price": 1.52,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:57:06.599Z",
+          "price": 1.52,
+          "active": true
+         }
+        ]
+       }
+      },
+      "112": {
+       "players": {
+        "0": [
+         {
+          "createdAt": "2026-11-22T00:33:15.109Z",
+          "price": 2.74,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:53:13.926Z",
+          "price": 2.75,
+          "active": true
+         },
+         {
+          "createdAt": "2026-11-22T00:57:06.599Z",
+          "price": 2.75,
+          "active": true
+         }
+        ]
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

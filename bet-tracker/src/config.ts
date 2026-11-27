@@ -42,6 +42,11 @@ export const appConfig = {
       historical: config.get<boolean>('oddsApi.clv.historical'),
     },
   },
+  oddsPapi: {
+    apiKey: config.get<string>('oddsPapi.apiKey'),
+    baseUrl: config.get<string>('oddsPapi.baseUrl'),
+    books: config.get<string[]>('oddsPapi.books'),
+  },
   polling: {
     liveSeconds: config.get<number>('polling.liveSeconds'),
     scheduledSeconds: config.get<number>('polling.scheduledSeconds'),
