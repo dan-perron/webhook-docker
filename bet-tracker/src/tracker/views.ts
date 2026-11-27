@@ -879,17 +879,31 @@ function exposureFor(e: EventRow, bets: BetWithLegs[]): Exposure {
   };
 }
 
+/** A leg is in a sport/timing filter (no filter: every leg). */
+export const legFilter =
+  ({ sport, timing }: PortfolioFilter) =>
+  (l: LegView) =>
+    (!sport || l.sport === sport) && (!timing || l.timing === timing);
+
+/**
+ * The bets a portfolio filter covers: one origin, and bets with at least one
+ * leg in the sport/timing bucket.
+ */
+export function filteredBetViews(db: Db, f: PortfolioFilter): BetView[] {
+  const matches = legFilter(f);
+  return betViews(db, undefined, f.origin).filter(
+    (v) => (!f.sport && !f.timing) || v.legs.some(matches)
+  );
+}
+
 export function portfolio(
   db: Db,
   filter: OriginFilter | PortfolioFilter = {}
 ): Portfolio {
   const f = typeof filter === 'string' ? { origin: filter } : filter;
   const { origin, sport, timing } = f;
-  const legMatches = (l: LegView) =>
-    (!sport || l.sport === sport) && (!timing || l.timing === timing);
-  const allViews = betViews(db, undefined, origin).filter(
-    (v) => (!sport && !timing) || v.legs.some(legMatches)
-  );
+  const legMatches = legFilter(f);
+  const allViews = filteredBetViews(db, f);
   const views = new Map(allViews.map((v) => [v.id, v]));
   const all = listBets(db, undefined, origin).filter((b) =>
     views.has(b.bet.id)

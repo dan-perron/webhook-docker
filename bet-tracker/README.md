@@ -288,6 +288,13 @@ every browser; revoke connector tokens by deleting rows from `oauth_tokens`.
   python3 scripts/fit_key_numbers.py games.csv > src/models/data/nfl-key-numbers.json
   ```
   then update the hand-checked football test values (`test/football.test.ts`).
+- **Profit vs. expected** (top of the Bets page): cumulative realized profit
+  vs. cumulative EV at placement over won/lost/push bets by settlement day
+  (America/Chicago), from `GET <base>/api/performance-series?origin=&sport=&timing=`
+  (session cookie; same filters as `portfolio`) and the `performance_series`
+  MCP tool. Units (1u = $10) or dollars; Chart.js is served from the
+  `chart.js` package at `<base>/static/vendor/chart.umd.min.js` (no build
+  step, no CDN).
 - **Odds API quota** shows in Bets → Portfolio details and in `portfolio`; each
   `check_odds` costs markets × regions requests (cached 60 s), and calls over
   3 requests need `confirm: true`.

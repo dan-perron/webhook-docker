@@ -866,8 +866,61 @@ export function Layout({
       timeZone={d.timeZone}
       summary={<Summary d={d} />}
       content={<Content d={d} />}
+      chart={<PerformanceChart origin={d.origin} />}
       wide
     />
+  );
+}
+
+/**
+ * "Cumulative profit vs. expected": drawn by public/perf.js from
+ * /api/performance-series. Outside #content so live updates don't redraw it
+ * from scratch (perf.js refetches after them instead).
+ */
+export function PerformanceChart({ origin }: { origin?: string | undefined }) {
+  const selected = origin === 'recommended' || origin === 'own' ? origin : '';
+  return (
+    <section
+      id="perf"
+      class="perf card"
+      data-api={url('/api/performance-series')}
+    >
+      <div class="perf-head">
+        <h2>Profit vs. expected</h2>
+        <div class="perf-controls">
+          <select id="perf-origin" aria-label="Origin">
+            <option value="" selected={selected === ''}>
+              All
+            </option>
+            <option value="recommended" selected={selected === 'recommended'}>
+              Recommended
+            </option>
+            <option value="own" selected={selected === 'own'}>
+              Own
+            </option>
+          </select>
+          <div class="perf-units" role="group" aria-label="Units">
+            <button type="button" data-perf-unit="u" aria-pressed="true">
+              Units
+            </button>
+            <button type="button" data-perf-unit="usd" aria-pressed="false">
+              $
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="perf-stats" id="perf-stats" aria-live="polite" />
+      <div class="perf-canvas">
+        <canvas
+          id="perf-chart"
+          role="img"
+          aria-label="Cumulative actual profit and expected profit (EV at placement) by settlement date"
+        />
+      </div>
+      <p class="perf-empty muted" id="perf-empty" hidden>
+        Nothing settled yet.
+      </p>
+    </section>
   );
 }
 
@@ -881,6 +934,8 @@ export function Shell(props: {
   timeZone: string;
   summary: Child;
   content: Child;
+  /** The performance chart (Bets only), between the header and #content. */
+  chart?: Child;
   /** Lay cards out in a grid on wide screens (Bets, Scores boards). */
   wide?: boolean;
 }) {
@@ -911,9 +966,16 @@ export function Shell(props: {
           data-base={home}
           data-tz={props.timeZone}
         />
+        {props.chart ? (
+          <>
+            <script src={url('/static/vendor/chart.umd.min.js')} defer />
+            <script src={assetUrl('perf.js')} defer />
+          </>
+        ) : null}
       </head>
       <body class={props.wide ? 'wide' : ''}>
         <header id="summary">{props.summary}</header>
+        {props.chart ? <div class="perf-wrap">{props.chart}</div> : null}
         <main id="content">{props.content}</main>
       </body>
     </html>
